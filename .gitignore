@@ -1,0 +1,58 @@
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Compiler Artifacts
+*.d
+*.bin
+*.map
+*makefile
+*.mk
+*.axf
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+
+# Release Folders
+GNU\ ARM*
+
+# Temporary files
+*~
+
+# Swap files
+*.swp
+
+# Backup files
+*.bak
+
+# settings file
+.settings
+
+# Project import result
+imported_project_report.html
