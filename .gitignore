@@ -1,5 +1,7 @@
 # Object files
 *.o
+# Silicon Labs requires this specific .o file to be checked in, not part of the build output
+!protocol/bluetooth/lib/*/GCC/binapploader.o
 *.ko
 *.obj
 *.elf
@@ -19,6 +21,8 @@
 # Libraries
 *.lib
 *.a
+# Silicon labs requires the set of closed source libraries here to be checked in, not part of the build output
+!protocol/bluetooth/lib/*/GCC/*.a
 *.la
 *.lo
 
