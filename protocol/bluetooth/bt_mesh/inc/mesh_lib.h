@@ -34,7 +34,16 @@ typedef enum {
   MESH_RESPONSE_FLAG_NONRELAYED = 0x01,
 } mesh_response_flags_t;
 
-/** @brief Convert transition time state value to milliseconds */
+/**
+ * @brief Convert transition time state value to milliseconds
+ *
+ * Converts from resolution+count format used in Mesh messages to
+ * milliseconds
+ *
+ * @param transition_time Transition time value in Mesh representation
+ *
+ * @return Value converted to milliseconds
+ */
 uint32_t mesh_lib_transition_time_to_ms(uint8_t transition_time);
 
 /***
@@ -117,8 +126,10 @@ void mesh_lib_generic_client_event_handler(struct gecko_cmd_packet *evt);
  * @param appkey_index Application key index of the key used to encrypt
  * the request; the response, if any, has to be encrypted with the same key.
  * @param req Request parameters
- * @param transition_ms Requested transition time in milliseconds
- * @param delay_ms Requested delay time in milliseconds
+ * @param transition_ms Requested transition time in milliseconds, or zero
+ * for immediate state transition
+ * @param delay_ms Requested delay time in milliseconds before a state
+ * transition or an immediate state change should occur
  * @param request_flags Request flags
  */
 typedef void
@@ -149,8 +160,12 @@ typedef void
  * @param model_id Model that generated the event
  * @param element_index Element where the model resides
  * @param current Current model state
- * @param target Target model state, towards which model is moving
- * @param remaining_ms Time remaining for transition in milliseconds
+ * @param target Target model state, towards which model is moving;
+ * in case there is no state transition ongoing a NULL pointer will
+ * be given
+ * @param remaining_ms Time remaining for transition in milliseconds;
+ * in case there is no state transition ongoing a value of zero will
+ * be given
  */
 typedef void
 (*mesh_lib_generic_server_change_cb)(uint16_t model_id,
@@ -173,8 +188,12 @@ typedef void
  * @param appkey_index Application key index of the key used to encrypt
  * the response; has to be the same key that was used to encrypt the request
  * @param current Current model state
- * @param target Target model state, towards which model is moving
- * @param remaining_ms Time remaining for transition in milliseconds
+ * @param target Target model state, towards which model is moving;
+ * in case there is no state transition ongoing a NULL pointer should
+ * be given
+ * @param remaining_ms Time remaining for transition in milliseconds;
+ * in case there is no state transition ongoing a zero value should be
+ * given
  * @param response_flags Response flags
  *
  * @return bg_err_success if response was sent; an error otherwise
@@ -202,8 +221,12 @@ mesh_lib_generic_server_response(uint16_t model_id,
  * @param model_id Model that is being updated
  * @param element_index Element where the model resides
  * @param current Current model state
- * @param target Target model state, towards which model is moving
- * @param remaining_ms Time remaining for transition in milliseconds
+ * @param target Target model state, towards which model is moving;
+ * in case there is no state transition ongoing a NULL pointer should
+ * be given
+ * @param remaining_ms Time remaining for transition in milliseconds;
+ * in case there is no state transition ongoing a zero value should be
+ * given
  *
  * @return bg_err_success if update was done; an error otherwise
  */
@@ -271,8 +294,12 @@ mesh_lib_generic_server_register_handler(uint16_t model_id,
  * @param client_addr Mesh address of the client node that received the response
  * @param server_addr Mesh address of the server that sent the response
  * @param current Current server state
- * @param target Target server state, towards which server is moving
- * @param remaining_ms Time remaining for transition in milliseconds
+ * @param target Target server state, towards which server is moving;
+ * in case there is no state transition ongoing a NULL pointer will
+ * be given
+ * @param remaining_ms Time remaining for transition in milliseconds;
+ * in case there is no state transition ongoing a value of zero will
+ * be given
  * @param response_flags Response flags
  */
 typedef void
@@ -323,7 +350,8 @@ mesh_lib_generic_client_get(uint16_t model_id,
  * @param transaction_id Transaction ID, used for messages that are defined
  * to contain one and ignored for others
  * @param req Request structure
- * @param transition_ms Requested transition time in milliseconds
+ * @param transition_ms Requested transition time in milliseconds,
+ * or zero for immediate state transition
  * @param delay_ms Requested delay before starting transition or
  * setting the immediate value, in milliseconds
  * @param request_flags Request flags
@@ -353,7 +381,8 @@ mesh_lib_generic_client_set(uint16_t model_id,
  * @param transaction_id Transaction ID, used for messages that are defined
  * to contain one and ignored for others
  * @param req Request structure
- * @param transition_ms Requested transition time in milliseconds
+ * @param transition_ms Requested transition time in milliseconds,
+ * or zero for immediate state transition
  * @param delay_ms Requested delay before starting transition or
  * setting the immediate value, in milliseconds
  * @param request_flags Request flags

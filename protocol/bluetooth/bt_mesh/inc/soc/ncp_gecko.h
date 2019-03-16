@@ -422,6 +422,12 @@ enum coex_option
     coex_option_high_priority                                    = 0x800
 };
 
+enum mesh_test_key_type
+{
+    mesh_test_key_type_net                                       = 0x0,
+    mesh_test_key_type_app                                       = 0x1
+};
+
 enum l2cap_coc_connection_result
 {
     l2cap_connection_successful                                  = 0x0,
@@ -531,6 +537,11 @@ enum gecko_dev_types
 #define MESH_GENERIC_CLIENT_STATE_LIGHTNESS_LAST                     0x82
 #define MESH_GENERIC_CLIENT_STATE_LIGHTNESS_DEFAULT                  0x83
 #define MESH_GENERIC_CLIENT_STATE_LIGHTNESS_RANGE                    0x84
+#define MESH_GENERIC_CLIENT_STATE_CTL                                0x85
+#define MESH_GENERIC_CLIENT_STATE_CTL_TEMPERATURE                    0x86
+#define MESH_GENERIC_CLIENT_STATE_CTL_DEFAULT                        0x87
+#define MESH_GENERIC_CLIENT_STATE_CTL_RANGE                          0x88
+#define MESH_GENERIC_CLIENT_STATE_CTL_LIGHTNESS_TEMPERATURE          0x89
 #define MESH_GENERIC_CLIENT_REQUEST_ON_OFF                           0x0
 #define MESH_GENERIC_CLIENT_REQUEST_ON_POWER_UP                      0x1
 #define MESH_GENERIC_CLIENT_REQUEST_LEVEL                            0x2
@@ -550,6 +561,10 @@ enum gecko_dev_types
 #define MESH_GENERIC_CLIENT_REQUEST_LIGHTNESS_LINEAR                 0x81
 #define MESH_GENERIC_CLIENT_REQUEST_LIGHTNESS_DEFAULT                0x82
 #define MESH_GENERIC_CLIENT_REQUEST_LIGHTNESS_RANGE                  0x83
+#define MESH_GENERIC_CLIENT_REQUEST_CTL                              0x84
+#define MESH_GENERIC_CLIENT_REQUEST_CTL_TEMPERATURE                  0x85
+#define MESH_GENERIC_CLIENT_REQUEST_CTL_DEFAULT                      0x86
+#define MESH_GENERIC_CLIENT_REQUEST_CTL_RANGE                        0x87
 
 
 #define gecko_cmd_dfu_reset_id                                        (((uint32)gecko_dev_type_gecko)|gecko_msg_type_cmd|0x00000000)
@@ -5596,7 +5611,7 @@ PACKSTRUCT( struct gecko_msg_cte_receiver_iq_report_evt_t
     uint16              status;
     uint8               packet_type;
     uint8               handle;
-    int16               rssi;
+    int8                rssi;
     uint8               channel;
     uint8array          samples;
 });
@@ -5621,7 +5636,6 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_server_send_descriptor_status_cmd_t
 {
     uint16              elem_index;
     uint16              client_address;
-    uint16              server_address;
     uint16              appkey_index;
     uint8               flags;
     uint8array          descriptors;
@@ -5706,7 +5720,6 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_setup_server_send_cadence_status_cmd_t
 {
     uint16              elem_index;
     uint16              client_address;
-    uint16              server_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -5720,7 +5733,6 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_setup_server_send_settings_status_cmd_t
 {
     uint16              elem_index;
     uint16              client_address;
-    uint16              server_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -5734,7 +5746,6 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_setup_server_send_setting_status_cmd_t
 {
     uint16              elem_index;
     uint16              client_address;
-    uint16              server_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -5926,8 +5937,8 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_client_set_setting_rsp_t
 PACKSTRUCT( struct gecko_msg_mesh_sensor_client_descriptor_status_evt_t
 {
     uint16              elem_index;
-    uint16              client_address;
     uint16              server_address;
+    uint16              client_address;
     uint16              appkey_index;
     uint8               flags;
     uint8array          descriptors;
@@ -5935,8 +5946,8 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_client_descriptor_status_evt_t
 PACKSTRUCT( struct gecko_msg_mesh_sensor_client_cadence_status_evt_t
 {
     uint16              elem_index;
-    uint16              client_address;
     uint16              server_address;
+    uint16              client_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -5945,8 +5956,8 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_client_cadence_status_evt_t
 PACKSTRUCT( struct gecko_msg_mesh_sensor_client_settings_status_evt_t
 {
     uint16              elem_index;
-    uint16              client_address;
     uint16              server_address;
+    uint16              client_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -5955,8 +5966,8 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_client_settings_status_evt_t
 PACKSTRUCT( struct gecko_msg_mesh_sensor_client_setting_status_evt_t
 {
     uint16              elem_index;
-    uint16              client_address;
     uint16              server_address;
+    uint16              client_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -5966,8 +5977,8 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_client_setting_status_evt_t
 PACKSTRUCT( struct gecko_msg_mesh_sensor_client_status_evt_t
 {
     uint16              elem_index;
-    uint16              client_address;
     uint16              server_address;
+    uint16              client_address;
     uint16              appkey_index;
     uint8               flags;
     uint8array          sensor_data;
@@ -5975,8 +5986,8 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_client_status_evt_t
 PACKSTRUCT( struct gecko_msg_mesh_sensor_client_column_status_evt_t
 {
     uint16              elem_index;
-    uint16              client_address;
     uint16              server_address;
+    uint16              client_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -5985,8 +5996,8 @@ PACKSTRUCT( struct gecko_msg_mesh_sensor_client_column_status_evt_t
 PACKSTRUCT( struct gecko_msg_mesh_sensor_client_series_status_evt_t
 {
     uint16              elem_index;
-    uint16              client_address;
     uint16              server_address;
+    uint16              client_address;
     uint16              appkey_index;
     uint8               flags;
     uint16              property_id;
@@ -7816,7 +7827,7 @@ static inline struct gecko_msg_le_gap_set_mode_rsp_t* gecko_cmd_le_gap_set_mode(
 *
 * gecko_cmd_le_gap_discover
 *
-* Deprecated. Replacement is "le_gap_start_discovery" command which allows to scan on LE 1M PHY or LE Coded PHY.
+* Deprecated. Replacement is "le_gap_start_discovery"             command. To preserve the same functionality when migrating to this new command, use LE 1M PHY in scanning_phy parameter.
 * This command can be used to start the GAP discovery procedure to scan
 * for advertising devices on LE 1M PHY. To cancel an ongoing
 * discovery process use the "le_gap_end_procedure" command.
@@ -8415,7 +8426,12 @@ static inline struct gecko_msg_le_gap_set_advertise_phy_rsp_t* gecko_cmd_le_gap_
 *
 * gecko_cmd_le_gap_set_advertise_configuration
 *
-* This command can be used to configure the type of advertising event and other advertising properties of the given advertising set. The command "le_gap_clear_advertise_configuration" can be used to clear the configurations set by this command. This setting will take effect on the next advertising enabling. 
+* This command can be used to enable advertising configuration flags on
+* the given advertising set. The                 configuration change
+* will take effects on the next advertising enabling.
+* These configuration flags can be disabled using
+* "le_gap_clear_advertise_configuration" command.
+*  
 *
 * @param handle   Advertising set handle
 * @param configurations   Advertising configuration flags to enable. This value can be a bitmask of multiple flags. Flags:                 
@@ -8446,7 +8462,7 @@ static inline struct gecko_msg_le_gap_set_advertise_configuration_rsp_t* gecko_c
 *
 * gecko_cmd_le_gap_clear_advertise_configuration
 *
-* This command can be used to disable advertising configurations on the given advertising set. The command "le_gap_set_advertise_configuration" can be used to set configurations. This setting will take effect on the next advertising enabling. 
+*  
 *
 * @param handle   Advertising set handle
 * @param configurations   Advertising configuration flags to disable. This value can be a bitmask of multiple flags. See "le_gap_set_advertise_configuration" for possible flags.                     
@@ -8483,6 +8499,8 @@ static inline struct gecko_msg_le_gap_clear_advertise_configuration_rsp_t* gecko
 * occurred under the default configuration:
 *  - The connectable mode is set to le_gap_connectable_non_scannable.
 *  - The primary advertising PHY has been set to LE Coded PHY by command "le_gap_set_advertise_phy".
+*  - The user advertising data length is more than 31 bytes.
+*  - Periodic advertising has been enabled.
 * If currently set parameters can't be used then an error will be
 * returned. Specifically, this command fails with "Connection Limit
 * Exceeded" error if it may cause the number of connections exceeding
@@ -8928,11 +8946,22 @@ static inline struct gecko_msg_le_gap_enable_whitelisting_rsp_t* gecko_cmd_le_ga
 *
 * gecko_cmd_sync_open
 *
-* This command can be used to establish a synchronization with periodic advertising from the specified             advertiser and begin receiving periodic advertising packets.          
+* This command can be used to establish a synchronization with a
+* periodic advertising from the specified             advertiser and
+* begin receiving periodic advertising packets. Note that
+* synchronization establishment can only             occur when scanning
+* is enabled. While scanning is disabled, no attempt to synchronize will
+* take place.
+* The application should decide skip and timeout values based on the
+* periodic advertising interval provided by             the advertiser.
+* It is recommended to set skip and timeout at the values that allow a
+* few receiving attempts.             Periodic advertising intervals are
+* reported in event             "le_gap_extended_scan_response".
+*  
 *
 * @param adv_sid   Advertising set identifier
-* @param skip   The number of periodic advertising packets that can be skipped after a successful receive.                     Range: 0x0000 to 0x01F3                  
-* @param timeout   Synchronization timeout for the periodic advertising. Unit: 10 ms.                      
+* @param skip   The maximum number of periodic advertising packets that can be skipped after a successful receive.                     Range: 0x0000 to 0x01F3                  
+* @param timeout   The maximum permitted time between successful receives. If this time is exceeded, synchronization is lost. Unit: 10 ms.                      
 *  - Range: 0x06 to 0xFFFF
 *  - Unit: 10 ms
 *  - Time range: 100 ms ms to 163.84 s
@@ -9733,14 +9762,27 @@ static inline struct gecko_msg_gatt_find_included_services_rsp_t* gecko_cmd_gatt
 *
 * gecko_cmd_gatt_read_multiple_characteristic_values
 *
-* This command can be used to read the values of multiple characteristics from a remote GATT database at once.              "gatt_characteristic_value" events are generated as the values are returned by the remote GATT server.             A received "gatt_procedure_completed" event indicates that either all data has been read successfully or that an error response has been received. 
+* This command can be used to read the values of multiple
+* characteristics from a remote GATT database at once.              The
+* GATT server will return the values in one ATT PDU as the response. If
+* the total set of values is greater than             (ATT_MTU - 1)
+* bytes in length, only the first (ATT_MTU - 1) bytes are included. A
+* single             "gatt_characteristic_value" event is generated, in
+* which the             characteristic is set to 0 and the data in value
+* parameter is a concatenation of characteristic values in the order
+* they were requested.             Received "gatt_procedure_completed"
+* event indicates that this GATT procedure              has successfully
+* completed or failed with error.
+* This command should be used only for characteristics values that have
+* known fixed size, except the last one that could have variable length.
+*  
 *
 * @param connection   
 * @param characteristic_list   Little endian encoded uint16 list of characteristics to be read.
 *
 * Events generated
 *
-* gecko_evt_gatt_characteristic_value - This event contains the data belonging to a characteristic sent by the GATT Server.
+* gecko_evt_gatt_characteristic_value - A concatenation of characteristic values in the order they were requested
 * gecko_evt_gatt_procedure_completed - Procedure has been successfully completed or failed with error.    
 *
 **/
@@ -10296,7 +10338,7 @@ static inline struct gecko_msg_flash_ps_load_rsp_t* gecko_cmd_flash_ps_load(uint
 *
 * gecko_cmd_flash_ps_erase
 *
-* This command can be used to erase a single PS key and its value from the persistent store.. 
+* This command can be used to erase a single PS key and its value from the persistent store. 
 *
 * @param key   PS key to erase    
 *
@@ -10468,7 +10510,10 @@ static inline struct gecko_msg_sm_set_bondable_mode_rsp_t* gecko_cmd_sm_set_bond
 * Bit 3: 
 *  - 0: Bonding request does not need to be confirmed
 *  - 1: Bonding requests need to be confirmed. Received bonding requests are notified with "sm_confirm_bonding events."
-* Bit 4 to 7: Reserved{br}{br}Default value: 0x00
+* Bit 4: 
+*  - 0: Allow all connections
+*  - 1: Allow connections only from bonded devices
+* Bit 5 to 7: Reserved{br}{br}Default value: 0x00
 * @param io_capabilities   I/O Capabilities. See link    
 *
 **/
@@ -10491,9 +10536,9 @@ static inline struct gecko_msg_sm_configure_rsp_t* gecko_cmd_sm_configure(uint8 
 *
 * gecko_cmd_sm_store_bonding_configuration
 *
-* This command can be used to set maximum allowed bonding count and bonding policy. The default value is maximum number of bondings supported. 
+* This command can be used to set maximum allowed bonding count and bonding policy. The actual maximum number of bondings that can be supported depends on how much user data is stored in the NVM and the NVM size. The default value is 14. 
 *
-* @param max_bonding_count   Maximum allowed bonding count. Range: 1 to 14
+* @param max_bonding_count   Maximum allowed bonding count. Range: 1 to 32
 * @param policy_flags   Bonding policy. Values: 
 *  - 0: If database is full, new bonding attempts will fail
 *  - 1: New bonding will overwrite the oldest existing bonding
@@ -11181,7 +11226,14 @@ static inline struct gecko_msg_homekit_broadcast_action_rsp_t* gecko_cmd_homekit
 *
 * gecko_cmd_mesh_node_init
 *
-* Initializes the Mesh stack in Node role. When             initialization is complete a "node initialized"             event will be generated.             {br}{br}              This command must be issued before any other Bluetooth             Mesh commands, except for "             set node UUID" command.             {br}{br}              Note that you may initialize a             device either in the Provisioner or the Node role, but not             both.              
+* Initializes the Mesh stack in Node role. When
+* initialization is complete a "node initialized"             event will
+* be generated.
+* This command must be issued before any other Bluetooth
+* Mesh commands, except for "             set node UUID" command.
+* Note that you may initialize a             device either in the
+* Provisioner or the Node role, but not             both.
+*  
 *
 *
 * Events generated
@@ -11206,7 +11258,27 @@ static inline struct gecko_msg_mesh_node_init_rsp_t* gecko_cmd_mesh_node_init()
 *
 * gecko_cmd_mesh_node_start_unprov_beaconing
 *
-* Start sending Unprovisioned Device Beacons.             {br}{br}              This command makes an unprovisioned device available for             provisioning. The device will start to send periodic             unprovisioned device beacons containing device UUID. It             will also start listening for incoming Provisioner             connection attempts on the specified bearers (PB-ADV,             PB-GATT, or both). In case of PB-GATT, the device will             also begin advertising its provisioning GATT service.             {br}{br}              At the beginning of a provisioning process a "provisioning             started" event will be generated. When the device             receives provisioning data from the Provisioner a "node provisioned"             event will be generates; if provisioning fails with an             error, a "             provisioning failed" event will be generated instead.             {br}{br}              Once provisioned, the node elements have been allocated             addresses and a network key has been deployed to the node,             making the node ready for further configuration by the             Provisioner. Note that the node is not yet fully ready             for communicating with other nodes on the network at this             stage.              
+* Start sending Unprovisioned Device Beacons.
+* This command makes an unprovisioned device available for
+* provisioning. The device will start to send periodic
+* unprovisioned device beacons containing device UUID. It
+* will also start listening for incoming Provisioner
+* connection attempts on the specified bearers (PB-ADV,             PB-
+* GATT, or both). In case of PB-GATT, the device will             also
+* begin advertising its provisioning GATT service.
+* At the beginning of a provisioning process a "provisioning
+* started" event will be generated. When the device             receives
+* provisioning data from the Provisioner a "node provisioned"
+* event will be generates; if provisioning fails with an
+* error, a "             provisioning failed" event will be generated
+* instead.
+* Once provisioned, the node elements have been allocated
+* addresses and a network key has been deployed to the node,
+* making the node ready for further configuration by the
+* Provisioner. Note that the node is not yet fully ready             for
+* communicating with other nodes on the network at this
+* stage.
+*  
 *
 * @param bearer   Bit mask for which bearer to use. Values are as follows: {br}                     
 *  - 1 (bit 0): PB-ADV
@@ -11268,7 +11340,16 @@ static inline struct gecko_msg_mesh_node_input_oob_request_rsp_rsp_t* gecko_cmd_
 *
 * gecko_cmd_mesh_node_get_uuid
 *
-* Get the device UUID.             {br}{br}              Every Mesh device has a 128-bit UUID identifying the device.             It is used primarily during provisioning, as it is broadcast             in Unprovisioned Device Beacons to indicate that the device             is ready to be provisioned.{br}{br}              This command can be used for debugging purposes. During             provisioning the stack automatically uses the UUID of the             device and it does not need to be explicitly specified when             "unprovisioned             device beaconing" is started.              
+* Get the device UUID.
+* Every Mesh device has a 128-bit UUID identifying the device.
+* It is used primarily during provisioning, as it is broadcast
+* in Unprovisioned Device Beacons to indicate that the device
+* is ready to be provisioned.
+* This command can be used for debugging purposes. During
+* provisioning the stack automatically uses the UUID of the
+* device and it does not need to be explicitly specified when
+* "unprovisioned             device beaconing" is started.
+*  
 *    
 *
 **/
@@ -11289,7 +11370,14 @@ static inline struct gecko_msg_mesh_node_get_uuid_rsp_t* gecko_cmd_mesh_node_get
 *
 * gecko_cmd_mesh_node_set_provisioning_data
 *
-* Used to provision devices completely             out-of-band. Provisioner's device database needs             to be populated with the corresponding values to             make the device reachable and configurable in the             Provisioner's network. {br}{br}              See also the Provisioner command for             "adding a device"             to Provisioner's device database. {br}{br}              NOTE: the device must be             reset after this command has been issued. 
+* Used to provision devices completely             out-of-band.
+* Provisioner's device database needs             to be populated with
+* the corresponding values to             make the device reachable and
+* configurable in the             Provisioner's network.
+* See also the Provisioner command for             "adding a device"
+* to Provisioner's device database.
+* NOTE: the device must be             reset after this command has been issued.
+*  
 *
 * @param device_key   Device Key for this Device, shared by the Provisioner
 * @param network_key   Network Key the Provisioner has selected for this Device
@@ -11322,7 +11410,18 @@ static inline struct gecko_msg_mesh_node_set_provisioning_data_rsp_t* gecko_cmd_
 *
 * gecko_cmd_mesh_node_init_oob
 *
-* Initializes the Mesh stack in Node role. When             initialization is complete a "node initialized"             event will be generated.             {br}{br}              This command is the same as the "node initialization"             command except for parameters defining whether OOB             authentication data stored on the device can be used             during provisioning.             {br}{br}              This command must be issued before any other Bluetooth             Mesh commands, except for "             set node UUID" command.             {br}{br}              Note that you may initialize a device either in the             Provisioner or the Node role, but not both.              
+* Initializes the Mesh stack in Node role. When
+* initialization is complete a "node initialized"             event will
+* be generated.
+* This command is the same as the "node initialization"
+* command except for parameters defining whether OOB
+* authentication data stored on the device can be used
+* during provisioning.
+* This command must be issued before any other Bluetooth
+* Mesh commands, except for "             set node UUID" command.
+* Note that you may initialize a device either in the
+* Provisioner or the Node role, but not both.
+*  
 *
 * @param public_key   If nonzero, use the ECC key stored                 in persistent storage during provisioning instead                 of an ephemeral key. 
 * @param auth_methods   Allowed OOB authentication methods. The value                 is a bitmap so that multiple methods can be allowed.
@@ -11361,7 +11460,13 @@ static inline struct gecko_msg_mesh_node_init_oob_rsp_t* gecko_cmd_mesh_node_ini
 *
 * gecko_cmd_mesh_node_set_ivrecovery_mode
 *
-* Enable/disable IV index recovery mode             {br}{br}             If the node has not been in communication with the network for             a long time (e.g., due to having been turned off) it may have             missed IV index updates and isn't any more able to communicate             with other nodes. In this case, IV index recovery mode should             be enabled.              
+* Enable/disable IV index recovery mode
+* If the node has not been in communication with the
+* network for             a long time (e.g., due to having been turned
+* off) it may have             missed IV index updates and isn't any
+* more able to communicate             with other nodes. In this case,
+* IV index recovery mode should             be enabled.
+*  
 *
 * @param mode   Zero to disable; nonzero to enable    
 *
@@ -11405,7 +11510,7 @@ static inline struct gecko_msg_mesh_node_get_ivrecovery_mode_rsp_t* gecko_cmd_me
 *
 * gecko_cmd_mesh_node_set_adv_event_filter
 *
-* Set filter for received advertising packet events.           
+* Set filter for received advertising packet events.            
 * As Mesh data traffic is carried over advertising events and
 * the BLE stack is scanning continuously when Mesh stack is
 * active, by default the Mesh stack filters out advertising
@@ -11569,7 +11674,25 @@ static inline struct gecko_msg_mesh_node_get_ivupdate_state_rsp_t* gecko_cmd_mes
 *
 * gecko_cmd_mesh_node_request_ivupdate
 *
-* Attempt to request an IV index update in the           network.           {br}{br}            Each network layer PDU a node sends has a 24-bit sequence           number attached to it; each element of a node keeps a           sequence number counter which is incremented for every PDU           sent out to the network. It is forbidden to repeat sequence           numbers for a given IV index value, so if a node determines           it is about to exhaust the available sequence numbers in one           of its elements it needs to request an IV index update by           issuing this command.           {br}{br}            Determining when a node may run out of sequence numbers           has to be done at the application as the stack cannot have           knowledge of how often the application plans to transmit           to the network, i.e., how long the remaining sequence           numbers might last.           {br}{br}            See also the "get           remaining sequence numbers" command.           {br}{br}            Note that the call may fail for various reasons, for instance           if an IV index update is already ongoing, or if not enough           time has passed since the previous IV index update.            
+* Attempt to request an IV index update in the           network.
+* Each network layer PDU a node sends has a 24-bit sequence
+* number attached to it; each element of a node keeps a
+* sequence number counter which is incremented for every PDU
+* sent out to the network. It is forbidden to repeat sequence
+* numbers for a given IV index value, so if a node determines
+* it is about to exhaust the available sequence numbers in one
+* of its elements it needs to request an IV index update by
+* issuing this command.
+* Determining when a node may run out of sequence numbers           has
+* to be done at the application as the stack cannot have
+* knowledge of how often the application plans to transmit           to
+* the network, i.e., how long the remaining sequence           numbers
+* might last.
+* See also the "get           remaining sequence numbers" command.
+* Note that the call may fail for various reasons, for instance
+* if an IV index update is already ongoing, or if not enough
+* time has passed since the previous IV index update.
+*  
 *    
 *
 **/
@@ -11647,7 +11770,18 @@ static inline struct gecko_msg_mesh_node_save_replay_protection_list_rsp_t* geck
 *
 * gecko_cmd_mesh_node_set_uuid
 *
-* Write device UUID into persistent storage. This           command must be called before the mesh stack is initialized;           otherwise the change will not take effect before a reboot.           {br}{br}            Note that UUID must not be changed when the device is provisioned           to a network.           {br}{br}            Furthermore, UUID should remain constant if a device           has received a firmware update which requires reprovisioning of the           device once the update has been applied (e.g., new elements are           added by the update).  
+* Write device UUID into persistent storage. This           command must
+* be called before initializing the mesh stack (before
+* "mesh_node_init" or           "mesh_node_init_oob";
+* otherwise the change will not take effect before a reboot.
+* UUID should conform to the format defined in "RFC 4122"
+* Note that UUID must not be changed when the device is provisioned
+* to a network.
+* Furthermore, UUID should remain constant if a device           has
+* received a firmware update which requires reprovisioning of the
+* device once the update has been applied (e.g., new elements are
+* added by the update).
+*  
 *
 * @param uuid   UUID to set    
 *
@@ -11723,7 +11857,13 @@ static inline struct gecko_msg_mesh_node_static_oob_request_rsp_rsp_t* gecko_cmd
 *
 * gecko_cmd_mesh_prov_init
 *
-* Initializes the Mesh stack in Provisioner             role. When initialization is complete a "provisioner initialized             event" will be generated.  {br}{br}              This command must be issued before any other Bluetooth             Mesh commands. Note that you may initialize a device             either in the Provisioner or the Node role, but not both.              
+* Initializes the Mesh stack in Provisioner             role. When
+* initialization is complete a "provisioner initialized
+* event" will be generated.
+* This command must be issued before any other Bluetooth
+* Mesh commands. Note that you may initialize a device
+* either in the Provisioner or the Node role, but not both.
+*  
 *
 *
 * Events generated
@@ -11748,7 +11888,14 @@ static inline struct gecko_msg_mesh_prov_init_rsp_t* gecko_cmd_mesh_prov_init()
 *
 * gecko_cmd_mesh_prov_scan_unprov_beacons
 *
-* Start scanning for unprovisioned device             beacons.  {br}{br} Unprovisioned devices send out beacons             containing their UUID.  An "unprovisioned beacon             event" will be generated for each beacon seen. Once the             UUID of a device is known, the Provisioner may start             provisioning the device by issuing either the " provision device             over PB-ADV" or "provision             device over PB-GATT" command.  
+* Start scanning for unprovisioned device             beacons.
+* Unprovisioned devices send out beacons             containing their
+* UUID.  An "unprovisioned beacon             event" will be generated
+* for each beacon seen. Once the             UUID of a device is known,
+* the Provisioner may start             provisioning the device by
+* issuing either the " provision device             over PB-ADV" or
+* "provision             device over PB-GATT" command.
+*  
 *
 *
 * Events generated
@@ -11773,7 +11920,14 @@ static inline struct gecko_msg_mesh_prov_scan_unprov_beacons_rsp_t* gecko_cmd_me
 *
 * gecko_cmd_mesh_prov_provision_device
 *
-* Provision a device into a network using the             advertisement bearer (PB-ADV)             {br}{br}              Issuing this command starts the provisioning process for             the specified device. Once the process completes             successfully, a "device             provisioned event" is generated. If provisioning does             not succeed, a " provisioning             failed event" will be generated instead. 
+* Provision a device into a network using the             advertisement
+* bearer (PB-ADV)
+* Issuing this command starts the provisioning process for
+* the specified device. Once the process completes
+* successfully, a "device             provisioned event" is generated.
+* If provisioning does             not succeed, a " provisioning
+* failed event" will be generated instead.
+*  
 *
 * @param network_id   Index of the initial network key                     which is sent to the device during                     provisioning.
 * @param uuid   UUID of the device to provision
@@ -11810,7 +11964,10 @@ static inline struct gecko_msg_mesh_prov_provision_device_rsp_t* gecko_cmd_mesh_
 *
 * gecko_cmd_mesh_prov_create_network
 *
-* Creates a new network key on the Provisioner.             {br}{br}              The created key can be deployed on a Node using the "add network key"             command.              
+* Creates a new network key on the Provisioner.
+* The created key can be deployed on a Node using the "add network key"
+* command.
+*  
 *
 * @param key   Key value to use; set to zero-length array to generate random key.    
 *
@@ -11871,21 +12028,17 @@ static inline struct gecko_msg_mesh_prov_get_dcd_rsp_t* gecko_cmd_mesh_prov_get_
 *
 * Deprecated. Replacements are               "mesh_config_client_get_beacon",               "mesh_config_client_get_default_ttl",               "mesh_config_client_get_friend",               "mesh_config_client_get_gatt_proxy",               "mesh_config_client_get_identity",               "mesh_config_client_get_lpn_polltimeout", and               "mesh_config_client_get_relay"               commands.
 * Get a configration state value of a Node.
-* {br}{br}                
 * Node Configuration Server model state contains a number
 * of node-wide values (for instance, Node's default TTL
 * value) which are represented as single bytes; they can
 * be queried with this command. See the " list of
 * configuration states" for reference.
-* {br}{br}                
 * Querying the more complex states (for instance,               model-
 * application key bindings) should be done using the
 * commands dedicated for the purpose; see, e.g., "get
 * model application key bindings" command.
-* {br}{br}                
 * Node response is reported with an "configuration status
 * event".
-* {br}{br}               
 *  
 *
 * @param address   Unicast address of the target Node's primary element
@@ -11919,17 +12072,14 @@ static inline struct gecko_msg_mesh_prov_get_config_rsp_t* gecko_cmd_mesh_prov_g
 *
 * Deprecated. Replacements are               "mesh_config_client_set_beacon",               "mesh_config_client_set_default_ttl",               "mesh_config_client_set_friend",               "mesh_config_client_set_gatt_proxy",               "mesh_config_client_set_identity", and               "mesh_config_client_set_relay"               commands.
 * Set a configration state value of a Node.
-* {br}{br}                
 * Node Configuration Server model state contains a number
 * of node-wide values (for instance, Node's default TTL
 * value) which are represented as single bytes; they can
 * be modified with this command. See the " list of
 * configuration states" for reference.
-* {br}{br}                
 * Setting the more complex states should be done using the
 * commands dedicated for the purpose as this command accepts
 * only raw binary data as the value to set.
-* {br}{br}                
 * Node response is reported with an "configuration status
 * event".
 *  
@@ -11972,7 +12122,15 @@ static inline struct gecko_msg_mesh_prov_set_config_rsp_t* gecko_cmd_mesh_prov_s
 *
 * gecko_cmd_mesh_prov_create_appkey
 *
-* Creates a new application key on the Provisioner.             {br}{br}              An application key is always bound to a network key; that             is, the application key is only valid in the context of a             particular network key. The selected network key must             exist on the Provisioner (see "create network             key" command). {br}{br}              The created application key can be deployed on a Node             using the "add             application key" command.              
+* Creates a new application key on the Provisioner.
+* An application key is always bound to a network key; that
+* is, the application key is only valid in the context of a
+* particular network key. The selected network key must
+* exist on the Provisioner (see "create network             key"
+* command).
+* The created application key can be deployed on a Node
+* using the "add             application key" command.
+*  
 *
 * @param netkey_index   Index of the network key to which the application key will be bound
 * @param key   Key value to use; set to zero-length array to generate random key.    
@@ -12097,7 +12255,15 @@ static inline struct gecko_msg_mesh_prov_set_oob_requirements_rsp_t* gecko_cmd_m
 *
 * gecko_cmd_mesh_prov_key_refresh_start
 *
-* Start a key refresh procedure in the network.             {br}{br}              A key refresh procedure updates a network key, and             optionally application keys associated with it, in all             nodes of the network except for blacklisted nodes. After             the refresh procedure is complete the old keys will be             discarded. Thus the blacklisted nodes which did not             receive new keys will be shut out of the network at the             completion of the procedure.  {br}{br}               
+* Start a key refresh procedure in the network.
+* A key refresh procedure updates a network key, and
+* optionally application keys associated with it, in all
+* nodes of the network except for blacklisted nodes. After
+* the refresh procedure is complete the old keys will be
+* discarded. Thus the blacklisted nodes which did not
+* receive new keys will be shut out of the network at the
+* completion of the procedure.
+*  
 *
 * @param netkey_index   Index of the network key to update
 * @param num_appkeys   Number of application keys to update;                     may be zero.
@@ -12249,12 +12415,10 @@ static inline struct gecko_msg_mesh_prov_appkey_add_rsp_t* gecko_cmd_mesh_prov_a
 *
 * Deprecated. Replacement is "mesh_config_client_remove_appkey" command.
 * Delete an application key on a node.
-* {br}{br}              
 * Note that the deleted key will be removed from any model
 * bindings on the node at the same time automatically; there
 * is no need to explicitly delete them using "model-application
 * key unbind command".
-* {br}{br}              
 * Node response is reported with an "configuration status
 * event".
 *  
@@ -12467,7 +12631,18 @@ static inline struct gecko_msg_mesh_prov_model_sub_add_rsp_t* gecko_cmd_mesh_pro
 *  - 10: 10 seconds
 *  - 11: 10 minutes
 * 
-* @param retrans   Retransmission count; controls how many times the model re-publishes                   the same message after the initial publish transmission. Range: 0..7. Default value                   is 0 (no retransmissions).
+* @param retrans   Retransmission count and interval;                   controls how many
+* times the model re-publishes the                   same message after
+* the initial publish transmission,                   and the cadence of
+* retransmissions.
+* Retransmission count is encoded in the three                   low
+* bits of the value, ranging from 0 to 7. Default
+* value is 0 (no retransmissions).
+* Retransmission interval is encoded in the                   five high
+* bits of the value, ranging from 0 to 31,                   in
+* 50-millisecond units. Value of 0 corresponds to                   50
+* ms, while value of 31 corresponds to 1600 ms.
+* 
 *
 * Events generated
 *
@@ -12501,7 +12676,18 @@ static inline struct gecko_msg_mesh_prov_model_pub_set_rsp_t* gecko_cmd_mesh_pro
 *
 * gecko_cmd_mesh_prov_provision_gatt_device
 *
-* Provision a device into a network using the             GATT bearer (PB-GATT)             {br}{br}              Issuing this command starts the provisioning process for             the specified device. Once the process completes             successfully, a "device             provisioned event" is generated. If provisioning does             not succeed, a " provisioning             failed event" will be generated instead.             {br}{br}              Note that this command is available only if GATT             functionality is compiled in to the firmware. If that is             not the case, the command will return with a "not             implemented" return code.              
+* Provision a device into a network using the             GATT bearer
+* (PB-GATT)
+* Issuing this command starts the provisioning process for
+* the specified device. Once the process completes
+* successfully, a "device             provisioned event" is generated.
+* If provisioning does             not succeed, a " provisioning
+* failed event" will be generated instead.
+* Note that this command is available only if GATT
+* functionality is compiled in to the firmware. If that is
+* not the case, the command will return with a "not
+* implemented" return code.
+*  
 *
 * @param network_id   Index of the initial network key                     which is sent to the device during                     provisioning.
 * @param connection   Connection handle for the device to be provisioned                    
@@ -12652,7 +12838,6 @@ static inline struct gecko_msg_mesh_prov_ddb_list_devices_rsp_t* gecko_cmd_mesh_
 * Deprecated. Replacement is "mesh_config_client_add_netkey" command.
 * Push a Network Key to a Node. The key             must exist on the
 * Provisioner (see "create network             key" command).
-* {br}{br}              
 * Node response is reported with an "configuration status
 * event".
 *  
@@ -12686,16 +12871,13 @@ static inline struct gecko_msg_mesh_prov_network_add_rsp_t* gecko_cmd_mesh_prov_
 *
 * Deprecated. Replacement is "mesh_config_client_remove_netkey" command.
 * Delete a network key on a node.
-* {br}{br}              
 * When a network key is deleted the application keys             bound
 * to it are deleted automatically; there is no             need to
 * explicitly use the "             delete application key" command.
-* {br}{br}                          
 * Note that it is not possible to delete the key used in
 * encrypting the command itself (which is the first network
 * key deployed to the node during provisioning) as otherwise
 * the node would not be able to respond.
-* {br}{br}
 * Node response is reported with an "configuration status
 * event".
 *  
@@ -13245,12 +13427,10 @@ static inline struct gecko_msg_mesh_prov_relay_set_rsp_t* gecko_cmd_mesh_prov_re
 *
 * Deprecated. Replacement is "mesh_config_client_reset_node" command.
 * Send a reset request to a node.
-* {br}{br}              
 * If a node replies to the request, a "node reset" event will
 * be generated. Note that the reply packet may get lost and
 * the node has reset itself even in the absence of the
 * event.
-* {br}{br}              
 * Also note that for securely removing a node from the network
 * a key refresh, with the removed node blacklisted, should be
 * done.
@@ -13321,10 +13501,8 @@ static inline struct gecko_msg_mesh_prov_appkey_get_rsp_t* gecko_cmd_mesh_prov_a
 *
 * Deprecated. Replacement is "mesh_config_client_list_netkeys" command.
 * Get a list of network keys bound from a node.
-* {br}{br}              
 * This command is used to return a list of network key
 * indices of network keys deployed to a node.
-* {br}{br}              
 * Node response is reported with a number of "network key list
 * "events, terminated by a "network key list             end" event.
 *  
@@ -13448,7 +13626,7 @@ static inline struct gecko_msg_mesh_prov_model_pub_get_rsp_t* gecko_cmd_mesh_pro
 *  - 10: 10 seconds
 *  - 11: 10 minutes
 * 
-* @param retrans   
+* @param retrans   Refer to the documentation of "model publication set command" for details.
 * @param pub_address   The Label UUID to publish to. The byte array must be exactly 16 bytes long.
 *
 * Events generated
@@ -13512,7 +13690,7 @@ static inline struct gecko_msg_mesh_prov_model_pub_set_va_rsp_t* gecko_cmd_mesh_
 *  - 10: 10 seconds
 *  - 11: 10 minutes
 * 
-* @param retrans   Retransmission count; controls how many times the model re-publishes                   the same message after the initial publish transmission. Range: 0..7. Default value                   is 0 (no retransmissions).
+* @param retrans   Refer to the documentation of "model publication set command" for details.
 * @param credentials   Friendship credential flag. If zero,                   publication is done using normal credentials; if                   one, it is done with friendship credentials, meaning                   only the friend can decrypt the published message                   and relay it forward using the normal credentials.                   The default value is 0.
 *
 * Events generated
@@ -13569,7 +13747,7 @@ static inline struct gecko_msg_mesh_prov_model_pub_set_cred_rsp_t* gecko_cmd_mes
 *  - 10: 10 seconds
 *  - 11: 10 minutes
 * 
-* @param retrans   
+* @param retrans   Refer to the documentation of "model publication set command" for details.
 * @param credentials   Friendship credential flag. If zero,                   publication is done using normal credentials; if                   one, it is done with friendship credentials, meaning                   only the friend can decrypt the published message                   and relay it forward using the normal credentials.                   The default value is 0.
 * @param pub_address   The Label UUID to publish to. The byte array must be exactly 16 bytes long.
 *
@@ -13740,12 +13918,20 @@ static inline struct gecko_msg_mesh_prov_set_default_configuration_timeout_rsp_t
 *
 * gecko_cmd_mesh_prov_provision_device_with_address
 *
-* Provision a device into a network using the             advertisement bearer (PB-ADV)             {br}{br}              Issuing this command starts the provisioning process for             the specified device. Once the process completes             successfully, a "device             provisioned event" is generated. If provisioning does             not succeed, a " provisioning             failed event" will be generated instead. 
+* Provision a device into a network using the             advertisement
+* bearer (PB-ADV). Application may specify             the unicast
+* addresses given for the device elements with             this command.
+* Issuing this command starts the provisioning process for
+* the specified device. Once the process completes
+* successfully, a "device             provisioned event" is generated.
+* If provisioning does             not succeed, a " provisioning
+* failed event" will be generated instead.
+*  
 *
 * @param network_id   Index of the initial network key                     which is sent to the device during                     provisioning.
-* @param address   Unicast address for devices primary element. 
-* @param elements   Number of elements in device to be provisioned.
-* @param attention_timer   Attention timer value tell for how long the provisioned device should                     attract human attention.
+* @param address   Unicast address for the primary element of th edevice. If unassigned address (0x0000) is given, the stack will automatically assign an address. Note that element addresses are contiguous and must all be unicast addresses; primary address must be chosen so that also the last element's address will still be a unicast address. 
+* @param elements   Number of elements in device to be provisioned. If the primary element address is set to unassigned, this needs to be set to zero. 
+* @param attention_timer   Attention timer value, in seconds, tells for how long the device being provisioned should attract human attention.
 * @param uuid   UUID of the device to provision
 *
 * Events generated
@@ -13783,13 +13969,25 @@ static inline struct gecko_msg_mesh_prov_provision_device_with_address_rsp_t* ge
 *
 * gecko_cmd_mesh_prov_provision_gatt_device_with_address
 *
-* Provision a device  with user defined address into a network using the             advertisement bearer (PB-GATT) with user             {br}{br}              Issuing this command starts the provisioning process for             the specified device. Once the process completes             successfully, a "device             provisioned event" is generated. If provisioning does             not succeed, a " provisioning                         failed event" will be generated instead.                          Note that this command is available only if GATT             functionality is compiled in to the firmware. If that is             not the case, the command will return with a "not             implemented" return code.              
+* Provision a device into a network using the             GATT bearer
+* (PB-GATT). Application may specify the unicast             addresses
+* given for the device elements with this command.
+* Issuing this command starts the provisioning process for
+* the specified device. Once the process completes
+* successfully, a "device             provisioned event" is generated.
+* If provisioning does             not succeed, a " provisioning
+* failed event" will be generated instead.
+* Note that this command is available only if GATT
+* functionality is compiled in to the firmware. If that is
+* not the case, the command will return with a "not
+* implemented" return code.
+*  
 *
 * @param network_id   Index of the initial network key                     which is sent to the device during                     provisioning.
 * @param connection   Connection handle for the device to be provisioned                    
-* @param address   Unicast address for devices primary element. 
-* @param elements   Number of elements in device to be provisioned.
-* @param attention_timer   Attention timer value tell for how long the provisioned device should                     attract human attention.
+* @param address   Unicast address for the primary element of th edevice. If unassigned address (0x0000) is given, the stack will automatically assign an address. Note that element addresses are contiguous and must all be unicast addresses; primary address must be chosen so that also the last element's address will still be a unicast address. 
+* @param elements   Number of elements in device to be provisioned. If the primary element address is set to unassigned, this needs to be set to zero. 
+* @param attention_timer   Attention timer value, in seconds, tells for how long the device being provisioned should attract human attention.
 * @param uuid   UUID of the device to provision
 *
 * Events generated
@@ -14050,7 +14248,17 @@ static inline struct gecko_msg_mesh_proxy_deny_rsp_t* gecko_cmd_mesh_proxy_deny(
 *
 * gecko_cmd_mesh_vendor_model_send
 *
-* Send vendor specific data             {br}{br}              Note that due to bgapi event length restrictions the             message sent may need to be fragmented into several             commands. If this is the case, the application must issue             the commands in the correct order and mark the command             carrying the last message fragment with the final flag set             to a nonzero value. The stack will not start sending the             message until the complete message is provided by the             application. Fragments from multiple messages must not             be interleaved. {br}{br}               
+* Send vendor specific data
+* Note that due to bgapi event length restrictions the
+* message sent may need to be fragmented into several
+* commands. If this is the case, the application must issue
+* the commands in the correct order and mark the command
+* carrying the last message fragment with the final flag set
+* to a nonzero value. The stack will not start sending the
+* message until the complete message is provided by the
+* application. Fragments from multiple messages must not             be
+* interleaved.
+*  
 *
 * @param elem_index   Sending model element index
 * @param vendor_id   Vendor ID of the sending model
@@ -14098,7 +14306,22 @@ static inline struct gecko_msg_mesh_vendor_model_send_rsp_t* gecko_cmd_mesh_vend
 *
 * gecko_cmd_mesh_vendor_model_set_publication
 *
-* Set vendor model publication message.             {br}{br}              The model publication message will be sent out when model             publication occurs either periodically (if the model is             configured for periodc publishing) or explicitly (see "vendor model publish             command".             {br}{br}              Note that due to bgapi length requirements the message may             need to be fragmented over multiple commands.             If this is the case, the application must issue             the commands in the correct order and mark the command             carrying the last message fragment with the final flag set             to a nonzero value. The stack will not assign the message             to the model until the complete message is provided by the             application.             {br}{br}              To disable publication the publication message may be             erased using the " clear             vendor model publication message" command.              
+* Set vendor model publication message.
+* The model publication message will be sent out when model
+* publication occurs either periodically (if the model is
+* configured for periodc publishing) or explicitly (see "vendor model
+* publish             command".
+* Note that due to bgapi length requirements the message may
+* need to be fragmented over multiple commands.             If this is
+* the case, the application must issue             the commands in the
+* correct order and mark the command             carrying the last
+* message fragment with the final flag set             to a nonzero
+* value. The stack will not assign the message             to the model
+* until the complete message is provided by the             application.
+* To disable publication the publication message may be
+* erased using the " clear             vendor model publication message"
+* command.
+*  
 *
 * @param elem_index   Publishing model element index
 * @param vendor_id   Vendor ID of the model
@@ -14138,7 +14361,11 @@ static inline struct gecko_msg_mesh_vendor_model_set_publication_rsp_t* gecko_cm
 *
 * gecko_cmd_mesh_vendor_model_clear_publication
 *
-* Clear vendor model publication message.             {br}{br}              Clearing the model publication message disables model             publishing; it can be re-enabled by defining the publication             message using the "             set vendor model publication" command.              
+* Clear vendor model publication message.
+* Clearing the model publication message disables model
+* publishing; it can be re-enabled by defining the publication
+* message using the "             set vendor model publication" command.
+*  
 *
 * @param elem_index   Publishing model element index
 * @param vendor_id   Vendor ID of the model
@@ -14165,7 +14392,11 @@ static inline struct gecko_msg_mesh_vendor_model_clear_publication_rsp_t* gecko_
 *
 * gecko_cmd_mesh_vendor_model_publish
 *
-* Publish vendor model publication message.             {br}{br}              Sends the stored publication message to the network             using the application key and destination address             stored in the model publication parameters.               
+* Publish vendor model publication message.
+* Sends the stored publication message to the network             using
+* the application key and destination address             stored in the
+* model publication parameters.
+*  
 *
 * @param elem_index   Publishing model element index
 * @param vendor_id   Vendor ID of the model
@@ -14192,7 +14423,19 @@ static inline struct gecko_msg_mesh_vendor_model_publish_rsp_t* gecko_cmd_mesh_v
 *
 * gecko_cmd_mesh_vendor_model_init
 *
-* Initialize the vendor model. This function             has to be called before the model can be used. Note that             the model can be deinitialized if it is not needed             anymore; see "deinitialization             command".             {br}{br}              It is necessary to define the opcodes the model is able to             receive at initialization. This enables the stack to pass             only valid messages up to the model during runtime.  Per             Mesh specification there are up to 64 opcodes per vendor,             ranging from 0 to 63. Specifying opcodes outside of that             range will result in an error response. Duplicate opcodes             in the array do not result in an error, but will of course             be recorded only once.              
+* Initialize the vendor model. This function             has to be
+* called before the model can be used. Note that             the model
+* can be deinitialized if it is not needed             anymore; see
+* "deinitialization             command".
+* It is necessary to define the opcodes the model is able to
+* receive at initialization. This enables the stack to pass
+* only valid messages up to the model during runtime.  Per
+* Mesh specification there are up to 64 opcodes per vendor,
+* ranging from 0 to 63. Specifying opcodes outside of that
+* range will result in an error response. Duplicate opcodes
+* in the array do not result in an error, but will of course
+* be recorded only once.
+*  
 *
 * @param elem_index   Model element index
 * @param vendor_id   Vendor ID of the model
@@ -14257,7 +14500,13 @@ static inline struct gecko_msg_mesh_vendor_model_deinit_rsp_t* gecko_cmd_mesh_ve
 *
 * gecko_cmd_mesh_health_client_get
 *
-* Get the registered fault status of a Health             Server model or models in the network.             {br}{br}              Besides the immediate result code the response or             responses (in case the destination server address is a             group address) from the network will generate "             server status report events".               
+* Get the registered fault status of a Health             Server model
+* or models in the network.
+* Besides the immediate result code the response or
+* responses (in case the destination server address is a
+* group address) from the network will generate "             server
+* status report events".
+*  
 *
 * @param elem_index   Client model element index.                     Identifies the client model used for sending the                     request.
 * @param server_address   Destination server model address. May                     be a unicast address or a group                     address.
@@ -14286,7 +14535,13 @@ static inline struct gecko_msg_mesh_health_client_get_rsp_t* gecko_cmd_mesh_heal
 *
 * gecko_cmd_mesh_health_client_clear
 *
-* Clear the fault status of a Health             Server model or models in the network.             {br}{br}              Besides the immediate result code the response or             responses (in case the destination server address is a             group address) from the network will generate "             server status report events".               
+* Clear the fault status of a Health             Server model or models
+* in the network.
+* Besides the immediate result code the response or
+* responses (in case the destination server address is a
+* group address) from the network will generate "             server
+* status report events".
+*  
 *
 * @param elem_index   Client model element index.                     Identifies the client model used for sending the                     request.
 * @param server_address   Destination server model address. May                     be a unicast address or a group                     address.
@@ -14317,7 +14572,9 @@ static inline struct gecko_msg_mesh_health_client_clear_rsp_t* gecko_cmd_mesh_he
 *
 * gecko_cmd_mesh_health_client_test
 *
-* Execute a self test on a             server model or models in the network             {br}{br}               
+* Execute a self test on a             server model or models in the
+* network
+*  
 *
 * @param elem_index   Client model element index.                     Identifies the client model used for sending the                     request.
 * @param server_address   Destination server model address. May                     be a unicast address or a group                     address.
@@ -14350,7 +14607,13 @@ static inline struct gecko_msg_mesh_health_client_test_rsp_t* gecko_cmd_mesh_hea
 *
 * gecko_cmd_mesh_health_client_get_period
 *
-* Get the health period log of a Health             Server model or models in the network.             {br}{br}              Besides the immediate result code the response or             responses (in case the destination server address is a             group address) from the network will generate "             server status report events".               
+* Get the health period log of a Health             Server model or
+* models in the network.
+* Besides the immediate result code the response or
+* responses (in case the destination server address is a
+* group address) from the network will generate "             server
+* status report events".
+*  
 *
 * @param elem_index   Client model element index.                     Identifies the client model used for sending the                     request.
 * @param server_address   Destination server model address. May                     be a unicast address or a group                     address.
@@ -14377,7 +14640,13 @@ static inline struct gecko_msg_mesh_health_client_get_period_rsp_t* gecko_cmd_me
 *
 * gecko_cmd_mesh_health_client_set_period
 *
-* Set the health period divisor of a Health             Server model or models in the network.             {br}{br}              Besides the immediate result code the response or             responses (in case the destination server address is a             group address) from the network will generate "             server status report events".               
+* Set the health period divisor of a Health             Server model or
+* models in the network.
+* Besides the immediate result code the response or
+* responses (in case the destination server address is a
+* group address) from the network will generate "             server
+* status report events".
+*  
 *
 * @param elem_index   Client model element index.                     Identifies the client model used for sending the                     request.
 * @param server_address   Destination server model address. May                     be a unicast address or a group                     address.
@@ -14408,7 +14677,13 @@ static inline struct gecko_msg_mesh_health_client_set_period_rsp_t* gecko_cmd_me
 *
 * gecko_cmd_mesh_health_client_get_attention
 *
-* Get the attention timer value of a Health             Server model or models in the network.             {br}{br}              Besides the immediate result code the response or             responses (in case the destination server address is a             group address) from the network will generate "             server status report events".               
+* Get the attention timer value of a Health             Server model or
+* models in the network.
+* Besides the immediate result code the response or
+* responses (in case the destination server address is a
+* group address) from the network will generate "             server
+* status report events".
+*  
 *
 * @param elem_index   Client model element index.                     Identifies the client model used for sending the                     request.
 * @param server_address   Destination server model address. May                     be a unicast address or a group                     address.
@@ -14435,7 +14710,13 @@ static inline struct gecko_msg_mesh_health_client_get_attention_rsp_t* gecko_cmd
 *
 * gecko_cmd_mesh_health_client_set_attention
 *
-* Set the attention timer value of a Health             Server model or models in the network.             {br}{br}              Besides the immediate result code the response or             responses (in case the destination server address is a             group address) from the network will generate "             server status report events".               
+* Set the attention timer value of a Health             Server model or
+* models in the network.
+* Besides the immediate result code the response or
+* responses (in case the destination server address is a
+* group address) from the network will generate "             server
+* status report events".
+*  
 *
 * @param elem_index   Client model element index.                     Identifies the client model used for sending the                     request.
 * @param server_address   Destination server model address. May                     be a unicast address or a group                     address.
@@ -14468,8 +14749,8 @@ static inline struct gecko_msg_mesh_health_client_set_attention_rsp_t* gecko_cmd
 *
 * Set fault condition on an element. 
 *
-* @param elem_index   
-* @param id       
+* @param elem_index   Index of the element on which the fault is occurring.               
+* @param id   Fault ID. Refer to the Mesh Profile specification for                 IDs defined by the Bluetooth SIG.                   
 *
 **/
 
@@ -14493,8 +14774,8 @@ static inline struct gecko_msg_mesh_health_server_set_fault_rsp_t* gecko_cmd_mes
 *
 * Clear fault condition on an element. 
 *
-* @param elem_index   
-* @param id       
+* @param elem_index   Index of the element on which the fault is no longer occurring.                   
+* @param id   Fault ID. Refer to the Mesh Profile specification for                     IDs defined by the Bluetooth SIG.                       
 *
 **/
 
@@ -14521,7 +14802,7 @@ static inline struct gecko_msg_mesh_health_server_clear_fault_rsp_t* gecko_cmd_m
 * @param elem_index   Server model element index.                     Identifies the Server model that received the                     request as well as the element on which the test                     is to be performed.
 * @param client_address   Address of the client model which                     sent the message
 * @param appkey_index   The application key index to use in                     encrypting the request.
-* @param vendor_id       
+* @param vendor_id   Bluetooth vendor ID used in the request.                       
 *
 **/
 
@@ -14545,7 +14826,13 @@ static inline struct gecko_msg_mesh_health_server_test_response_rsp_t* gecko_cmd
 *
 * gecko_cmd_mesh_generic_client_get
 *
-* Get the current state of a server             model or models in the network. Besides the immediate             result code, the response or responses from the network             will generate server state report events for the replies             received.               The server model responses will be reported in             "             server status" events.              
+* Get the current state of a server             model or models in the
+* network. Besides the immediate             result code, the response
+* or responses from the network             will generate server state
+* report events for the replies             received.
+* The server model responses will be reported in             "
+* server status" events.
+*  
 *
 * @param model_id   Client model ID
 * @param elem_index   Client model element index
@@ -14580,15 +14867,34 @@ static inline struct gecko_msg_mesh_generic_client_get_rsp_t* gecko_cmd_mesh_gen
 *
 * gecko_cmd_mesh_generic_client_set
 *
-* Set the current state of a server             model or models in the network. Besides the immediate             result code, the response or responses from the network             will generate erver state report events for the replies             received. {br}{br}              The server model responses will be reported in " server             status" events. Note that for responses to be generated             the corresponding flag needs to be set.              
+* Set the current state of a server             model or models in the
+* network. Besides the immediate             result code, the response
+* or responses from the network             will generate erver state
+* report events for the replies             received.
+* The server model responses will be reported in " server
+* status" events. Note that for responses to be generated
+* the corresponding flag needs to be set.
+*  
 *
 * @param model_id   Client model ID
 * @param elem_index   Client model element index
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param tid   Transaction identifier. This applies to those                   messages the Mesh Model specification defines as transactional                   and can be left as zero for others.
-* @param transition   Transition time (in milliseconds) for                     the state change. If both the transition time and                     the delay are zero the transition is immediate.                     {br}{br}                     This applies to messages the Mesh Model specification                     defines to have transition and delay times, and                     can be left as zero for others.                     
-* @param delay   Delay time (in milliseconds) before                     starting the state change. If both the transition                     time and the delay are zero the transition is                     immediate.                     {br}{br}                     This applies to messages the Mesh Model specification                     defines to have transition and delay times, and                     can be left as zero for others.                     
+* @param transition   Transition time (in milliseconds) for                     the state
+* change. If both the transition time and                     the delay
+* are zero the transition is immediate.
+* This applies to messages the Mesh Model
+* specification                     defines to have transition and delay
+* times, and                     can be left as zero for others.
+* 
+* @param delay   Delay time (in milliseconds) before                     starting the
+* state change. If both the transition                     time and the
+* delay are zero the transition is                     immediate.
+* This applies to messages the Mesh Model
+* specification                     defines to have transition and delay
+* times, and                     can be left as zero for others.
+* 
 * @param flags   Message flags. Bitmask of the following:                     
 *  - Bit 0: Response required. If nonzero client expects                     a response from the server
 *  - Bit 1: Default transition timer.                     If nonzero client requests                     that server uses its default transition timer and the                     supplied transition and delay values are ignored.
@@ -14635,13 +14941,34 @@ static inline struct gecko_msg_mesh_generic_client_set_rsp_t* gecko_cmd_mesh_gen
 *
 * gecko_cmd_mesh_generic_client_publish
 *
-* Publish a set request to the network using             the publish address and publish application key of the             model. The message will be received by the server models             which subscribe to the publish address, and there's no             need to explicitly specify a destination address or             application key. {br}{br}              The server model responses will be reported in " server             status" events. Note that for responses to be generated             the corresponding flag needs to be set.  
+* Publish a set request to the network using             the publish
+* address and publish application key of the             model. The
+* message will be received by the server models             which
+* subscribe to the publish address, and there's no             need to
+* explicitly specify a destination address or             application
+* key.
+* The server model responses will be reported in " server
+* status" events. Note that for responses to be generated
+* the corresponding flag needs to be set.
+*  
 *
 * @param model_id   Client model ID
 * @param elem_index   Client model element index
 * @param tid   Transaction identifier
-* @param transition   Transition time (in milliseconds) for                     the state change. If both the transition time and                     the delay are zero the transition is immediate.                     {br}{br}                     This applies to messages the Mesh Model specification                     defines to have transition and delay times, and                     can be left as zero for others.                     
-* @param delay   Delay time (in milliseconds) before                     starting the state change. If both the transition                     time and the delay are zero the transition is                     immediate.                     {br}{br}                     This applies to messages the Mesh Model specification                     defines to have transition and delay times, and                     can be left as zero for others.                     
+* @param transition   Transition time (in milliseconds) for                     the state
+* change. If both the transition time and                     the delay
+* are zero the transition is immediate.
+* This applies to messages the Mesh Model
+* specification                     defines to have transition and delay
+* times, and                     can be left as zero for others.
+* 
+* @param delay   Delay time (in milliseconds) before                     starting the
+* state change. If both the transition                     time and the
+* delay are zero the transition is                     immediate.
+* This applies to messages the Mesh Model
+* specification                     defines to have transition and delay
+* times, and                     can be left as zero for others.
+* 
 * @param flags   Message flags. Bitmask of the following:                     
 *  - Bit 0: Response required. If nonzero client expects                     a response from the server
 *  - Bit 1: Default transition timer.                     If nonzero client requests                     that server uses its default transition timer and the                     supplied transition and delay values are ignored.
@@ -14686,7 +15013,16 @@ static inline struct gecko_msg_mesh_generic_client_publish_rsp_t* gecko_cmd_mesh
 *
 * gecko_cmd_mesh_generic_client_get_params
 *
-* Get the current state of a server             model or models in the network, with additional parameters             detailing the request. Besides the immediate             result code, the response or responses from the network             will generate server state report events for the replies             received.               The server model responses will be reported in             "             server status" events.             {br}{br}              This call is used to query properties, for which the             property ID is given as a parameter.              
+* Get the current state of a server             model or models in the
+* network, with additional parameters             detailing the request.
+* Besides the immediate             result code, the response or
+* responses from the network             will generate server state
+* report events for the replies             received.
+* The server model responses will be reported in             "
+* server status" events.
+* This call is used to query properties, for which the
+* property ID is given as a parameter.
+*  
 *
 * @param model_id   Client model ID
 * @param elem_index   Client model element index
@@ -15394,8 +15730,26 @@ static inline struct gecko_msg_mesh_test_get_local_model_sub_rsp_t* gecko_cmd_me
 * @param model_id   Model ID
 * @param pub_address   The address to publish to
 * @param ttl   Time-to-Live value for published messages
-* @param period   
-* @param retrans   
+* @param period   Publication period encoded as step count and step resolution. The encoding is as follows:                   
+*  - Bits 0..5: Step count
+*  - Bits 6..7: Step resolution:                     
+*  - 00: 100 milliseconds
+*  - 01: 1 second
+*  - 10: 10 seconds
+*  - 11: 10 minutes
+* 
+* @param retrans   Retransmission count and interval;                   controls how many
+* times the model re-publishes the                   same message after
+* the initial publish transmission,                   and the cadence of
+* retransmissions.
+* Retransmission count is encoded in the three
+* low bits of the value, ranging from 0 to 7. Default
+* value is 0 (no retransmissions).
+* Retransmission interval is encoded in the
+* five high bits of the value, ranging from 0 to 31,
+* in 50-millisecond units. Value of 0 corresponds to
+* 50 ms, while value of 31 corresponds to 1600 ms.
+* 
 * @param credentials   Friendship credentials flag    
 *
 **/
@@ -15432,8 +15786,15 @@ static inline struct gecko_msg_mesh_test_set_local_model_pub_rsp_t* gecko_cmd_me
 * @param vendor_id   Vendor ID of model being configured. Use 0xffff for Bluetooth SIG models.
 * @param model_id   Model ID of the model being configured.
 * @param ttl   Publication time-to-live value
-* @param period   
-* @param retrans   
+* @param period   Publication period encoded as step count and step resolution. The encoding is as follows:                   
+*  - Bits 0..5: Step count
+*  - Bits 6..7: Step resolution:                     
+*  - 00: 100 milliseconds
+*  - 01: 1 second
+*  - 10: 10 seconds
+*  - 11: 10 minutes
+* 
+* @param retrans   Refer to the documentation of "local model publication set command" for details. Retransmission count; controls how many times the model re-publishes                   the same message after the initial publish transmission. Range: 0..7. Default value                   is 0 (no retransmissions).
 * @param credentials   Friendship credentials flag
 * @param pub_address   The Label UUID to publish to. The byte array must be exactly 16 bytes long.    
 *
@@ -15731,7 +16092,13 @@ static inline struct gecko_msg_mesh_test_del_local_key_rsp_t* gecko_cmd_mesh_tes
 *
 * gecko_cmd_mesh_test_update_local_key
 *
-* Update network or application key value locally.             {br}{br}              Copies the existing network key value to the old value             and replaces the current value with the given key data.             {br}{br}              Note that the normal way to update keys on Provisioner             as well as on nodes is to run the key refresh procedure.             This command is for debugging only.              
+* Update network or application key value locally.
+* Copies the existing network key value to the old value             and
+* replaces the current value with the given key data.
+* Note that the normal way to update keys on Provisioner             as
+* well as on nodes is to run the key refresh procedure.             This
+* command is for debugging only.
+*  
 *
 * @param key_type   0 for network key, 1 for application key.
 * @param key   Key data
@@ -15839,7 +16206,7 @@ static inline struct gecko_msg_mesh_test_set_adv_bearer_state_rsp_t* gecko_cmd_m
 *
 * Get total number of keys in node.              
 *
-* @param type   Key type    
+* @param type   0 for network key, 1 for application key.    
 *
 **/
 
@@ -15860,10 +16227,10 @@ static inline struct gecko_msg_mesh_test_get_key_count_rsp_t* gecko_cmd_mesh_tes
 *
 * gecko_cmd_mesh_test_get_key
 *
-* Get key by the the index. Only current key exits in normal mode. Old keys can             be queried only during key refresh.              
+* Get key by position. Only current key data exits in normal mode. Old key data can be queried only during key refresh.              
 *
-* @param type   Key type
-* @param index   Index of the key
+* @param type   0 for network key, 1 for application key.
+* @param index   Key position, ranging from zero to key count minus one.
 * @param current   1: Current key, 0: Old  key.    
 *
 **/
@@ -16237,7 +16604,7 @@ static inline struct gecko_msg_mesh_config_client_set_default_timeout_rsp_t* gec
 *
 * @param enc_netkey_index   Network key used to encrypt the request             on the network layer
 * @param server_address   Destination node primary element address             
-* @param netkey_index   
+* @param netkey_index   Index of the network key to add             
 *
 * Events generated
 *
@@ -16268,7 +16635,7 @@ static inline struct gecko_msg_mesh_config_client_add_netkey_rsp_t* gecko_cmd_me
 *
 * @param enc_netkey_index   Network key used to encrypt the request             on the network layer
 * @param server_address   Destination node primary element address             
-* @param netkey_index   
+* @param netkey_index   Index of the network key to remove             
 *
 * Events generated
 *
@@ -16395,7 +16762,7 @@ static inline struct gecko_msg_mesh_config_client_remove_appkey_rsp_t* gecko_cmd
 *
 * @param enc_netkey_index   Network key used to encrypt the request             on the network layer
 * @param server_address   Destination node primary element address             
-* @param netkey_index   
+* @param netkey_index   Network key index for the key used as the query parameter;               the result contains the indices of the application keys               bound to this network key on the node.             
 *
 * Events generated
 *
@@ -18256,14 +18623,18 @@ static inline struct gecko_msg_cte_receiver_clear_dtm_parameters_rsp_t* gecko_cm
 * Initializes the Sensor Server model> 
 *
 * @param elem_index   Server model element index
-* @param descriptors   Sensor Descriptor State structures submitted as a byte array{br}{br}               A sensor descriptor represents the attributes describing the sensor data. It does not change throughout the lifetime of the element. {br}{br}               The following fields are required: {br}               
+* @param descriptors   Sensor Descriptor State structures submitted as a byte array
+* A sensor descriptor represents the attributes describing the sensor
+* data. It does not change throughout the lifetime of the element.
+* {br}{br}               The following fields are required: {br}               
 *  - Sensor Property ID:        16 bits
 *  - Sensor Positive Tolerance: 12 bits
 *  - Sensor Negative Tolerance: 12 bits
 *  - Sensor Sampling Function:   8 bits
 *  - Sensor Measurement Period:  8 bits
 *  - Sensor Update Interval:     8 bits
-* Sensor Property ID is a 2-octet value referencing a device property that describes the meaning and the format of the data reported by the sensor.               The value 0x0000 if prohibited, thae valid range is 0x0001 to 0xFFFF.                                
+* Sensor Property ID is a 2-octet value referencing a device property that describes the meaning and the format of the data reported by the sensor.               The value 0x0000 if prohibited, thae valid range is 0x0001 to 0xFFFF.
+*     
 *
 **/
 
@@ -18319,18 +18690,23 @@ static inline struct gecko_msg_mesh_sensor_server_deinit_rsp_t* gecko_cmd_mesh_s
 *
 * @param elem_index   Server model element index
 * @param client_address   Destination client address
-* @param server_address   Source server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param descriptors       
+* @param descriptors   Serialized Sensor Descriptor states for all sensors within the element consisting one or more 8 bytes structures as follows:               
+*  - Sensor Property ID:        16 bits
+*  - Sensor Positive Tolerance: 12 bits
+*  - Sensor Negative Tolerance: 12 bits
+*  - Sensor Sampling Function:   8 bits
+*  - Sensor Measurement Period:  8 bits
+*     
 *
 **/
 
-static inline struct gecko_msg_mesh_sensor_server_send_descriptor_status_rsp_t* gecko_cmd_mesh_sensor_server_send_descriptor_status(uint16 elem_index,uint16 client_address,uint16 server_address,uint16 appkey_index,uint8 flags,uint8 descriptors_len, const uint8* descriptors_data)
+static inline struct gecko_msg_mesh_sensor_server_send_descriptor_status_rsp_t* gecko_cmd_mesh_sensor_server_send_descriptor_status(uint16 elem_index,uint16 client_address,uint16 appkey_index,uint8 flags,uint8 descriptors_len, const uint8* descriptors_data)
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)descriptors_len > 256 - 10)
+    if ((uint16_t)descriptors_len > 256 - 8)
     {
         gecko_rsp_msg->data.rsp_mesh_sensor_server_send_descriptor_status.result = bg_err_command_too_long;
         return &gecko_rsp_msg->data.rsp_mesh_sensor_server_send_descriptor_status;
@@ -18339,12 +18715,11 @@ static inline struct gecko_msg_mesh_sensor_server_send_descriptor_status_rsp_t* 
     
     gecko_cmd_msg->data.cmd_mesh_sensor_server_send_descriptor_status.elem_index=elem_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_server_send_descriptor_status.client_address=client_address;
-    gecko_cmd_msg->data.cmd_mesh_sensor_server_send_descriptor_status.server_address=server_address;
     gecko_cmd_msg->data.cmd_mesh_sensor_server_send_descriptor_status.appkey_index=appkey_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_server_send_descriptor_status.flags=flags;
     gecko_cmd_msg->data.cmd_mesh_sensor_server_send_descriptor_status.descriptors.len=descriptors_len;
     memcpy(gecko_cmd_msg->data.cmd_mesh_sensor_server_send_descriptor_status.descriptors.data,descriptors_data,descriptors_len);
-    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_server_send_descriptor_status_id+((10+descriptors_len)<<8)));
+    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_server_send_descriptor_status_id+((8+descriptors_len)<<8)));
     
     gecko_handle_command(gecko_cmd_msg->header,&gecko_cmd_msg->data.payload);
     
@@ -18361,7 +18736,15 @@ static inline struct gecko_msg_mesh_sensor_server_send_descriptor_status_rsp_t* 
 * @param client_address   Destination client address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param sensor_data       
+* @param sensor_data   Serialized Sensor Data consisting of one or more Sensor state for each sensor within the element.               In order to simplify processing, the byte array shall be in TLV format:               
+*  - 1st Property ID: 16 bits
+*  - Value Length: 8 bits
+*  - Value:        variable 
+*  - 2nd Property ID: 16 bits
+*  - Value Length: 8 bits
+*  - Value:        variable 
+*  - ...
+*     
 *
 **/
 
@@ -18399,8 +18782,12 @@ static inline struct gecko_msg_mesh_sensor_server_send_status_rsp_t* gecko_cmd_m
 * @param client_address   Destination client address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   
-* @param sensor_data       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param sensor_data   Byte array containing the serialized Sensor Serier Column state in the following format:               
+*  - Sensor Raw Value X, variable length raw value representing the left corner of a column
+*  - Sensor Column Width, variable length raw value representing the width of the column
+*  - Sensor Raw Value Y, variable length raw value representing the height og the column
+*     
 *
 **/
 
@@ -18439,8 +18826,16 @@ static inline struct gecko_msg_mesh_sensor_server_send_column_status_rsp_t* geck
 * @param client_address   Destination client address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   
-* @param sensor_data       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param sensor_data   Byte array containing the serialized sequence of Sensor Serier Column states in the following format:               
+*  - 1st Sensor Raw Value X, variable length raw value representing the left corner of a column
+*  - 1st Sensor Column Width, variable length raw value representing the width of the column
+*  - 1st Sensor Raw Value Y, variable length raw value representing the height og the column
+*  - ...
+*  - Nth Sensor Raw Value X, variable length raw value representing the left corner of a column
+*  - Nth Sensor Column Width, variable length raw value representing the width of the column
+*  - Nth Sensor Raw Value Y, variable length raw value representing the height og the column
+*     
 *
 **/
 
@@ -18477,19 +18872,26 @@ static inline struct gecko_msg_mesh_sensor_server_send_series_status_rsp_t* geck
 *
 * @param elem_index   Client model element index
 * @param client_address   Destination client address
-* @param server_address   Source server address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   
-* @param params       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param params   Optional byte array containing the serialized Sensor Cadence state, excluding the property ID.               If not empty, the state consists of the following fields:               
+*  - Fast Cadence Period Divisor, 7 bits
+*  - Status Trigger type, 1 bits (0 = discrete value, 1 = percentage)
+*  - Status Trigger Delta Down, variable length
+*  - Status Trigger Delta Up, variable length
+*  - Status Min Interval, 8 bits, representing a power of 2 milliseconds. Valid range is 0-26 
+*  - Fast Cadence Low, variable length, lower bound for the fast cadence range
+*  - Low Cadence Low, variable length, higher bound for the fast cadence range
+*     
 *
 **/
 
-static inline struct gecko_msg_mesh_sensor_setup_server_send_cadence_status_rsp_t* gecko_cmd_mesh_sensor_setup_server_send_cadence_status(uint16 elem_index,uint16 client_address,uint16 server_address,uint16 appkey_index,uint8 flags,uint16 property_id,uint8 params_len, const uint8* params_data)
+static inline struct gecko_msg_mesh_sensor_setup_server_send_cadence_status_rsp_t* gecko_cmd_mesh_sensor_setup_server_send_cadence_status(uint16 elem_index,uint16 client_address,uint16 appkey_index,uint8 flags,uint16 property_id,uint8 params_len, const uint8* params_data)
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)params_len > 256 - 12)
+    if ((uint16_t)params_len > 256 - 10)
     {
         gecko_rsp_msg->data.rsp_mesh_sensor_setup_server_send_cadence_status.result = bg_err_command_too_long;
         return &gecko_rsp_msg->data.rsp_mesh_sensor_setup_server_send_cadence_status;
@@ -18498,13 +18900,12 @@ static inline struct gecko_msg_mesh_sensor_setup_server_send_cadence_status_rsp_
     
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.elem_index=elem_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.client_address=client_address;
-    gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.server_address=server_address;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.appkey_index=appkey_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.flags=flags;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.property_id=property_id;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.params.len=params_len;
     memcpy(gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_cadence_status.params.data,params_data,params_len);
-    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_setup_server_send_cadence_status_id+((12+params_len)<<8)));
+    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_setup_server_send_cadence_status_id+((10+params_len)<<8)));
     
     gecko_handle_command(gecko_cmd_msg->header,&gecko_cmd_msg->data.payload);
     
@@ -18519,19 +18920,18 @@ static inline struct gecko_msg_mesh_sensor_setup_server_send_cadence_status_rsp_
 *
 * @param elem_index   Client model element index
 * @param client_address   Destination client model address
-* @param server_address   Source server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   
-* @param setting_ids       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param setting_ids   Array of 16-bit Setting Property IDs of the settings the given sensor has                  
 *
 **/
 
-static inline struct gecko_msg_mesh_sensor_setup_server_send_settings_status_rsp_t* gecko_cmd_mesh_sensor_setup_server_send_settings_status(uint16 elem_index,uint16 client_address,uint16 server_address,uint16 appkey_index,uint8 flags,uint16 property_id,uint8 setting_ids_len, const uint8* setting_ids_data)
+static inline struct gecko_msg_mesh_sensor_setup_server_send_settings_status_rsp_t* gecko_cmd_mesh_sensor_setup_server_send_settings_status(uint16 elem_index,uint16 client_address,uint16 appkey_index,uint8 flags,uint16 property_id,uint8 setting_ids_len, const uint8* setting_ids_data)
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)setting_ids_len > 256 - 12)
+    if ((uint16_t)setting_ids_len > 256 - 10)
     {
         gecko_rsp_msg->data.rsp_mesh_sensor_setup_server_send_settings_status.result = bg_err_command_too_long;
         return &gecko_rsp_msg->data.rsp_mesh_sensor_setup_server_send_settings_status;
@@ -18540,13 +18940,12 @@ static inline struct gecko_msg_mesh_sensor_setup_server_send_settings_status_rsp
     
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.elem_index=elem_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.client_address=client_address;
-    gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.server_address=server_address;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.appkey_index=appkey_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.flags=flags;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.property_id=property_id;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.setting_ids.len=setting_ids_len;
     memcpy(gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_settings_status.setting_ids.data,setting_ids_data,setting_ids_len);
-    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_setup_server_send_settings_status_id+((12+setting_ids_len)<<8)));
+    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_setup_server_send_settings_status_id+((10+setting_ids_len)<<8)));
     
     gecko_handle_command(gecko_cmd_msg->header,&gecko_cmd_msg->data.payload);
     
@@ -18561,20 +18960,19 @@ static inline struct gecko_msg_mesh_sensor_setup_server_send_settings_status_rsp
 *
 * @param elem_index   Client model element index
 * @param client_address   Destination client model address
-* @param server_address   Source server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   
-* @param setting_id   
-* @param raw_value       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param setting_id   Sensor Setting Property ID field identifying the device property of a setting.               Range: 0x0001 - 0xffff, 0x0000 is prohibited.             
+* @param raw_value   Sensor Setting raw value.                Size and representation depends on the type defined by the Sensor Setting Property ID.                 
 *
 **/
 
-static inline struct gecko_msg_mesh_sensor_setup_server_send_setting_status_rsp_t* gecko_cmd_mesh_sensor_setup_server_send_setting_status(uint16 elem_index,uint16 client_address,uint16 server_address,uint16 appkey_index,uint8 flags,uint16 property_id,uint16 setting_id,uint8 raw_value_len, const uint8* raw_value_data)
+static inline struct gecko_msg_mesh_sensor_setup_server_send_setting_status_rsp_t* gecko_cmd_mesh_sensor_setup_server_send_setting_status(uint16 elem_index,uint16 client_address,uint16 appkey_index,uint8 flags,uint16 property_id,uint16 setting_id,uint8 raw_value_len, const uint8* raw_value_data)
 {
     struct gecko_cmd_packet *gecko_cmd_msg = (struct gecko_cmd_packet *)gecko_cmd_msg_buf;
     struct gecko_cmd_packet *gecko_rsp_msg = (struct gecko_cmd_packet *)gecko_rsp_msg_buf;
-    if ((uint16_t)raw_value_len > 256 - 14)
+    if ((uint16_t)raw_value_len > 256 - 12)
     {
         gecko_rsp_msg->data.rsp_mesh_sensor_setup_server_send_setting_status.result = bg_err_command_too_long;
         return &gecko_rsp_msg->data.rsp_mesh_sensor_setup_server_send_setting_status;
@@ -18583,14 +18981,13 @@ static inline struct gecko_msg_mesh_sensor_setup_server_send_setting_status_rsp_
     
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.elem_index=elem_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.client_address=client_address;
-    gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.server_address=server_address;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.appkey_index=appkey_index;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.flags=flags;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.property_id=property_id;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.setting_id=setting_id;
     gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.raw_value.len=raw_value_len;
     memcpy(gecko_cmd_msg->data.cmd_mesh_sensor_setup_server_send_setting_status.raw_value.data,raw_value_data,raw_value_len);
-    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_setup_server_send_setting_status_id+((14+raw_value_len)<<8)));
+    gecko_cmd_msg->header=((gecko_cmd_mesh_sensor_setup_server_send_setting_status_id+((12+raw_value_len)<<8)));
     
     gecko_handle_command(gecko_cmd_msg->header,&gecko_cmd_msg->data.payload);
     
@@ -18680,7 +19077,7 @@ static inline struct gecko_msg_mesh_sensor_client_get_descriptor_rsp_t* gecko_cm
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   Property ID for the sensor (optional). Range: 0x0001 - 0x0ffff for a specific device property, or 0x0000 when not used.                 
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, or 0x0000 when not used to get values for all sensors present in the element.                 
 *
 **/
 
@@ -18711,8 +19108,8 @@ static inline struct gecko_msg_mesh_sensor_client_get_rsp_t* gecko_cmd_mesh_sens
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   Property identifying a sensor
-* @param column_id   Raw values identifying starting and ending columns    
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param column_id   Raw value identifying a columns    
 *
 **/
 
@@ -18751,8 +19148,8 @@ static inline struct gecko_msg_mesh_sensor_client_get_column_rsp_t* gecko_cmd_me
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   Propery identifying a sensor
-* @param column_ids       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param column_ids   Raw values identifying starting and ending columns    
 *
 **/
 
@@ -18791,7 +19188,7 @@ static inline struct gecko_msg_mesh_sensor_client_get_series_rsp_t* gecko_cmd_me
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   Propery identifying a sensor    
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.                 
 *
 **/
 
@@ -18822,8 +19219,16 @@ static inline struct gecko_msg_mesh_sensor_client_get_cadence_rsp_t* gecko_cmd_m
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   Bit 1 (0x02) defines whether response is required.{br}              If set to 1, SET CADENCE message will be sent, zero will send SET CADENCE UNACKNOWLEDGED
-* @param property_id   
-* @param params       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param params   Byte array containing serialized fields of Sensor Cadence state, excluding the property ID               
+*  - Fast Cadence Period Divisor, 7 bits
+*  - Status Trigger type, 1 bit (0 = discrete value, 1 = percentage)
+*  - Status Trigger Delta Down, variable length
+*  - Status Trigger Delta Up, variable length
+*  - Status Min Interval, 8 bits, representing a power of 2 milliseconds. Valid range is 0-26 
+*  - Fast Cadence Low, variable length, lower bound for the fast cadence range
+*  - Low Cadence Low, variable length, higher bound for the fast cadence range
+*     
 *
 **/
 
@@ -18862,7 +19267,7 @@ static inline struct gecko_msg_mesh_sensor_client_set_cadence_rsp_t* gecko_cmd_m
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.                 
 *
 **/
 
@@ -18893,8 +19298,8 @@ static inline struct gecko_msg_mesh_sensor_client_get_settings_rsp_t* gecko_cmd_
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   No flags defined currently
-* @param property_id   
-* @param setting_id       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param setting_id   Sensor Setting Property ID field identifying the device property of a setting.               Range: 0x0001 - 0xffff, 0x0000 is prohibited.                 
 *
 **/
 
@@ -18926,9 +19331,9 @@ static inline struct gecko_msg_mesh_sensor_client_get_setting_rsp_t* gecko_cmd_m
 * @param server_address   Destination server model address
 * @param appkey_index   The application key index to use.
 * @param flags   Bit 1 (0x02) defines whether response is required.{br}             If set to 1, SET SETTING message is sent, zero will use SET SETTING UNACKNOWLEDGED.             
-* @param property_id   
-* @param setting_id   
-* @param raw_value       
+* @param property_id   Property ID for the sensor. Range: 0x0001 - 0x0ffff for a specific device property, the value 0x0000 is prohibited.             
+* @param setting_id   Sensor Setting Property ID field identifying the device property of a setting.               Range: 0x0001 - 0xffff, 0x0000 is prohibited.             
+* @param raw_value   Sensor Setting raw value.                Size and representation depends on the type defined by the Sensor Setting Property ID.                 
 *
 **/
 

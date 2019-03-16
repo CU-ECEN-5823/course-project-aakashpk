@@ -22,16 +22,27 @@
 extern "C" {
 #endif
 
+#include "board_features.h"
+
 /*
- * If Studio is allowed to use the CTUNE value from EEPROM on board
+ * If Studio is allowed to use the CTUNE value from EEPROM on Silicon Labs radio board,
  * it will store it in the User page memory on the MFG_CTUNE_ADDR address.
- * If Studio is not allowed to store this value on that address
- * for example user already storing a value there, then the MFG_CTUNE_EN
- * must be set to 0, to avoid wrong value read out.
+ * If not, for example user already storing a value there, then the MFG_CTUNE_EN
+ * must be set to 0, to avoid wrong value to be read out.
+ * Studio can only read out the CTUNE value from the EEPROM if that is a
+ * Silicon Labs radio board.
+ * Please verify that CTUNE value is stored at the MFG_CTUNE_ADDR of
+ * the User page, if want to overwrite the default MFG_CTUNE_EN define
+ * for self use on custom boards.
  */
 
-//Enable this to use CTUNE value form User page (0 DISABLE , 1 ENABLE)
-#define MFG_CTUNE_EN   1
+#if defined(FEATURE_BOARD_DETECTED)
+//This is a Silicon Labs radio board, the CTUNE value can be read out from EEPROM
+    #define MFG_CTUNE_EN   1
+#else
+//This is not a Silicon Labs radio board, the CTUNE value cannot be read out from EEPROM
+    #define MFG_CTUNE_EN   0
+#endif
 //Address for CTUNE in User page
 #define MFG_CTUNE_ADDR 0x0FE00100UL
 //Value of the CTUNE in User page

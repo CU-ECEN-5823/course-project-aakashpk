@@ -1609,7 +1609,7 @@ RAIL_Status_t RAIL_ConfigTxPower(RAIL_Handle_t railHandle,
  * successful.
  *
  * Note that this API does not return the current TX power, which is separately
- * managed by the \ref RAIL_GetTxPower/\ref RAIL_SetTxPower APIs. This API
+ * managed by the \ref RAIL_GetTxPower / \ref RAIL_SetTxPower APIs. This API
  * should be used to determine which values were set as a result of
  * \ref RAIL_ConfigTxPower.
  */

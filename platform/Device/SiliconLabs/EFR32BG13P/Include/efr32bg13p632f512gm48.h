@@ -2,7 +2,7 @@
  * @file
  * @brief CMSIS Cortex-M Peripheral Access Layer Header File
  *        for EFR32BG13P632F512GM48
- * @version 5.7.0
+ * @version 5.7.2
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>

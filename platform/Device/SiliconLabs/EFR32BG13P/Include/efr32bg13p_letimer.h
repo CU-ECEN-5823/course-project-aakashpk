@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * @file
  * @brief EFR32BG13P_LETIMER register and bit field definitions
- * @version 5.7.0
+ * @version 5.7.2
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>

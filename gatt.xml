@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--Custom BLE GATT-->
-<gatt generic_attribute_service="true" header="gatt_db.h" name="Custom BLE GATT" out="gatt_db.c" prefix="gattdb_">
+<gatt gatt_caching="true" generic_attribute_service="true" header="gatt_db.h" name="Custom BLE GATT" out="gatt_db.c" prefix="gattdb_">
   <capabilities_declare>
     <capability enable="false">mesh_provisioning_service</capability>
     <capability enable="false">mesh_proxy_service</capability>
@@ -45,7 +45,7 @@
   </service>
   
   <!--Mesh Provisioning Service-->
-  <service advertise="true" name="Mesh Provisioning Service" requirement="mandatory" sourceId="com.silabs.service.mesh_provisioning" type="primary" uuid="1827">
+  <service advertise="false" name="Mesh Provisioning Service" requirement="mandatory" sourceId="com.silabs.service.mesh_provisioning" type="primary" uuid="1827">
     <informativeText>Abstract:  The Mesh Provisioning Service allows a Provisioning Client to provision a Provisioning Server to allow it to participate in the mesh network.  </informativeText>
     <capabilities>
       <capability>mesh_provisioning_service</capability>
@@ -67,7 +67,7 @@
   </service>
   
   <!--Mesh Proxy Service-->
-  <service advertise="true" name="Mesh Proxy Service" requirement="mandatory" sourceId="com.silabs.service.mesh_proxy" type="primary" uuid="1828">
+  <service advertise="false" name="Mesh Proxy Service" requirement="mandatory" sourceId="com.silabs.service.mesh_proxy" type="primary" uuid="1828">
     <informativeText>Abstract:  The Mesh Proxy Service is used to enable a server to send and receive Proxy PDUs with a client.  </informativeText>
     <capabilities>
       <capability>mesh_proxy_service</capability>

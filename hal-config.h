@@ -22,8 +22,14 @@
 #include "hal-config-board.h"
 #include "hal-config-app-common.h"
 
+#ifndef HAL_VCOM_ENABLE
 #define HAL_VCOM_ENABLE                   (0)
+#endif
+#ifndef HAL_I2CSENSOR_ENABLE
 #define HAL_I2CSENSOR_ENABLE              (0)
+#endif
+#ifndef HAL_SPIDISPLAY_ENABLE
 #define HAL_SPIDISPLAY_ENABLE             (0)
+#endif
 
 #endif

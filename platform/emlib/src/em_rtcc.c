@@ -1,7 +1,7 @@
 /***************************************************************************//**
  * @file
  * @brief Real Time Counter with Calendar (RTCC) Peripheral API
- * @version 5.7.0
+ * @version 5.7.2
  *******************************************************************************
  * # License
  * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>

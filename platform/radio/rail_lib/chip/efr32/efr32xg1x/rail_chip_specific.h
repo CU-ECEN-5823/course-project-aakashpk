@@ -651,12 +651,10 @@ RAIL_ENUM(RAIL_AntennaSel_t) {
  * @brief A configuration for antenna selection.
  */
 typedef struct RAIL_AntennaConfig {
-  /** MODEM_ROUTEPEN fields */
   /** Antenna 0 Pin Enable */
   bool ant0PinEn;
   /** Antenna 1 Pin Enable */
   bool ant1PinEn;
-  /** MODEM_ROUTELOC1 fields */
   /** Antenna 0 location for pin/port */
   uint8_t ant0Loc;
   /** Antenna 0 output GPIO port */
