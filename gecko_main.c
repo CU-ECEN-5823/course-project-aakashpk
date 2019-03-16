@@ -101,11 +101,11 @@ const gecko_configuration_t config =
   .max_timers = 16,
 };
 
-static void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt);
+void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt);
 void mesh_native_bgapi_init(void);
 bool mesh_bgapi_listener(struct gecko_cmd_packet *evt);
 
-int main()
+void gecko_main_init()
 {
   // Initialize device
   initMcu();
@@ -132,16 +132,9 @@ int main()
   mesh_native_bgapi_init();
   gecko_initCoexHAL();
 
-  while (1) {
-    struct gecko_cmd_packet *evt = gecko_wait_event();
-    bool pass = mesh_bgapi_listener(evt);
-    if (pass) {
-      handle_gecko_event(BGLIB_MSG_ID(evt->header), evt);
-    }
-  }
 }
 
-static void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
+void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 {
   switch (evt_id) {
     case gecko_evt_system_boot_id:
