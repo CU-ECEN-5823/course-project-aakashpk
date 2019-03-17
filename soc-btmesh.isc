@@ -8,8 +8,8 @@ appId: btmesh
 frameworkRoot: app\bluetooth\appbuilder\fwk-mesh
 architecture: efr32~family[B]~series[1]~device_configuration[3]~performance[P]~radio[632]~flash[512K]~temp[G]~package[M]~pins[48]~!module+BRD4104A+gcc
 exactArchitectureToolchain: com.silabs.ss.tool.ide.arm.toolchain.gnu.cdt:7.2.1.20170904
-deviceName: soc-btmesh-empty
-sourceSampleAppId: soc-btmesh-empty
+deviceName: soc-btmesh-switch
+sourceSampleAppId: soc-btmesh-switch
 generationDirectory: PATH(ISC_RELATIVE):.
 
 # Devices
@@ -113,20 +113,18 @@ appPlugin: slot-manager=false
     "PID": "0xf0b0",
     "VID": "0x1234",
     "CRPL": "0x0020",
-    "Features": "0x0003",
+    "Features": "0x000b",
     "Elements": [
       \{
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "4",
+        "NumS": "3",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
           "Configuration Server",
-          "0x0002",
-          "Health Server",
-          "0x0003",
-          "Health Client",
+          "0x1001",
+          "Generic OnOff Client",
           "0x1000",
           "Generic OnOff Server"]
         ,
@@ -136,7 +134,7 @@ appPlugin: slot-manager=false
   \},
   "Memory configuration": \{
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "4",
+    "MAX_MODELS": "3",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",

@@ -75,8 +75,8 @@
 									<listOptionValue builtIn="false" value="__HEAP_SIZE=0x1200"/>
 									<listOptionValue builtIn="false" value="__STACK_SIZE=0x1000"/>
 									<listOptionValue builtIn="false" value="HAL_CONFIG=1"/>
-									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 									<listOptionValue builtIn="false" value="INCLUDE_LOGGING=1"/>
+									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 								</option>
 								<option id="gnu.c.compiler.option.warnings.extrawarn.1072918920" name="Extra warnings (-Wextra)" superClass="gnu.c.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.1388802804" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -120,9 +120,11 @@
 									<listOptionValue builtIn="false" value="__HEAP_SIZE=0x1200"/>
 									<listOptionValue builtIn="false" value="__STACK_SIZE=0x1000"/>
 									<listOptionValue builtIn="false" value="HAL_CONFIG=1"/>
-									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 									<listOptionValue builtIn="false" value="INCLUDE_LOGGING=1"/>
+									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 								</option>
+								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.enable.1913628276" name="Enable Hardware Floating Point (-mfpu=)" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.enable" value="true" valueType="boolean"/>
+								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.type.250106036" name="Floating-Point ABI" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.type" value="floatingpoint.type.softfp" valueType="enumerated"/>
 								<inputType id="org.eclipse.cdt.core.asmSource.1987722590" superClass="org.eclipse.cdt.core.asmSource"/>
 							</tool>
 							<tool id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base.694961669" name="GNU ARM C Linker" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.base">
@@ -161,6 +163,9 @@
 							<tool id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.archiver.base.1984623195" name="GNU ARM Archiver" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.archiver.base"/>
 						</toolChain>
 					</folderInfo>
+					<sourceEntries>
+						<entry excluding=".git/objects/info|.git/objects/pack|.git/refs/tags" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+					</sourceEntries>
 				</configuration>
 			</storageModule>
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
@@ -239,8 +244,8 @@
 									<listOptionValue builtIn="false" value="HAL_CONFIG=1"/>
 									<listOptionValue builtIn="false" value="__STACK_SIZE=0x1000"/>
 									<listOptionValue builtIn="false" value="__HEAP_SIZE=0x1200"/>
-									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 									<listOptionValue builtIn="false" value="INCLUDE_LOGGING=1"/>
+									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 								</option>
 								<option id="gnu.c.compiler.option.warnings.extrawarn.303866827" name="Extra warnings (-Wextra)" superClass="gnu.c.compiler.option.warnings.extrawarn" value="true" valueType="boolean"/>
 								<inputType id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input.101416325" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.compiler.input"/>
@@ -284,8 +289,8 @@
 									<listOptionValue builtIn="false" value="HAL_CONFIG=1"/>
 									<listOptionValue builtIn="false" value="__STACK_SIZE=0x1000"/>
 									<listOptionValue builtIn="false" value="__HEAP_SIZE=0x1200"/>
-									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 									<listOptionValue builtIn="false" value="INCLUDE_LOGGING=1"/>
+									<listOptionValue builtIn="false" value="EFR32BG13P632F512GM48=1"/>
 								</option>
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.enable.387106197" name="Enable Hardware Floating Point (-mfpu=)" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.enable" value="true" valueType="boolean"/>
 								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.type.1344914692" name="Floating-Point ABI" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.assembler.floatingpoint.type" value="floatingpoint.type.softfp" valueType="enumerated"/>
@@ -307,7 +312,7 @@
 									<listOptionValue builtIn="false" value="-no-enum-size-warning"/>
 									<listOptionValue builtIn="false" value="-no-wchar-size-warning"/>
 								</option>
-								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.category.ordering.selection.505926665" name="Linker input ordering" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.category.ordering.selection" value="./platform/Device/SiliconLabs/$(chipFamilyUpperCase)/Source/GCC/startup_$(chipFamily).o;" valueType="string"/>
+								<option id="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.category.ordering.selection.505926665" name="Linker input ordering" superClass="com.silabs.ide.si32.gcc.cdt.managedbuild.tool.gnu.c.linker.category.ordering.selection" value="./platform/Device/SiliconLabs/EFR32BG13P/Source/GCC/startup_efr32bg13p.o;" valueType="string"/>
 								<option id="gnu.c.link.option.libs.1631483843" name="Libraries (-l)" superClass="gnu.c.link.option.libs" valueType="libs">
 									<listOptionValue builtIn="false" srcPrefixMapping="" srcRootPath="" value="m"/>
 								</option>
@@ -335,7 +340,7 @@
 			<storageModule moduleId="org.eclipse.cdt.core.externalSettings"/>
 		</cconfiguration>
 	</storageModule>
-	<storageModule generalProj.esf.protocolIds="com.silabs.sdk.stack.btmesh:1.4.1._620725456.com.silabs.stack.ble:2.11.2.0_-229499850" generalProj.esf.protocolNames="btmesh" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="423" projectCommon.boardIds="brd4104a:0.0.0.A00" projectCommon.partId="mcu.arm.efr32.bg13.efr32bg13p632f512gm48" projectCommon.sdkId="com.silabs.sdk.stack.btmesh:1.4.1._620725456"/>
+	<storageModule generalProj.esf.protocolIds="com.silabs.sdk.stack.btmesh:1.4.1._620725456.com.silabs.stack.ble:2.11.2.0_-229499850" generalProj.esf.protocolNames="btmesh" moduleId="com.silabs.ss.framework.ide.project.core.cpp" project.generation="492" projectCommon.boardIds="brd4104a:0.0.0.A00" projectCommon.partId="mcu.arm.efr32.bg13.efr32bg13p632f512gm48" projectCommon.sdkId="com.silabs.sdk.stack.btmesh:1.4.1._620725456"/>
 	<storageModule moduleId="cdtBuildSystem" version="4.0.0">
 		<project id="soc-btmesh-empty.com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType.387706800" name="SLS CDT Project" projectType="com.silabs.ss.framework.ide.project.core.cdt.cdtMbsProjectType"/>
 	</storageModule>

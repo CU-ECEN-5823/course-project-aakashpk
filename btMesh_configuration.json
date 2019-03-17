@@ -5,20 +5,18 @@
     "PID": "0xf0b0",
     "VID": "0x1234",
     "CRPL": "0x0020",
-    "Features": "0x0003",
+    "Features": "0x000b",
     "Elements": [
       {
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "4",
+        "NumS": "3",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
           "Configuration Server",
-          "0x0002",
-          "Health Server",
-          "0x0003",
-          "Health Client",
+          "0x1001",
+          "Generic OnOff Client",
           "0x1000",
           "Generic OnOff Server"]
         ,
@@ -29,7 +27,7 @@
   },
   "Memory configuration": {
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "4",
+    "MAX_MODELS": "3",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",

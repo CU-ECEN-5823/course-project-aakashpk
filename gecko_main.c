@@ -44,6 +44,7 @@
 #else
 #include "bspconfig.h"
 #endif
+#include "src/ble_mesh_device_type.h"
 
 /***********************************************************************************************//**
  * @addtogroup Application
@@ -105,6 +106,69 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt);
 void mesh_native_bgapi_init(void);
 bool mesh_bgapi_listener(struct gecko_cmd_packet *evt);
 
+/**
+ * See light switch app.c file definition
+ */
+void gecko_bgapi_classes_init_server_friend(void)
+{
+	gecko_bgapi_class_dfu_init();
+	gecko_bgapi_class_system_init();
+	gecko_bgapi_class_le_gap_init();
+	gecko_bgapi_class_le_connection_init();
+	//gecko_bgapi_class_gatt_init();
+	gecko_bgapi_class_gatt_server_init();
+	gecko_bgapi_class_hardware_init();
+	gecko_bgapi_class_flash_init();
+	gecko_bgapi_class_test_init();
+	//gecko_bgapi_class_sm_init();
+	//mesh_native_bgapi_init();
+	gecko_bgapi_class_mesh_node_init();
+	//gecko_bgapi_class_mesh_prov_init();
+	gecko_bgapi_class_mesh_proxy_init();
+	gecko_bgapi_class_mesh_proxy_server_init();
+	//gecko_bgapi_class_mesh_proxy_client_init();
+	//gecko_bgapi_class_mesh_generic_client_init();
+	gecko_bgapi_class_mesh_generic_server_init();
+	//gecko_bgapi_class_mesh_vendor_model_init();
+	//gecko_bgapi_class_mesh_health_client_init();
+	//gecko_bgapi_class_mesh_health_server_init();
+	//gecko_bgapi_class_mesh_test_init();
+	gecko_bgapi_class_mesh_lpn_init();
+	//gecko_bgapi_class_mesh_friend_init();
+}
+
+
+/**
+ * See main function list in soc-btmesh-switch project file
+ */
+void gecko_bgapi_classes_init_client_lpn(void)
+{
+	gecko_bgapi_class_dfu_init();
+	gecko_bgapi_class_system_init();
+	gecko_bgapi_class_le_gap_init();
+	gecko_bgapi_class_le_connection_init();
+	//gecko_bgapi_class_gatt_init();
+	gecko_bgapi_class_gatt_server_init();
+	gecko_bgapi_class_hardware_init();
+	gecko_bgapi_class_flash_init();
+	gecko_bgapi_class_test_init();
+	//gecko_bgapi_class_sm_init();
+	//mesh_native_bgapi_init();
+	gecko_bgapi_class_mesh_node_init();
+	//gecko_bgapi_class_mesh_prov_init();
+	gecko_bgapi_class_mesh_proxy_init();
+	gecko_bgapi_class_mesh_proxy_server_init();
+	//gecko_bgapi_class_mesh_proxy_client_init();
+	gecko_bgapi_class_mesh_generic_client_init();
+	//gecko_bgapi_class_mesh_generic_server_init();
+	//gecko_bgapi_class_mesh_vendor_model_init();
+	//gecko_bgapi_class_mesh_health_client_init();
+	//gecko_bgapi_class_mesh_health_server_init();
+	//gecko_bgapi_class_mesh_test_init();
+	gecko_bgapi_class_mesh_lpn_init();
+	//gecko_bgapi_class_mesh_friend_init();
+
+}
 void gecko_main_init()
 {
   // Initialize device
@@ -119,17 +183,14 @@ void gecko_main_init()
   linklayer_priorities.scan_max = linklayer_priorities.adv_min + 1;
 
   gecko_stack_init(&config);
-  gecko_bgapi_class_dfu_init();
-  gecko_bgapi_class_system_init();
-  gecko_bgapi_class_le_gap_init();
-  gecko_bgapi_class_le_connection_init();
-  gecko_bgapi_class_gatt_init();
-  gecko_bgapi_class_gatt_server_init();
-  gecko_bgapi_class_hardware_init();
-  gecko_bgapi_class_flash_init();
-  gecko_bgapi_class_test_init();
-  gecko_bgapi_class_sm_init();
-  mesh_native_bgapi_init();
+
+  if( DeviceUsesClientModel() ) {
+	  gecko_bgapi_classes_init_client_lpn();
+  } else {
+	  gecko_bgapi_classes_init_server_friend();
+  }
+
+  // Initialize coexistence interface. Parameters are taken from HAL config.
   gecko_initCoexHAL();
 
 }
