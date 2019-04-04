@@ -18,7 +18,7 @@
 #include "gpio.h"
 #include "log.h"
 #include "display.h"
-#include "hardware/kit/common/drivers/display.h"
+//#include "gecko_helper.h"
 //#include "scheduler.h" // Add a reference to your module supporting scheduler events for display update
 //#include "timer.h" // Add a reference to your module supporting configuration of underflow events here
 
@@ -198,7 +198,8 @@ void displayInit()
 	}
 #if SCHEDULER_SUPPORTS_DISPLAY_UPDATE_EVENT
 #if TIMER_SUPPORTS_1HZ_TIMER_EVENT
-	timerEnable1HzSchedulerEvent(Scheduler_DisplayUpdate);
+	//Setup 1 sec soft timer
+	gecko_cmd_hardware_set_soft_timer(32768, 0, 0);
 #else
 #warning "Timer does not support scheduling 1Hz event.  Please implement for full display support"
 #endif

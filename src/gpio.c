@@ -3,40 +3,38 @@
  *
  *  Created on: Dec 12, 2018
  *      Author: Dan Walkes
+ *
+ *      Edited by: Aakash Kumar
  */
 #include "gpio.h"
 #include "em_gpio.h"
 #include <string.h>
+#include "display.h"
+#include "displayhalconfig.h"
 
-
-#define	LED0_port gpioPortF
-#define LED0_pin	4
-#define LED1_port gpioPortF
-#define LED1_pin 5
 
 void gpioInit()
 {
-	GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateStrong);
-	//GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateWeak);
+	GPIO_DriveStrengthSet(LED0_port, gpioDriveStrengthWeakAlternateWeak);
 	GPIO_PinModeSet(LED0_port, LED0_pin, gpioModePushPull, false);
-	GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateStrong);
-	//GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateWeak);
+	GPIO_DriveStrengthSet(LED1_port, gpioDriveStrengthWeakAlternateWeak);
 	GPIO_PinModeSet(LED1_port, LED1_pin, gpioModePushPull, false);
+
+	gpioLed0SetOff();
+	gpioLed1SetOff();
+
 }
 
-void gpioLed0SetOn()
+
+void gpioEnableDisplay(void)
 {
-	GPIO_PinOutSet(LED0_port,LED0_pin);
+	GPIO_DriveStrengthSet(LCD_PORT_DISP_PWR, gpioDriveStrengthWeakAlternateWeak);
+	GPIO_PinModeSet(LCD_PORT_DISP_PWR, LCD_PIN_DISP_PWR, gpioModePushPull, false);
 }
-void gpioLed0SetOff()
+
+
+void gpioSetDisplayExtcomin(bool high)
 {
-	GPIO_PinOutClear(LED0_port,LED0_pin);
-}
-void gpioLed1SetOn()
-{
-	GPIO_PinOutSet(LED1_port,LED1_pin);
-}
-void gpioLed1SetOff()
-{
-	GPIO_PinOutClear(LED1_port,LED1_pin);
+	if(high) GPIO_PinOutSet(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
+	else GPIO_PinOutClear(LCD_PORT_EXTCOMIN,LCD_PIN_EXTCOMIN);
 }

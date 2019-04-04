@@ -14,7 +14,7 @@
  * Set to 1 to build an on/off publisher client model for Assignment 10
  * Set to 0 to build an on/off subscriber server model for Assignment 10
  */
-#define DEVICE_IS_ONOFF_PUBLISHER			1
+#define DEVICE_IS_ONOFF_PUBLISHER			0
 
 #if DEVICE_IS_ONOFF_PUBLISHER
 #define DEVICE_USES_BLE_MESH_CLIENT_MODEL 	1
@@ -64,8 +64,10 @@ static inline bool DeviceUsesServerModel() { return false; }
 
 #if DEVICE_IS_ONOFF_PUBLISHER
 static inline bool DeviceIsOnOffPublisher() { return true; }
+#define device_name "Pub"
 #else
 static inline bool DeviceIsOnOffPublisher() { return false; }
+#define device_name "Sub"
 #endif
 
 #if DEVICE_IS_ONOFF_SUBSCRIBER

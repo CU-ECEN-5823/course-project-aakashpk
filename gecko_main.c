@@ -79,7 +79,7 @@ static gecko_bluetooth_ll_priorities linklayer_priorities = GECKO_BLUETOOTH_PRIO
 extern const struct bg_gattdb_def bg_gattdb_data;
 
 // Flag for indicating DFU Reset must be performed
-uint8_t boot_to_dfu = 0;
+//uint8_t boot_to_dfu = 0;
 
 const gecko_configuration_t config =
 {
@@ -101,10 +101,10 @@ const gecko_configuration_t config =
 #endif // (HAL_PA_ENABLE)
   .max_timers = 16,
 };
-
-void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt);
-void mesh_native_bgapi_init(void);
-bool mesh_bgapi_listener(struct gecko_cmd_packet *evt);
+//
+//void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt);
+//void mesh_native_bgapi_init(void);
+//bool mesh_bgapi_listener(struct gecko_cmd_packet *evt);
 
 /**
  * See light switch app.c file definition
@@ -195,41 +195,43 @@ void gecko_main_init()
 
 }
 
-void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
-{
-  switch (evt_id) {
-    case gecko_evt_system_boot_id:
-      // Initialize Mesh stack in Node operation mode, wait for initialized event
-      gecko_cmd_mesh_node_init();
-      break;
-    case gecko_evt_mesh_node_initialized_id:
-      if (!evt->data.evt_mesh_node_initialized.provisioned) {
-        // The Node is now initialized, start unprovisioned Beaconing using PB-ADV and PB-GATT Bearers
-        gecko_cmd_mesh_node_start_unprov_beaconing(0x3);
-      }
-      break;
-    case gecko_evt_le_connection_closed_id:
-      /* Check if need to boot to dfu mode */
-      if (boot_to_dfu) {
-        /* Enter to DFU OTA mode */
-        gecko_cmd_system_reset(2);
-      }
-      break;
-    case gecko_evt_gatt_server_user_write_request_id:
-      if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_ota_control) {
-        /* Set flag to enter to OTA mode */
-        boot_to_dfu = 1;
-        /* Send response to Write Request */
-        gecko_cmd_gatt_server_send_user_write_response(
-          evt->data.evt_gatt_server_user_write_request.connection,
-          gattdb_ota_control,
-          bg_err_success);
 
-        /* Close connection to enter to DFU OTA mode */
-        gecko_cmd_le_connection_close(evt->data.evt_gatt_server_user_write_request.connection);
-      }
-      break;
-    default:
-      break;
-  }
-}
+//
+//void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
+//{
+//  switch (evt_id) {
+//    case gecko_evt_system_boot_id:
+//      // Initialize Mesh stack in Node operation mode, wait for initialized event
+//      gecko_cmd_mesh_node_init();
+//      break;
+//    case gecko_evt_mesh_node_initialized_id:
+//      if (!evt->data.evt_mesh_node_initialized.provisioned) {
+//        // The Node is now initialized, start unprovisioned Beaconing using PB-ADV and PB-GATT Bearers
+//        gecko_cmd_mesh_node_start_unprov_beaconing(0x3);
+//      }
+//      break;
+//    case gecko_evt_le_connection_closed_id:
+//      /* Check if need to boot to dfu mode */
+//      if (boot_to_dfu) {
+//        /* Enter to DFU OTA mode */
+//        gecko_cmd_system_reset(2);
+//      }
+//      break;
+//    case gecko_evt_gatt_server_user_write_request_id:
+//      if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_ota_control) {
+//        /* Set flag to enter to OTA mode */
+//        boot_to_dfu = 1;
+//        /* Send response to Write Request */
+//        gecko_cmd_gatt_server_send_user_write_response(
+//          evt->data.evt_gatt_server_user_write_request.connection,
+//          gattdb_ota_control,
+//          bg_err_success);
+//
+//        /* Close connection to enter to DFU OTA mode */
+//        gecko_cmd_le_connection_close(evt->data.evt_gatt_server_user_write_request.connection);
+//      }
+//      break;
+//    default:
+//      break;
+//  }
+//}

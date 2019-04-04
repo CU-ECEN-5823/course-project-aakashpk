@@ -8,7 +8,10 @@
 #ifndef SRC_LOG_H_
 #define SRC_LOG_H_
 #include "stdio.h"
+
 #include <inttypes.h>
+
+#include "letimer.h"
 
 /**
  * Instructions for using this module:
@@ -34,23 +37,23 @@
  */
 #ifndef LOG_ERROR
 #define LOG_ERROR(message,...) \
-	LOG_DO(message,"Error", ##__VA_ARGS__)
+	LOG_DO(message,"[ERROR]", ##__VA_ARGS__)
 #endif
 
 #ifndef LOG_WARN
 #define LOG_WARN(message,...) \
-	LOG_DO(message,"Warn ", ##__VA_ARGS__)
+	LOG_DO(message,"[WARN ]", ##__VA_ARGS__)
 #endif
 
 #ifndef LOG_INFO
 #define LOG_INFO(message,...) \
-	LOG_DO(message,"Info ", ##__VA_ARGS__)
+	LOG_DO(message,"[INFO ]", ##__VA_ARGS__)
 #endif
 
 #if INCLUDE_LOG_DEBUG
 #ifndef LOG_DEBUG
 #define LOG_DEBUG(message,...) \
-	LOG_DO(message,"Debug",##__VA_ARGS__)
+	LOG_DO(message,"[DEBUG]",##__VA_ARGS__)
 #define LOG_DEBUG_CODE(code) code
 #endif
 #else
@@ -61,7 +64,9 @@
 
 #if INCLUDE_LOGGING
 #define LOG_DO(message,level, ...) \
-	printf( "%5"PRIu32":%s:%s: " message "\n", loggerGetTimestamp(), level, __func__, ##__VA_ARGS__ )
+	printf( "%6"PRIu32":%s: " message "\n", loggerGetTimestamp(), level, ##__VA_ARGS__ )
+
+//#define LOG_DO(message,level, ...) printf( "%5"PRIu32":%s:%s:%s: " message "\n", loggerGetTimestamp(), level, __FILE__,__func__, ##__VA_ARGS__ )
 void logInit();
 uint32_t loggerGetTimestamp();
 void logFlush();

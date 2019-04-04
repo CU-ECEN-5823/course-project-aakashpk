@@ -9,6 +9,7 @@
 #include "log.h"
 #include <stdbool.h>
 
+
 #if INCLUDE_LOGGING
 /**
  * @return a timestamp value for the logger, typically based on a free running timer.
@@ -16,8 +17,7 @@
  */
 uint32_t loggerGetTimestamp(void)
 {
-	//return timerGetRunTimeMilliseconds();
-	return 0;
+	return timerGetRunTimeMilliseconds();
 }
 
 /**
@@ -32,6 +32,11 @@ void logInit(void)
 	 * RETARGET_SerialCrLf() ensures each linefeed also includes carriage return.  Without it, the first character is shifted in TeraTerm
 	 */
 	RETARGET_SerialCrLf(true);
+
+	// from https://stackoverflow.com/questions/46612044/how-do-i-clear-a-serial-screen
+	// to clear tera term screen on startup
+	LOG_INFO("\033[2J\033[H");
+
 	LOG_INFO("Initialized Logging");
 }
 

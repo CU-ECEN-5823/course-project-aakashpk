@@ -33,6 +33,7 @@
 #define ECEN5823_INCLUDE_DISPLAY_SUPPORT 1
 
 #include "glib.h"
+#include "hardware/kit/common/drivers/display.h"
 
 /**
  * Display row definitions, used for writing specific content based on assignment requirements.
