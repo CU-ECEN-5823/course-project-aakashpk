@@ -78,6 +78,11 @@ int main(void)
 }
 
 
+/*
+ * All code below heavily borrows from
+ * Si Labs BT mesh light and switch implementation
+ */
+
 // TODO: Move to different file, kept here till working proven
 
 #define TIMER_ID_FACTORY_RESET  77
@@ -188,13 +193,13 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			if (pData->provisioned) {
 				LOG_INFO("node is provisioned. address:%x, ivi:%ld", pData->address, pData->ivi);
 
-				displayPrintf(DISPLAY_ROW_CONNECTION,"provisioned");
+				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 
 			}
 			else
 			{
 				LOG_INFO("node is unprovisioned");
-				displayPrintf(DISPLAY_ROW_CONNECTION,"unprovisioned");
+				displayPrintf(DISPLAY_ROW_PASSKEY,"unprovisioned");
 
 				LOG_INFO("starting unprovisioned beaconing...");
 
@@ -208,7 +213,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 		case gecko_evt_mesh_node_provisioning_started_id:
 			LOG_INFO("Started provisioning");
-			displayPrintf(DISPLAY_ROW_CONNECTION,"provisioning ..");
+			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioning ..");
 			// start timer for blinking LEDs to indicate which node is being provisioned
 			gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
 			break;
@@ -227,13 +232,13 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			// stop LED blinking when provisioning complete
 			gecko_cmd_hardware_set_soft_timer(0, TIMER_ID_PROVISIONING, 0);
 
-			displayPrintf(DISPLAY_ROW_CONNECTION,"provisioned");
+			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 			break;
 
 		case gecko_evt_mesh_node_provisioning_failed_id:
 			prov_fail_evt = (struct gecko_msg_mesh_node_provisioning_failed_evt_t  *)&(evt->data);
 			LOG_INFO("provisioning failed, code %x", prov_fail_evt->result);
-			displayPrintf(DISPLAY_ROW_CONNECTION,"prov failed");
+			displayPrintf(DISPLAY_ROW_PASSKEY,"prov failed");
 			/* start a one-shot timer that will trigger soft reset after small delay */
 			gecko_cmd_hardware_set_soft_timer(2 * 32768, TIMER_ID_RESTART, 1);
 			break;
@@ -248,12 +253,12 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_mesh_generic_server_client_request_id:
-			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
+			LOG_DEBUG("evt gecko_evt_mesh_generic_server_client_request_id");
 			mesh_lib_generic_server_event_handler(evt);
 			break;
 
 		case gecko_evt_mesh_generic_server_state_changed_id:
-
+			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
 			// uncomment following line to get debug prints for each server state changed event
 			//server_state_changed(&(evt->data.evt_mesh_generic_server_state_changed));
 

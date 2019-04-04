@@ -29,58 +29,11 @@ static void onoff_request(uint16_t model_id,
                           uint16_t delay_ms,
                           uint8_t request_flags)
 {
-	static uint8_t state =0x01;
-	LOG_INFO("onoff_request called");
 
-	displayPrintf(DISPLAY_ROW_TEMPVALUE,"Button %2x",state);
-	state = (~state & 0x01);
-	/*
-  printf("ON/OFF request: requested state=<%s>, transition=%lu, delay=%u\r\n",
-         request->on_off ? "ON" : "OFF", transition_ms, delay_ms);
+	LOG_INFO("State %x",request->on_off);
 
-  if (lightbulb_state.onoff_current == request->on_off) {
-    printf("Request for current state received; no op\n");
-  } else {
-    printf("Turning lightbulb <%s>\r\n", request->on_off ? "ON" : "OFF");
-    if (transition_ms == 0 && delay_ms == 0) { // Immediate change
-      lightbulb_state.onoff_current = request->on_off;
-      lightbulb_state.onoff_target = request->on_off;
-      if (lightbulb_state.onoff_current == MESH_GENERIC_ON_OFF_STATE_OFF) {
-        LEDS_SetState(LED_STATE_OFF);
-      } else {
-        LEDS_SetState(LED_STATE_ON);
-      }
-    } else if (delay_ms > 0) {
-      // a delay has been specified for the light change. Start a soft timer
-      // that will trigger the change after the given delay
-      // Current state remains as is for now
-      lightbulb_state.onoff_target = request->on_off;
-      gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(delay_ms), TIMER_ID_DELAYED_ONOFF, 1);
-      // store transition parameter for later use
-      delayed_onoff_trans = transition_ms;
-    } else {
-      // no delay but transition time has been set.
-      lightbulb_state.onoff_target = request->on_off;
-
-      if (request->on_off == MESH_GENERIC_ON_OFF_STATE_OFF) {
-        LEDS_SetLevel(0, transition_ms);
-      } else {
-        // restore last brightness
-        lightbulb_state.lightness_target = lightbulb_state.lightness_last;
-        LEDS_SetLevel(lightbulb_state.lightness_target, transition_ms);
-      }
-      // lightbulb current state will be updated when transition is complete
-      gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(transition_ms), TIMER_ID_ONOFF_TRANSITION, 1);
-    }
-    lightbulb_state_changed();
-  }
-
-  if (request_flags & MESH_REQUEST_FLAG_RESPONSE_REQUIRED) {
-    onoff_response(element_index, client_addr, appkey_index);
-  } else {
-    onoff_update(element_index);
-  }
-  */
+	if(request->on_off == 0x01 ) displayPrintf(DISPLAY_ROW_TEMPVALUE,"Button Pressed");
+	else displayPrintf(DISPLAY_ROW_TEMPVALUE,"Button Released");
 }
 
 static void onoff_change(uint16_t model_id,
