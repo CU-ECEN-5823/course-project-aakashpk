@@ -31,6 +31,7 @@
 
 
 void send_button_state(uint8_t state);
-void button_node_init(void);
+void sensor_node_init(void);
+void actuator_node_init(void);
 
 #endif /* SRC_GECKO_HELPER_H_ */

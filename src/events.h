@@ -9,7 +9,6 @@
 #define SRC_EVENTS_H_
 
 #include "log.h"
-#include "Si7021_I2C.h"
 #include "letimer.h"
 #include "scheduler.h"
 #include "gecko_helper.h"

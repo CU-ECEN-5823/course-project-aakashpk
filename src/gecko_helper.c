@@ -7,12 +7,38 @@
 
 #include "gecko_helper.h"
 
+/**
+ * Initialize LPN functionality with configuration and friendship establishment.
+ */
+void lpn_init(void)
+{
+  uint16 res;
+  // Initialize LPN functionality.
+  res = gecko_cmd_mesh_lpn_init()->result;
+  if (res) {
+    LOG_INFO("LPN init failed (0x%x)", res);
+    return;
+  }
+
+  res = gecko_cmd_mesh_lpn_configure(2, 5 * 1000)->result;
+  if (res) {
+    LOG_INFO("LPN conf failed (0x%x)", res);
+    return;
+  }
+
+  LOG_INFO("trying to find friend...");
+  res = gecko_cmd_mesh_lpn_establish_friendship(0)->result;
+
+  if (res != 0) {
+    LOG_INFO("ret.code %x\r\n", res);
+  }
+}
 
 /**
- * Switch node initialization. This is called at each boot if provisioning is already done.
+ * Sensor node initialization. This is called at each boot if provisioning is already done.
  * Otherwise this function is called after provisioning is completed.
  */
-void button_node_init(void)
+void sensor_node_init(void)
 {
   mesh_lib_init(malloc, free, 8);
 
@@ -45,9 +71,14 @@ static void onoff_change(uint16_t model_id,
 	LOG_INFO("onoff_change called");
 }
 
-void subscriber_node_init(void)
+void actuator_node_init(void)
 {
 	mesh_lib_init(malloc, free, 9);
+
+	uint16_t res;
+	//Initialize Friend functionality
+	LOG_INFO("Friend node init 0x%x", gecko_cmd_mesh_friend_init()->result);
+
 	mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
 	                                           0,
 	                                           onoff_request,
