@@ -1,5 +1,5 @@
 #ISD afv6
-# Simplicity Studio version: 5.2.2.201902221249-1438
+# Simplicity Studio version: 5.2.2.201903181400-1443
 
 # Application configuration
 stackId: com.silabs.sdk.stack.btmesh
@@ -113,7 +113,7 @@ appPlugin: slot-manager=false
     "PID": "0xf0b0",
     "VID": "0x1234",
     "CRPL": "0x0020",
-    "Features": "0x000b",
+    "Features": "0x000f",
     "Elements": [
       \{
         "Name": "Primary Element",
