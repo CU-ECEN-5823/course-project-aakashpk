@@ -44,7 +44,7 @@
 #else
 #include "bspconfig.h"
 #endif
-#include "src/ble_mesh_device_type.h"
+#include "ble_mesh_device_type.h"
 
 #include "log.h"
 #include "display.h"
@@ -139,7 +139,7 @@ void gecko_bgapi_classes_init_server_friend(void)
 	//gecko_bgapi_class_mesh_health_client_init();
 	//gecko_bgapi_class_mesh_health_server_init();
 	//gecko_bgapi_class_mesh_test_init();
-	gecko_bgapi_class_mesh_lpn_init();
+	//gecko_bgapi_class_mesh_lpn_init();
 	gecko_bgapi_class_mesh_friend_init();
 }
 
@@ -172,7 +172,7 @@ void gecko_bgapi_classes_init_client_lpn(void)
 	//gecko_bgapi_class_mesh_health_server_init();
 	//gecko_bgapi_class_mesh_test_init();
 	gecko_bgapi_class_mesh_lpn_init();
-	gecko_bgapi_class_mesh_friend_init();
+	//gecko_bgapi_class_mesh_friend_init();
 
 }
 void gecko_main_init()
@@ -290,8 +290,8 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			set_device_name(&pAddr->address);
 
 			// Initialize Mesh stack in Node operation mode, wait for initialized event
-			BTSTACK_CHECK_RESPONSE(
-					gecko_cmd_mesh_node_init());
+			LOG_INFO("Node init %x",gecko_cmd_mesh_node_init()->result);
+
 		}
 		break;
 
@@ -325,7 +325,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 			#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 						gecko_cmd_mesh_generic_server_init(); // server
-						LOG_INFO("Friend init failed 0x%x", gecko_cmd_mesh_friend_init()->result);
+						//LOG_INFO("Friend init 0x%x", gecko_cmd_mesh_friend_init()->result);
 
 			#else
 						gecko_cmd_mesh_generic_client_init(); //client
@@ -334,14 +334,14 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			struct gecko_msg_mesh_node_initialized_evt_t *pData = (struct gecko_msg_mesh_node_initialized_evt_t *)&(evt->data);
 
 			if (pData->provisioned) {
+				LOG_INFO("node is provisioned. address:%x, ivi:%ld", pData->address, pData->ivi);
+				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
+
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 							actuator_node_init();
 				#else
 							sensor_node_init();
 				#endif
-				LOG_INFO("node is provisioned. address:%x, ivi:%ld", pData->address, pData->ivi);
-				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
-
 			}
 			else
 			{
@@ -353,7 +353,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 								gecko_cmd_mesh_node_start_unprov_beaconing(0x3);   //server enable ADV and GATT provisioning bearer
 				#else
-								gecko_cmd_mesh_node_start_unprov_beaconing(0x2);   // client enable GATT provisioning bearer
+								gecko_cmd_mesh_node_start_unprov_beaconing(0x3);   // client enable GATT provisioning bearer
 				#endif
 			}
 			break;
@@ -396,7 +396,10 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_mesh_node_model_config_changed_id:
-			LOG_INFO("model config changed");
+			LOG_INFO("model config changed id %x state %x addr %x",
+			    		  evt->data.evt_mesh_node_model_config_changed.model_id,
+						  evt->data.evt_mesh_node_model_config_changed.mesh_node_config_state,
+						  evt->data.evt_mesh_node_model_config_changed.element_address);
 			break;
 
 		case gecko_evt_mesh_generic_server_client_request_id:
@@ -406,7 +409,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 		case gecko_evt_mesh_generic_server_state_changed_id:
 			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
-			// uncomment following line to get debug prints for each server state changed event
+
 			LOG_INFO("Elem index %d Model id: %d",
 					evt->data.evt_mesh_generic_server_state_changed.elem_index,
 					evt->data.evt_mesh_generic_server_state_changed.model_id);
@@ -433,7 +436,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 	    case gecko_evt_mesh_lpn_friendship_established_id:
 	      LOG_INFO("friendship established");
-	      displayPrintf(DISPLAY_ROW_ACTION,"FRIEND");
+	      displayPrintf(DISPLAY_ROW_ACTION,"LPN with FRIEND");
 
 	      break;
 

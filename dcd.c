@@ -29,7 +29,7 @@ const uint8_t __mesh_dcd[] = {
     0xb0, 0xf0, /* Product ID = 0xf0b0 */
     0x34, 0x12, /* Version Number = 0x1234 */
     0x20, 0x00, /* Capacity of Replay Protection List = 0x0020 */
-    0x0b, 0x00, /* Features Bitmask = 0x000b */
+    0x0f, 0x00, /* Features Bitmask = 0x000f */
     /* Begin Primary Element */
         0x00, 0x00, /* Location = 0x0000 */
         0x03, /* Number of SIG Models = 0x03 */
