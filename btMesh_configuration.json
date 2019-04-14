@@ -5,7 +5,7 @@
     "PID": "0xf0b0",
     "VID": "0x1234",
     "CRPL": "0x0020",
-    "Features": "0x000b",
+    "Features": "0x000f",
     "Elements": [
       {
         "Name": "Primary Element",

@@ -7,19 +7,45 @@
 
 #include "gecko_helper.h"
 
+/**
+ * Initialize LPN functionality with configuration and friendship establishment.
+ */
+void lpn_init(void)
+{
+  uint16 res;
+  // Initialize LPN functionality.
+  res = gecko_cmd_mesh_lpn_init()->result;
+  if (res) {
+    LOG_INFO("LPN init failed (0x%x)", res);
+    return;
+  }
+
+  res = gecko_cmd_mesh_lpn_configure(2, 5 * 1000)->result;
+  if (res) {
+    LOG_INFO("LPN conf failed (0x%x)", res);
+    return;
+  }
+
+  LOG_INFO("trying to find friend...");
+  res = gecko_cmd_mesh_lpn_establish_friendship(0)->result;
+
+  if (res != 0) {
+    LOG_INFO("ret.code %x\r\n", res);
+  }
+}
 
 /**
- * Switch node initialization. This is called at each boot if provisioning is already done.
+ * Sensor node initialization. This is called at each boot if provisioning is already done.
  * Otherwise this function is called after provisioning is completed.
  */
-void button_node_init(void)
+void sensor_node_init(void)
 {
   mesh_lib_init(malloc, free, 8);
 
-  //lpn_init();
+  lpn_init();
 }
 
-static void onoff_request(uint16_t model_id,
+void onoff_request(uint16_t model_id,
                           uint16_t element_index,
                           uint16_t client_addr,
                           uint16_t server_addr,
@@ -36,7 +62,7 @@ static void onoff_request(uint16_t model_id,
 	else displayPrintf(DISPLAY_ROW_TEMPVALUE,"Button Released");
 }
 
-static void onoff_change(uint16_t model_id,
+void onoff_change(uint16_t model_id,
                          uint16_t element_index,
                          const struct mesh_generic_state *current,
                          const struct mesh_generic_state *target,
@@ -45,13 +71,24 @@ static void onoff_change(uint16_t model_id,
 	LOG_INFO("onoff_change called");
 }
 
-void subscriber_node_init(void)
+void actuator_node_init(void)
 {
-	mesh_lib_init(malloc, free, 9);
-	mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
+	mesh_lib_init(malloc, free,8);
+
+	uint16_t res;
+	//Initialize Friend functionality
+	  LOG_INFO("Friend mode initialization ");
+
+	  res = gecko_cmd_mesh_friend_init()->result;
+	  if (res) {
+	    LOG_INFO("Friend init failed 0x%x", res);
+	  }
+
+	LOG_INFO("register handler 1 %d",mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
 	                                           0,
 	                                           onoff_request,
-	                                           onoff_change);
+	                                           onoff_change));
+
 	struct mesh_generic_state current, target;
 	errorcode_t e;
 
@@ -61,11 +98,13 @@ void subscriber_node_init(void)
 	target.kind = mesh_generic_state_on_off;
 	target.on_off.on = MESH_GENERIC_ON_OFF_STATE_OFF;
 
+
 	e = mesh_lib_generic_server_update(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
 	                                        0, // element index for primary is 0
 	                                        &current,
 	                                        &target,
 	                                        0);
+
 	  if (e == bg_err_success)
 	  {
 	    e = mesh_lib_generic_server_publish(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
@@ -73,11 +112,12 @@ void subscriber_node_init(void)
 	                                        mesh_generic_state_on_off);
 	    if(e != bg_err_success)
 	    {
-	    	LOG_ERROR("Server publish failed, reason %x",e);
+	    	LOG_ERROR("Server publish failed --, reason %x",e);
 	    }
 	  }
 	  else
-		  LOG_ERROR("Server update failed, reason %x",e);
+		  LOG_ERROR("Server update failed --, reason %x",e);
+
 }
 
 /**

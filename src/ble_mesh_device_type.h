@@ -14,19 +14,22 @@
  * Set to 1 to build an on/off publisher client model for Assignment 10
  * Set to 0 to build an on/off subscriber server model for Assignment 10
  */
-#define DEVICE_IS_ONOFF_PUBLISHER			1
+#define DEVICE_IS_ONOFF_PUBLISHER			1 // 1 sets to sensor node, 0 to actuator node
 
 #if DEVICE_IS_ONOFF_PUBLISHER
 #define DEVICE_USES_BLE_MESH_CLIENT_MODEL 	1
 #define DEVICE_USES_BLE_MESH_SERVER_MODEL 	0
+#define DEVICE_IS_BLE_MESH_LPN 				1
+#define DEVICE_IS_BLE_MESH_FRIEND 			0
 #else
 #define DEVICE_USES_BLE_MESH_CLIENT_MODEL 	0
 #define DEVICE_USES_BLE_MESH_SERVER_MODEL 	1
 #define DEVICE_IS_ONOFF_SUBSCRIBER			1
+#define DEVICE_IS_BLE_MESH_LPN 				0
+#define DEVICE_IS_BLE_MESH_FRIEND 			1
 #endif
 
-#define DEVICE_IS_BLE_MESH_LPN 				0
-#define DEVICE_IS_BLE_MESH_FRIEND 			0
+
 
 
 #if DEVICE_IS_BLE_MESH_LPN

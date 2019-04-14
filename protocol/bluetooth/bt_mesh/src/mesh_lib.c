@@ -1,19 +1,3 @@
-/***************************************************************************//**
- * @brief Mesh helper library
- *******************************************************************************
- * # License
- * <b>Copyright 2018 Silicon Laboratories Inc. www.silabs.com</b>
- *******************************************************************************
- *
- * The licensor of this software is Silicon Laboratories Inc. Your use of this
- * software is governed by the terms of Silicon Labs Master Software License
- * Agreement (MSLA) available at
- * www.silabs.com/about-us/legal/master-software-license-agreement. This
- * software is distributed to you in Source Code format and is governed by the
- * sections of the MSLA applicable to Source Code.
- *
- ******************************************************************************/
-
 #include <stdint.h>
 #include <stdlib.h>
 
@@ -360,6 +344,7 @@ errorcode_t mesh_lib_generic_client_set(uint16_t model_id,
 errorcode_t
 mesh_lib_generic_client_publish(uint16_t model_id,
                                 uint16_t element_index,
+                                uint16_t appkey_index,
                                 uint8_t transaction_id,
                                 const struct mesh_generic_request *request,
                                 uint32_t transition_ms,
