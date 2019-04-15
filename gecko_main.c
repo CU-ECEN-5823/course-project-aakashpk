@@ -227,7 +227,7 @@ static uint8 conn_handle = 0xFF;      /* handle of the last opened LE connection
 
 void initiate_factory_reset(void)
 {
-  LOG_INFO("factory reset\r\n");
+  LOG_INFO("factory reset");
   displayPrintf(DISPLAY_ROW_CONNECTION,"FACTORY RESET");
 
   /* if connection is open then close it before rebooting */
@@ -334,7 +334,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			struct gecko_msg_mesh_node_initialized_evt_t *pData = (struct gecko_msg_mesh_node_initialized_evt_t *)&(evt->data);
 
 			if (pData->provisioned) {
-				LOG_INFO("node is provisioned. address:%x, ivi:%ld", pData->address, pData->ivi);
+				LOG_INFO("node is provisioned. address:0x%x, ivi:%ld", pData->address, pData->ivi);
 				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
@@ -353,7 +353,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 								gecko_cmd_mesh_node_start_unprov_beaconing(0x3);   //server enable ADV and GATT provisioning bearer
 				#else
-								gecko_cmd_mesh_node_start_unprov_beaconing(0x3);   // client enable GATT provisioning bearer
+								gecko_cmd_mesh_node_start_unprov_beaconing(0x2);   // client enable GATT provisioning bearer
 				#endif
 			}
 			break;
@@ -375,7 +375,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 						sensor_node_init();
 			#endif
 
-			LOG_INFO("node provisioned, got address=%x\r\n", evt->data.evt_mesh_node_provisioned.address);
+			LOG_INFO("node provisioned, got address=0x%x", evt->data.evt_mesh_node_provisioned.address);
 			// stop LED blinking when provisioning complete
 			gecko_cmd_hardware_set_soft_timer(0, TIMER_ID_PROVISIONING, 0);
 
@@ -384,14 +384,15 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 		case gecko_evt_mesh_node_provisioning_failed_id:
 			prov_fail_evt = (struct gecko_msg_mesh_node_provisioning_failed_evt_t  *)&(evt->data);
-			LOG_INFO("provisioning failed, code %x", prov_fail_evt->result);
+			LOG_INFO("provisioning failed, code 0x%x", prov_fail_evt->result);
 			displayPrintf(DISPLAY_ROW_PASSKEY,"prov failed");
 			/* start a one-shot timer that will trigger soft reset after small delay */
 			gecko_cmd_hardware_set_soft_timer(2 * 32768, TIMER_ID_RESTART, 1);
 			break;
 
 		case gecko_evt_mesh_node_key_added_id:
-			LOG_INFO("got new %s key with index %x", evt->data.evt_mesh_node_key_added.type == 0 ? "network" : "application",
+			LOG_INFO("got new %s key with index 0x%x",
+					evt->data.evt_mesh_node_key_added.type == 0 ? "network" : "application",
 					evt->data.evt_mesh_node_key_added.index);
 			break;
 
@@ -410,7 +411,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 		case gecko_evt_mesh_generic_server_state_changed_id:
 			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
 
-			LOG_INFO("Elem index %d Model id: %d",
+			LOG_INFO("State changed Elem index %d Model id: 0x%x",
 					evt->data.evt_mesh_generic_server_state_changed.elem_index,
 					evt->data.evt_mesh_generic_server_state_changed.model_id);
 
@@ -459,7 +460,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	        // try again in 2 seconds
 	        result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(2000), TIMER_ID_FRIEND_FIND, 1)->result;
 	        if (result) {
-	          LOG_INFO("timer failure?!  %x\r\n", result);
+	          LOG_INFO("timer failure?!  %x", result);
 	        }
 
 	      break;

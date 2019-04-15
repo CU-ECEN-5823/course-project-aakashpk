@@ -19,6 +19,7 @@
 #include "gecko_ble_errors.h"
 #include "log.h"
 #include "display.h"
+#include "gpio.h"
 
 #define SET_GECKO_EVENT (1U)
 

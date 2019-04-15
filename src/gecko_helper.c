@@ -45,58 +45,16 @@ void sensor_node_init(void)
   lpn_init();
 }
 
-void onoff_request(uint16_t model_id,
-                          uint16_t element_index,
-                          uint16_t client_addr,
-                          uint16_t server_addr,
-                          uint16_t appkey_index,
-                          const struct mesh_generic_request *request,
-                          uint32_t transition_ms,
-                          uint16_t delay_ms,
-                          uint8_t request_flags)
+errorcode_t update_and_publish_on_off(uint8_t old_state, uint8_t new_state)
 {
-
-	LOG_INFO("State %x",request->on_off);
-
-	if(request->on_off == 0x01 ) displayPrintf(DISPLAY_ROW_TEMPVALUE,"Button Pressed");
-	else displayPrintf(DISPLAY_ROW_TEMPVALUE,"Button Released");
-}
-
-void onoff_change(uint16_t model_id,
-                         uint16_t element_index,
-                         const struct mesh_generic_state *current,
-                         const struct mesh_generic_state *target,
-                         uint32_t remaining_ms)
-{
-	LOG_INFO("onoff_change called");
-}
-
-void actuator_node_init(void)
-{
-	mesh_lib_init(malloc, free,8);
-
-	uint16_t res;
-	//Initialize Friend functionality
-	  LOG_INFO("Friend mode initialization ");
-
-	  res = gecko_cmd_mesh_friend_init()->result;
-	  if (res) {
-	    LOG_INFO("Friend init failed 0x%x", res);
-	  }
-
-	LOG_INFO("register handler 1 %d",mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
-	                                           0,
-	                                           onoff_request,
-	                                           onoff_change));
-
 	struct mesh_generic_state current, target;
 	errorcode_t e;
 
 	current.kind = mesh_generic_state_on_off;
-	current.on_off.on = MESH_GENERIC_ON_OFF_STATE_ON;
+	current.on_off.on = old_state; //MESH_GENERIC_ON_OFF_STATE_ON;
 
 	target.kind = mesh_generic_state_on_off;
-	target.on_off.on = MESH_GENERIC_ON_OFF_STATE_OFF;
+	target.on_off.on = new_state; //MESH_GENERIC_ON_OFF_STATE_OFF;
 
 
 	e = mesh_lib_generic_server_update(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
@@ -117,6 +75,76 @@ void actuator_node_init(void)
 	  }
 	  else
 		  LOG_ERROR("Server update failed --, reason %x",e);
+
+	  return e;
+
+}
+
+void onoff_request(uint16_t model_id,
+                          uint16_t element_index,
+                          uint16_t client_addr,
+                          uint16_t server_addr,
+                          uint16_t appkey_index,
+                          const struct mesh_generic_request *request,
+                          uint32_t transition_ms,
+                          uint16_t delay_ms,
+                          uint8_t request_flags)
+{
+	static uint8_t button_state = 0x01;
+	LOG_INFO("Model id 0x%4x element index 0%d client addr 0x%04x server addr 0x%04x "
+			"appkey index 0%d transition_ms 0%d delay_ms 0%d request flags 0x%4x",
+			model_id,element_index,client_addr,server_addr,appkey_index,
+			transition_ms,delay_ms,request_flags);
+
+	LOG_INFO("Request %d",request->on_off);
+
+	displayPrintf(DISPLAY_ROW_TEMPVALUE,"LED %s",(button_state?"ON":"OFF"));
+	button_state?gpioLed0SetOn():gpioLed0SetOff();
+	update_and_publish_on_off(button_state^0x01,button_state);
+	button_state = button_state^0x01;
+}
+
+void onoff_change(uint16_t model_id,
+                         uint16_t element_index,
+                         const struct mesh_generic_state *current,
+                         const struct mesh_generic_state *target,
+                         uint32_t remaining_ms)
+{
+	LOG_INFO("Model id 0x%4x element index 0%d, remaining_ms %d",
+			model_id,element_index,remaining_ms);
+
+	LOG_INFO("onoff_change called with current %x target %x",
+			current->on_off,
+			target->on_off);
+}
+
+
+
+void actuator_node_init(void)
+{
+	mesh_lib_init(malloc, free,8);
+
+	uint16_t res;
+	//Initialize Friend functionality
+	  LOG_INFO("Friend mode initialization ");
+
+	  res = gecko_cmd_mesh_friend_init()->result;
+	  if (res) {
+		LOG_INFO("Friend init failed 0x%x", res);
+	  }
+
+
+
+	LOG_INFO("register handler 1 %d",mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
+	                                           0,
+	                                           onoff_request,
+	                                           onoff_change));
+
+	LOG_INFO("register handler 2 %d",mesh_lib_generic_server_register_handler(0x1100,
+		                                           0,
+		                                           onoff_request,
+		                                           onoff_change));
+
 
 }
 
