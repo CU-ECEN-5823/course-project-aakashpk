@@ -10,7 +10,7 @@
       {
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "5",
+        "NumS": "8",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
@@ -19,10 +19,16 @@
           "Generic OnOff Client",
           "0x1000",
           "Generic OnOff Server",
-          "0x1100",
-          "Sensor Server",
-          "0x1102",
-          "Sensor Client"]
+          "0x1303",
+          "Light CTL Server",
+          "0x1305",
+          "Light CTL Client",
+          "0x1002",
+          "Generic Level Server",
+          "0x1003",
+          "Generic Level Client",
+          "0x1304",
+          "Light CTL Setup Server"]
         ,
         "Vendor Models": [
           ]
@@ -31,7 +37,7 @@
   },
   "Memory configuration": {
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "5",
+    "MAX_MODELS": "8",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
