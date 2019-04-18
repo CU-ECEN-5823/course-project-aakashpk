@@ -40,9 +40,9 @@ const uint8_t __mesh_dcd[] = {
         0x00, 0x10, /* Generic OnOff Server */
         0x03, 0x13, /* Light CTL Server */
         0x05, 0x13, /* Light CTL Client */
-        0x02, 0x10, /* Generic Level Server */
-        0x03, 0x10, /* Generic Level Client */
-        0x04, 0x13, /* Light CTL Setup Server */
+        0x02, 0x13, /* Light Lightness Client */
+        0x00, 0x13, /* Light Lightness Server */
+        0x01, 0x13, /* Light Lightness Setup Server */
         /* End SIG Models */
         /* Begin Vendor Models */
         /* End Vendor Models */

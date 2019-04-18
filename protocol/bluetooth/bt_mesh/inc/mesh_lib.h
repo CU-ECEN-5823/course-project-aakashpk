@@ -392,7 +392,6 @@ mesh_lib_generic_client_set(uint16_t model_id,
 errorcode_t
 mesh_lib_generic_client_publish(uint16_t model_id,
                                 uint16_t element_index,
-								uint16_t appkey_index,
                                 uint8_t transaction_id,
                                 const struct mesh_generic_request *req,
                                 uint32_t transition_ms,
