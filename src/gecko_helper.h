@@ -9,6 +9,7 @@
 #define SRC_GECKO_HELPER_H_
 
 /* Bluetooth stack headers */
+#include <stdint.h>
 #include "bg_types.h"
 #include "gatt_db.h"
 #include "native_gecko.h"
@@ -51,5 +52,10 @@ void onoff_change(uint16_t model_id,
                          const struct mesh_generic_state *current,
                          const struct mesh_generic_state *target,
                          uint32_t remaining_ms);
+
+void send_sensor_data(uint16_t lightness_level,
+					  uint16_t temperature_level,
+					  int16_t DELTA_UV,
+					  int retrans);
 
 #endif /* SRC_GECKO_HELPER_H_ */

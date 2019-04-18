@@ -7,6 +7,8 @@
 
 #include "gecko_helper.h"
 
+static uint8_t trid; // transaction id
+
 /**
  * Initialize LPN functionality with configuration and friendship establishment.
  */
@@ -119,41 +121,11 @@ void onoff_change(uint16_t model_id,
 }
 
 
-
-void actuator_node_init(void)
-{
-	mesh_lib_init(malloc, free,8);
-
-	uint16_t res;
-	//Initialize Friend functionality
-	  LOG_INFO("Friend mode initialization ");
-
-	  res = gecko_cmd_mesh_friend_init()->result;
-	  if (res) {
-		LOG_INFO("Friend init failed 0x%x", res);
-	  }
-
-
-
-	LOG_INFO("register handler 1 %d",mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
-	                                           0,
-	                                           onoff_request,
-	                                           onoff_change));
-
-	LOG_INFO("register handler 2 %d",mesh_lib_generic_server_register_handler(0x1100,
-		                                           0,
-		                                           onoff_request,
-		                                           onoff_change));
-
-
-}
-
 /**
  * This function publishes one on/off request to change the state of light(s)
  */
 void send_button_state(uint8_t state)
 {
-	static uint8_t trid;
 	uint16 resp;
 	struct mesh_generic_request req;
 
@@ -162,7 +134,7 @@ void send_button_state(uint8_t state)
 
 	// increment transaction ID for each request
 		trid++;
-
+		//mesh_lib_generic_client_publish
 	resp = gecko_cmd_mesh_generic_client_publish(
 			MESH_GENERIC_ON_OFF_CLIENT_MODEL_ID,
 			0, // element index of primary element is 0
@@ -181,3 +153,198 @@ void send_button_state(uint8_t state)
 		LOG_INFO("request sent, trx id = %u", trid);
 	}
 }
+
+/***************************************************************************//**
+ * This function publishes one light CTL request to change the temperature level
+ * of light(s) in the group. Global variable temperature_level holds the latest
+ * desired light temperature level.
+ * The CTL request also send lightness_level which holds the latest desired light
+ * lightness level and Delta UV which is hardcoded to 0 for this application.
+ *
+ * param[in] retrans  Indicates if this is the first request or a retransmission,
+ *                    possible values are 0 = first request, 1 = retransmission.
+ ******************************************************************************/
+void send_sensor_data(uint16_t lightness_level,
+		uint16_t temperature_level,int16_t DELTA_UV,int retrans)
+{
+  uint16 resp1 = 1;
+  uint16 delay;
+  struct mesh_generic_request req;
+
+//  req.kind = mesh_lighting_request_lightness_actual;
+  req.kind = mesh_lighting_request_ctl;
+  req.ctl.lightness = lightness_level;
+  req.ctl.temperature = temperature_level;
+  req.ctl.deltauv = DELTA_UV; //hardcoded delta uv
+
+  // increment transaction ID for each request, unless it's a retransmission
+  if (retrans == 0)
+  {
+    trid++;
+  }
+
+  delay = 0;
+
+  resp1 = mesh_lib_generic_client_publish(
+		  MESH_LIGHTING_LIGHTNESS_CLIENT_MODEL_ID,
+    0,
+    trid,
+    &req,
+    0,     // transition
+    delay,
+    0     // flags
+    );
+
+  if (resp1) {
+    LOG_ERROR("gecko_cmd_mesh_generic_client_publish failed,code %x", resp1);
+  } else {
+    LOG_INFO("request sent, trid = %u, delay = %d", trid, delay);
+  }
+}
+
+
+/***************************************************************************//**
+ * This function process the requests for the light CTL model.
+ *
+ * @param[in] model_id       Server model ID.
+ * @param[in] element_index  Server model element index.
+ * @param[in] client_addr    Address of the client model which sent the message.
+ * @param[in] server_addr    Address the message was sent to.
+ * @param[in] appkey_index   The application key index used in encrypting the request.
+ * @param[in] request        Pointer to the request structure.
+ * @param[in] transition_ms  Requested transition time (in milliseconds).
+ * @param[in] delay_ms       Delay time (in milliseconds).
+ * @param[in] request_flags  Message flags. Bitmask of the following:
+ *                           - Bit 0: Nonrelayed. If nonzero indicates
+ *                                    a response to a nonrelayed request.
+ *                           - Bit 1: Response required. If nonzero client
+ *                                    expects a response from the server.
+ ******************************************************************************/
+void ctl_request(uint16_t model_id,
+                        uint16_t element_index,
+                        uint16_t client_addr,
+                        uint16_t server_addr,
+                        uint16_t appkey_index,
+                        const struct mesh_generic_request *request,
+                        uint32_t transition_ms,
+                        uint16_t delay_ms,
+                        uint8_t request_flags)
+{
+  LOG_INFO("ctl_request: lightness=%u, temperature=%u, delta_uv=%d, transition=%lu, delay=%u",
+         request->ctl.lightness, request->ctl.temperature, request->ctl.deltauv, transition_ms, delay_ms);
+
+  //ctl_update_and_publish(element_index, remaining_ms);
+}
+
+/***************************************************************************//**
+ * This function is a handler for light CTL change event.
+ *
+ * @param[in] model_id       Server model ID.
+ * @param[in] element_index  Server model element index.
+ * @param[in] current        Pointer to current state structure.
+ * @param[in] target         Pointer to target state structure.
+ * @param[in] remaining_ms   Time (in milliseconds) remaining before transition
+ *                           from current state to target state is complete.
+ ******************************************************************************/
+void ctl_change(uint16_t model_id,
+                       uint16_t element_index,
+                       const struct mesh_generic_state *current,
+                       const struct mesh_generic_state *target,
+                       uint32_t remaining_ms)
+{
+	LOG_INFO("CTL change called");
+  if (current->kind != mesh_lighting_state_ctl) {
+    // if kind is not 'ctl' then just report the change here
+    printf("ctl change, kind %u\r\n", current->kind);
+    return;
+  }
+
+}
+
+
+/***************************************************************************//**
+ * Update light CTL state.
+ *
+ * @param[in] element_index  Server model element index.
+ * @param[in] remaining_ms   The remaining time in milliseconds.
+ *
+ * @return Status of the update operation.
+ *         Returns bg_err_success (0) if succeed, non-zero otherwise.
+ ******************************************************************************/
+static errorcode_t ctl_update(uint16_t element_index, uint32_t remaining_ms)
+{
+  struct mesh_generic_state current, target;
+
+  current.kind = mesh_lighting_state_ctl;
+  current.ctl.lightness = 1;
+  current.ctl.temperature = 2;
+  current.ctl.deltauv =3;
+
+  target.kind = mesh_lighting_state_ctl;
+  target.ctl.lightness = 4;
+  target.ctl.temperature = 5;
+  target.ctl.deltauv = 6;
+
+  return mesh_lib_generic_server_update(MESH_LIGHTING_CTL_SERVER_MODEL_ID,
+                                        element_index,
+                                        &current,
+                                        &target,
+                                        remaining_ms);
+}
+
+
+
+
+/***************************************************************************//**
+ * Update light CTL state and publish model state to the network.
+ *
+ * @param[in] element_index  Server model element index.
+ * @param[in] remaining_ms   The remaining time in milliseconds.
+ *
+ * @return Status of the update and publish operation.
+ *         Returns bg_err_success (0) if succeed, non-zero otherwise.
+ ******************************************************************************/
+errorcode_t ctl_update_and_publish(uint16_t element_index,
+                                          uint32_t remaining_ms)
+{
+  errorcode_t e;
+
+  e = ctl_update(element_index, remaining_ms);
+  /*
+  if (e == bg_err_success) {
+
+    e = mesh_lib_generic_server_publish(MESH_LIGHTING_CTL_SERVER_MODEL_ID,
+                                        element_index,
+                                        mesh_lighting_state_ctl);
+  }*/
+
+  return e;
+}
+
+void actuator_node_init(void)
+{
+	mesh_lib_init(malloc, free,8);
+
+	uint16_t res;
+	//Initialize Friend functionality
+	  LOG_INFO("Friend mode initialization ");
+
+	  res = gecko_cmd_mesh_friend_init()->result;
+	  if (res) {
+		LOG_INFO("Friend init failed 0x%x", res);
+	  }
+
+	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
+	                                           0,
+	                                           onoff_request,
+	                                           onoff_change));
+
+	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_LIGHTING_CTL_SERVER_MODEL_ID,
+			                                           0,
+													   ctl_request,
+													   ctl_change));
+	//update_and_publish_on_off(0,1);
+	LOG_INFO("Update and publish 0x%x",ctl_update_and_publish(0,0));
+
+}
+

@@ -46,10 +46,10 @@ int main(void)
 
   // Initialize stack
   gecko_main_init();
-
+  buttonInit();
 
   gpioInit();
-  buttonInit();
+
   displayInit();
   logInit();
 
@@ -58,7 +58,7 @@ int main(void)
    */
   LETIMER_pulse_setup(PERIOD_MS,sleepEM4);
 
-  //LETIMER_stop_intr();
+  LETIMER_stop_intr();
 
   //Init scheduler, Tasks registered later
    scheduler_init();
@@ -72,6 +72,7 @@ int main(void)
    * project sensors once drivers are written
    */
   temp_sensor_init();
+
 
    //register LETIMER & I2C0 interrupt handlers
    LETIMER_register_UFISR(log_temp);

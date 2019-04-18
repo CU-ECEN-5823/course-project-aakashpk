@@ -51,6 +51,7 @@
 #include "scheduler.h"
 #include "gecko_ble_errors.h"
 #include "gecko_helper.h"
+#include "lightbulb.h"
 
 /***********************************************************************************************//**
  * @addtogroup Application
@@ -117,30 +118,30 @@ const gecko_configuration_t config =
  */
 void gecko_bgapi_classes_init_server_friend(void)
 {
-	gecko_bgapi_class_dfu_init();
-	gecko_bgapi_class_system_init();
-	gecko_bgapi_class_le_gap_init();
-	gecko_bgapi_class_le_connection_init();
-	//gecko_bgapi_class_gatt_init();
-	gecko_bgapi_class_gatt_server_init();
-	gecko_bgapi_class_hardware_init();
-	gecko_bgapi_class_flash_init();
-	gecko_bgapi_class_test_init();
-	//gecko_bgapi_class_sm_init();
-	//mesh_native_bgapi_init();
-	gecko_bgapi_class_mesh_node_init();
-	//gecko_bgapi_class_mesh_prov_init();
-	gecko_bgapi_class_mesh_proxy_init();
-	gecko_bgapi_class_mesh_proxy_server_init();
-	//gecko_bgapi_class_mesh_proxy_client_init();
-	//gecko_bgapi_class_mesh_generic_client_init();
-	gecko_bgapi_class_mesh_generic_server_init();
-	//gecko_bgapi_class_mesh_vendor_model_init();
-	//gecko_bgapi_class_mesh_health_client_init();
-	//gecko_bgapi_class_mesh_health_server_init();
-	//gecko_bgapi_class_mesh_test_init();
-	//gecko_bgapi_class_mesh_lpn_init();
-	gecko_bgapi_class_mesh_friend_init();
+	  gecko_bgapi_class_dfu_init();
+	  gecko_bgapi_class_system_init();
+	  gecko_bgapi_class_le_gap_init();
+	  gecko_bgapi_class_le_connection_init();
+	  //gecko_bgapi_class_gatt_init();
+	  gecko_bgapi_class_gatt_server_init();
+	  gecko_bgapi_class_hardware_init();
+	  gecko_bgapi_class_flash_init();
+	  gecko_bgapi_class_test_init();
+	  //gecko_bgapi_class_sm_init();
+	  //mesh_native_bgapi_init();
+	  gecko_bgapi_class_mesh_node_init();
+	  //gecko_bgapi_class_mesh_prov_init();
+	  gecko_bgapi_class_mesh_proxy_init();
+	  gecko_bgapi_class_mesh_proxy_server_init();
+	  //gecko_bgapi_class_mesh_proxy_client_init();
+	  //gecko_bgapi_class_mesh_generic_client_init();
+	  gecko_bgapi_class_mesh_generic_server_init();
+	  //gecko_bgapi_class_mesh_vendor_model_init();
+	  //gecko_bgapi_class_mesh_health_client_init();
+	  //gecko_bgapi_class_mesh_health_server_init();
+	  //gecko_bgapi_class_mesh_test_init();
+	  //gecko_bgapi_class_mesh_lpn_init();
+	  gecko_bgapi_class_mesh_friend_init();
 }
 
 
@@ -338,7 +339,8 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
-							actuator_node_init();
+				lightbulb_state_init();
+				//							actuator_node_init();
 				#else
 							sensor_node_init();
 				#endif
@@ -404,7 +406,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_mesh_generic_server_client_request_id:
-			LOG_DEBUG("evt gecko_evt_mesh_generic_server_client_request_id");
+			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
 			mesh_lib_generic_server_event_handler(evt);
 			break;
 
@@ -446,7 +448,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	      displayPrintf(DISPLAY_ROW_ACTION,"NO FRIEND");
 
 	      // try again in 2 seconds
-	      result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(2000), TIMER_ID_FRIEND_FIND, 1)->result;
+	      result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(5000), TIMER_ID_FRIEND_FIND, 1)->result;
 	      if (result) {
 	        LOG_DEBUG("timer failure?!  %x", result);
 	      }
