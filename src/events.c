@@ -47,7 +47,7 @@ void log_temp_task(void)
 //Task1
 void Button_Press_Task(void)
 {
-	send_button_state(0x01);
+	//send_button_state(0x01);
 	LETIMER_start_intr();
 }
 

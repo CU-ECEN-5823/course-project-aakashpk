@@ -508,7 +508,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_system_external_signal_id:
-			LOG_DEBUG("gecko_evt_system_external_signal_id");
+			LOG_INFO("gecko_evt_system_external_signal_id");
 			scheduler_run();
 			logFlush();
 			break;

@@ -171,11 +171,11 @@ void send_sensor_data(uint16_t lightness_level,
   uint16 delay;
   struct mesh_generic_request req;
 
-//  req.kind = mesh_lighting_request_lightness_actual;
-  req.kind = mesh_lighting_request_ctl;
+  req.kind = mesh_lighting_request_lightness_actual;
+//  req.kind = mesh_lighting_request_ctl;
   req.ctl.lightness = lightness_level;
-  req.ctl.temperature = temperature_level;
-  req.ctl.deltauv = DELTA_UV; //hardcoded delta uv
+//  req.ctl.temperature = temperature_level;
+//  req.ctl.deltauv = DELTA_UV; //hardcoded delta uv
 
   // increment transaction ID for each request, unless it's a retransmission
   if (retrans == 0)
@@ -344,7 +344,7 @@ void actuator_node_init(void)
 													   ctl_request,
 													   ctl_change));
 	//update_and_publish_on_off(0,1);
-	LOG_INFO("Update and publish 0x%x",ctl_update_and_publish(0,0));
+	LOG_INFO("Update and publish 0x%x",ctl_update_and_publish(0,0)); // This errors now, no clue why
 
 }
 
