@@ -171,11 +171,11 @@ void send_sensor_data(uint16_t lightness_level,
   uint16 delay;
   struct mesh_generic_request req;
 
-  req.kind = mesh_lighting_request_lightness_actual;
-//  req.kind = mesh_lighting_request_ctl;
+  //req.kind = mesh_lighting_request_lightness_actual;
+  req.kind = mesh_lighting_request_ctl;
   req.ctl.lightness = lightness_level;
-//  req.ctl.temperature = temperature_level;
-//  req.ctl.deltauv = DELTA_UV; //hardcoded delta uv
+  req.ctl.temperature = temperature_level;
+  req.ctl.deltauv = DELTA_UV; //hardcoded delta uv
 
   // increment transaction ID for each request, unless it's a retransmission
   if (retrans == 0)
@@ -186,7 +186,7 @@ void send_sensor_data(uint16_t lightness_level,
   delay = 0;
 
   resp1 = mesh_lib_generic_client_publish(
-		  MESH_LIGHTING_LIGHTNESS_CLIENT_MODEL_ID,
+		  MESH_LIGHTING_CTL_CLIENT_MODEL_ID,
     0,
     trid,
     &req,
