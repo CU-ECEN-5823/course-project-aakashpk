@@ -233,7 +233,8 @@ void initiate_factory_reset(void)
 
   /* perform a factory reset by erasing PS storage. This removes all the keys and other settings
      that have been configured for this node */
-  gecko_cmd_flash_ps_erase_all();
+  if(gecko_cmd_flash_ps_erase_all()!=0)
+	  LOG_ERROR("Flash erase failed");
   // reboot after a small delay
   gecko_cmd_hardware_set_soft_timer(2 * 32768, TIMER_ID_FACTORY_RESET, 1);
 }

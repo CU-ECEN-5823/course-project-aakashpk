@@ -24,6 +24,20 @@ void lpn_init(void)
     return;
   }
 
+  /*
+   * param 1 Minimum queue length the friend must support.
+   * This value should be chosen based on the expected message
+   * frequency and LPN sleep period, as messages that do not fit
+   * into the friend queue are dropped.
+   * Note that the given value is rounded up to the nearest
+   * power of 2.             Range: 2..128
+   *
+   * Poll timeout in milliseconds. Poll timeout is the
+   * longest time LPN will sleep in between querying its friend for
+   * queued messages. Long poll timeout allows the LPN to sleep for
+   * longer periods, at the expense of increased latency for receiving
+   * messages.Note that the given value is rounded up to the nearest 100ms
+   */
   res = gecko_cmd_mesh_lpn_configure(2, 5 * 1000)->result;
   if (res) {
     LOG_INFO("LPN conf failed (0x%x)", res);
