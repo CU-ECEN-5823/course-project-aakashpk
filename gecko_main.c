@@ -210,12 +210,6 @@ void gecko_main_init()
  */
 
 
-
-#define TIMER_ID_FACTORY_RESET  77
-#define TIMER_ID_RESTART    78
-#define TIMER_ID_PROVISIONING   66
-#define TIMER_ID_FRIEND_FIND 20
-
 /** Timer Frequency used. */
 #define TIMER_CLK_FREQ ((uint32)32768)
 /** Convert msec to timer ticks. */
@@ -340,7 +334,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 				lightbulb_state_init();
-				//							actuator_node_init();
+											actuator_node_init();
 				#else
 							sensor_node_init();
 				#endif
@@ -355,7 +349,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 								gecko_cmd_mesh_node_start_unprov_beaconing(0x3);   //server enable ADV and GATT provisioning bearer
 				#else
-								gecko_cmd_mesh_node_start_unprov_beaconing(0x2);   // client enable GATT provisioning bearer
+								gecko_cmd_mesh_node_start_unprov_beaconing(0x3);   // client enable GATT provisioning bearer
 				#endif
 			}
 			break;
@@ -364,7 +358,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			LOG_INFO("Started provisioning");
 			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioning ..");
 			// start timer for blinking LEDs to indicate which node is being provisioned
-			gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
+//			gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
 			break;
 
 		case gecko_evt_mesh_node_provisioned_id:
@@ -379,7 +373,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 			LOG_INFO("node provisioned, got address=0x%x", evt->data.evt_mesh_node_provisioned.address);
 			// stop LED blinking when provisioning complete
-			gecko_cmd_hardware_set_soft_timer(0, TIMER_ID_PROVISIONING, 0);
+//			gecko_cmd_hardware_set_soft_timer(0, TIMER_ID_PROVISIONING, 0);
 
 			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 			break;
@@ -468,10 +462,12 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	      break;
 
 		case gecko_evt_le_gap_adv_timeout_id:
+			LOG_INFO("Connection timeout");
 			// adv timeout events silently discarded
 			break;
 
 		case gecko_evt_le_connection_opened_id:
+			lpn_deinit();
 			LOG_INFO("evt:gecko_evt_le_connection_opened_id");
 			conn_handle = evt->data.evt_le_connection_opened.connection;
 			displayPrintf(DISPLAY_ROW_CONNECTION,"connected");
