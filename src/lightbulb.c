@@ -17,6 +17,7 @@
  ******************************************************************************/
 
 #include "lightbulb.h"
+#include "log.h"
 
 /* C Standard Library headers */
 #include <stdlib.h>
@@ -278,6 +279,11 @@ static void onoff_request(uint16_t model_id,
 {
   printf("ON/OFF request: requested state=<%s>, transition=%lu, delay=%u\r\n",
          request->on_off ? "ON" : "OFF", transition_ms, delay_ms);
+  if (lightbulb_state.onoff_current == MESH_GENERIC_ON_OFF_STATE_OFF) {
+    LEDS_SetState(LED_STATE_OFF);
+  } else {
+    LEDS_SetState(LED_STATE_ON);
+  }
 /*
   if (lightbulb_state.onoff_current == request->on_off) {
     printf("Request for current state received; no op\r\n");
@@ -830,13 +836,25 @@ static void lightness_request(uint16_t model_id,
 {
   // for simplicity, this demo assumes that all lightness requests use the actual scale.
   // other type of requests are ignored
-  if (request->kind != mesh_lighting_request_lightness_actual) {
-    return;
-  }
+//  if (request->kind != mesh_lighting_request_lightness_actual) {
+//    return;
+//  }
+	switch(request->kind)
+	{
+	case mesh_lighting_request_lightness_actual:
+		LOG_INFO("lightness_request actual: level=%u, transition=%lu, delay=%u\r\n",
+				         request->lightness, transition_ms, delay_ms);
+		LOG_INFO("temp_val = %f",request->lightness/1000.0);
+		break;
+	case mesh_lighting_request_lightness_linear:
+		LOG_INFO("lightness_request linear: level=%u, transition=%lu, delay=%u\r\n",
+						         request->lightness, transition_ms, delay_ms);
+		break;
+	default:
+		LOG_INFO("Unhandled lightness type %x",request->kind);
+		break;
+	}
 
-  printf("lightness_request: level=%u, transition=%lu, delay=%u\r\n",
-         request->lightness, transition_ms, delay_ms);
-  printf("temp_val = %f",request->lightness/1000.0);
   /*
   if (lightbulb_state.lightness_current == request->lightness) {
     printf("Request for current state received; no op\r\n");
@@ -2514,6 +2532,7 @@ static void init_models(void)
 //                                           0,
 //                                           pri_level_request,
 //                                           pri_level_change);
+
   mesh_lib_generic_server_register_handler(MESH_LIGHTING_CTL_SERVER_MODEL_ID,
                                            0,
                                            ctl_request,
