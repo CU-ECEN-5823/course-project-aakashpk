@@ -11,7 +11,7 @@
 #define SRC_BLE_MESH_DEVICE_TYPE_H_
 
 
-#define DEVICE_IS_SENSOR_NODE			0 // 1 sets to sensor node, 0 to actuator node
+#define DEVICE_IS_SENSOR_NODE			1// 1 sets to sensor node, 0 to actuator node
 
 #if DEVICE_IS_SENSOR_NODE
 #define DEVICE_USES_BLE_MESH_CLIENT_MODEL 	1
