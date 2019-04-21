@@ -1,4 +1,21 @@
-# ECEN 5823 Bluetooth Mesh Skeleton Project
+# Current Implementation progress
+All project update documents on [google drive](https://drive.google.com/drive/u/0/folders/1rQfYgGdwMprrHQvmEfe_ihg3yPjacLZz)
+
+* Low Power and Friend implementation working, proven using energy profiler.
+
+* Publish working over lighting lightness model. This model has a request.kind field that can be used to differentiate between the sensors. 
+* The lightness model gives a 16bit value that can be sent, this should be enough for both sensors
+* Publish over lightness model verified by subscribing with the Silabs light example and looking at logs. 
+
+### TODOs
+* Get subscribe on the lighting lightness model working – this is the highest priority at this point.
+* Look into the ability to change setpoints using GATT proxy, if that requires a separate advertise or just handle the characteristic changed events for GATT attribute??
+* Add functions to write the setpoint to flash once updated and retrieve the setpoint stored in flash on startup.
+* Basic control functions based on sensor values read and state save of the actuator last state. 
+* If time permits, try getting the vendor model working. provisioning can be done using the embedded provisioner.
+
+
+## ECEN 5823 Bluetooth Mesh Skeleton Project
 
 This project contains skeleton code used for coursework in University of Colorado [ECEN 5823 IoT Embedded Firmware](https://sites.google.com/colorado.edu/ecen5823/home).
 
