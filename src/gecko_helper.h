@@ -28,6 +28,11 @@
 #define TIMER_SUPPORTS_1HZ_TIMER_EVENT	1
 
 
+#define TIMER_ID_FACTORY_RESET  77
+#define TIMER_ID_RESTART    78
+#define TIMER_ID_PROVISIONING   66
+#define TIMER_ID_FRIEND_FIND 20
+
 #define BT_ADDRESS(server_addr)		server_addr.addr[5],server_addr.addr[4],\
 									server_addr.addr[3],server_addr.addr[2],\
 									server_addr.addr[1],server_addr.addr[0]
@@ -57,5 +62,8 @@ void send_sensor_data(uint16_t lightness_level,
 					  uint16_t temperature_level,
 					  int16_t DELTA_UV,
 					  int retrans);
+
+void lpn_init(void);
+void lpn_deinit(void);
 
 #endif /* SRC_GECKO_HELPER_H_ */

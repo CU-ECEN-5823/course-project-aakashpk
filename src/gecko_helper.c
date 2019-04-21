@@ -8,6 +8,8 @@
 #include "gecko_helper.h"
 
 static uint8_t trid; // transaction id
+/// Flag for indicating that lpn feature is active
+static uint8 lpn_active = 0;
 
 /**
  * Initialize LPN functionality with configuration and friendship establishment.
@@ -32,8 +34,38 @@ void lpn_init(void)
   res = gecko_cmd_mesh_lpn_establish_friendship(0)->result;
 
   if (res != 0) {
-    LOG_INFO("ret.code %x\r\n", res);
+    LOG_INFO("Friend failed with code %x\r\n", res);
   }
+  else lpn_active = 1;
+}
+
+/***************************************************************************//**
+ * Deinitialize LPN functionality.
+ ******************************************************************************/
+void lpn_deinit(void)
+{
+  uint16 result;
+
+  if (!lpn_active) {
+    return; // lpn feature is currently inactive
+  }
+
+  result = gecko_cmd_hardware_set_soft_timer(0, // cancel friend finding timer
+                                             TIMER_ID_FRIEND_FIND,
+                                             1)->result;
+
+  // Terminate friendship if exist
+  result = gecko_cmd_mesh_lpn_terminate_friendship()->result;
+  if (result) {
+    LOG_INFO("Friendship termination failed (0x%x)\r\n", result);
+  }
+  // turn off lpn feature
+  result = gecko_cmd_mesh_lpn_deinit()->result;
+  if (result) {
+    LOG_INFO("LPN deinit failed (0x%x)\r\n", result);
+  }
+  lpn_active = 0;
+  LOG_INFO("LPN deinitialized\r\n");
 }
 
 /**
@@ -340,6 +372,11 @@ void actuator_node_init(void)
 	                                           onoff_change));
 
 	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_LIGHTING_CTL_SERVER_MODEL_ID,
+			                                           0,
+													   ctl_request,
+													   ctl_change));
+
+	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_LIGHTING_LIGHTNESS_SERVER_MODEL_ID,
 			                                           0,
 													   ctl_request,
 													   ctl_change));
