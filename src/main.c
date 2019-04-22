@@ -13,6 +13,8 @@
 #include "button.h"
 #include "scheduler.h"
 #include "events.h"
+#include "letimer.h"
+#include "Si7021_I2C.h"
 
 
 extern void gecko_main_init();
@@ -37,27 +39,51 @@ uint8_t bluetooth_stack_heap[DEFAULT_BLUETOOTH_HEAP(MAX_CONNECTIONS) + BTMESH_HE
 //
 #define MAX_ADVERTISERS (4 + MESH_CFG_MAX_NETKEYS)
 
+#define PERIOD_MS (3000) // Change for Measurement period, in ms
 
 int main(void)
 {
 
   // Initialize stack
   gecko_main_init();
-
+  buttonInit();
 
   gpioInit();
-  buttonInit();
+
   displayInit();
   logInit();
 
-  // Init and Register button press ISRs
-  GPIOINT_Init();
-  GPIOINT_CallbackRegister(BUTTON0_PIN,button_press);
+  /*Initialize LETIMER to generate pulse at period interval
+   * and for logging time stamps
+   */
+  LETIMER_pulse_setup(PERIOD_MS,sleepEM4);
 
-  //Init scheduler and Register Tasks
-  scheduler_init();
-  scheduler_event_register(Button_Press_Task,Task0);
-  scheduler_event_register(Button_Release_Task,Task1);
+  LETIMER_stop_intr();
+
+  //Init scheduler, Tasks registered later
+   scheduler_init();
+
+
+
+#if DEVICE_IS_SENSOR_NODE
+  /*
+   * Initialize temp sensor,
+   * using for now, will change to
+   * project sensors once drivers are written
+   */
+  temp_sensor_init();
+
+
+   //register LETIMER & I2C0 interrupt handlers
+   LETIMER_register_UFISR(log_temp);
+   // Init and Register button press ISRs
+   GPIOINT_Init();
+   GPIOINT_CallbackRegister(BUTTON0_PIN,button_press);
+
+   //Register Tasks
+  scheduler_event_register(log_temp_task, Task0);
+  scheduler_event_register(Button_Press_Task,Task1);
+#endif
 
 
   while (1) {

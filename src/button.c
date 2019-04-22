@@ -16,7 +16,7 @@ void buttonInit()
 	 * this raises interrupts on button press and release.
 	 */
 	GPIO_PinModeSet(BUTTON0_PORT, BUTTON0_PIN, gpioModeInput, true);
-	GPIO_ExtIntConfig(BUTTON0_PORT,BUTTON0_PIN,BUTTON0_PIN,true,true,true);
+	GPIO_ExtIntConfig(BUTTON0_PORT,BUTTON0_PIN,BUTTON0_PIN,true,false,true);
 	NVIC_EnableIRQ(GPIO_EVEN_IRQn);
 
 	/* For PB1 - unused for now

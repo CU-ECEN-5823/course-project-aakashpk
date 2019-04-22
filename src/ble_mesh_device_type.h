@@ -10,13 +10,10 @@
 #ifndef SRC_BLE_MESH_DEVICE_TYPE_H_
 #define SRC_BLE_MESH_DEVICE_TYPE_H_
 
-/**
- * Set to 1 to build an on/off publisher client model for Assignment 10
- * Set to 0 to build an on/off subscriber server model for Assignment 10
- */
-#define DEVICE_IS_ONOFF_PUBLISHER			1 // 1 sets to sensor node, 0 to actuator node
 
-#if DEVICE_IS_ONOFF_PUBLISHER
+#define DEVICE_IS_SENSOR_NODE			0// 1 sets to sensor node, 0 to actuator node
+
+#if DEVICE_IS_SENSOR_NODE
 #define DEVICE_USES_BLE_MESH_CLIENT_MODEL 	1
 #define DEVICE_USES_BLE_MESH_SERVER_MODEL 	0
 #define DEVICE_IS_BLE_MESH_LPN 				1
@@ -65,12 +62,12 @@ static inline bool DeviceUsesServerModel() { return false; }
 #endif
 
 
-#if DEVICE_IS_ONOFF_PUBLISHER
+#if DEVICE_IS_SENSOR_NODE
 static inline bool DeviceIsOnOffPublisher() { return true; }
-#define device_name "Pub"
+#define device_name "Sen"
 #else
 static inline bool DeviceIsOnOffPublisher() { return false; }
-#define device_name "Sub"
+#define device_name "Act"
 #endif
 
 #if DEVICE_IS_ONOFF_SUBSCRIBER

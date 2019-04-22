@@ -9,6 +9,7 @@
 #define SRC_GECKO_HELPER_H_
 
 /* Bluetooth stack headers */
+#include <stdint.h>
 #include "bg_types.h"
 #include "gatt_db.h"
 #include "native_gecko.h"
@@ -19,12 +20,18 @@
 #include "gecko_ble_errors.h"
 #include "log.h"
 #include "display.h"
+#include "gpio.h"
 
 #define SET_GECKO_EVENT (1U)
 
 #define SCHEDULER_SUPPORTS_DISPLAY_UPDATE_EVENT 1
 #define TIMER_SUPPORTS_1HZ_TIMER_EVENT	1
 
+
+#define TIMER_ID_FACTORY_RESET  77
+#define TIMER_ID_RESTART    78
+#define TIMER_ID_PROVISIONING   66
+#define TIMER_ID_FRIEND_FIND 20
 
 #define BT_ADDRESS(server_addr)		server_addr.addr[5],server_addr.addr[4],\
 									server_addr.addr[3],server_addr.addr[2],\
@@ -50,5 +57,13 @@ void onoff_change(uint16_t model_id,
                          const struct mesh_generic_state *current,
                          const struct mesh_generic_state *target,
                          uint32_t remaining_ms);
+
+void send_sensor_data(uint16_t lightness_level,
+					  uint16_t temperature_level,
+					  int16_t DELTA_UV,
+					  int retrans);
+
+void lpn_init(void);
+void lpn_deinit(void);
 
 #endif /* SRC_GECKO_HELPER_H_ */

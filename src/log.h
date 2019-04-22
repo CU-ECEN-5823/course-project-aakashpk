@@ -63,8 +63,7 @@
 
 
 #if INCLUDE_LOGGING
-#define LOG_DO(message,level, ...) \
-	printf( "%6"PRIu32":%s: " message "\n", loggerGetTimestamp(), level, ##__VA_ARGS__ )
+#define LOG_DO(message,level, ...) printf( "%6"PRIu32":%s: " message "\n", loggerGetTimestamp(), level, ##__VA_ARGS__ )
 
 //#define LOG_DO(message,level, ...) printf( "%5"PRIu32":%s:%s:%s: " message "\n", loggerGetTimestamp(), level, __FILE__,__func__, ##__VA_ARGS__ )
 void logInit();

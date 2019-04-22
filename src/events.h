@@ -13,14 +13,18 @@
 #include "scheduler.h"
 #include "gecko_helper.h"
 #include "display.h"
+#include "Si7021_I2C.h"
 
 #define READ_TEMP_EVENT 0
 #define READ_HUMIDITY_EVENT	1
 
 // Event schedule from ISR
+void log_temp(void);
 void button_press(uint8 flags);
 
 // Events / Tasks
+
+void log_temp_task(void);
 void Button_Press_Task(void);
-void Button_Release_Task(void);
+
 #endif /* SRC_EVENTS_H_ */

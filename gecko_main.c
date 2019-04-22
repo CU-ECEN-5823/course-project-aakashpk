@@ -51,6 +51,7 @@
 #include "scheduler.h"
 #include "gecko_ble_errors.h"
 #include "gecko_helper.h"
+#include "lightbulb.h"
 
 /***********************************************************************************************//**
  * @addtogroup Application
@@ -117,30 +118,30 @@ const gecko_configuration_t config =
  */
 void gecko_bgapi_classes_init_server_friend(void)
 {
-	gecko_bgapi_class_dfu_init();
-	gecko_bgapi_class_system_init();
-	gecko_bgapi_class_le_gap_init();
-	gecko_bgapi_class_le_connection_init();
-	//gecko_bgapi_class_gatt_init();
-	gecko_bgapi_class_gatt_server_init();
-	gecko_bgapi_class_hardware_init();
-	gecko_bgapi_class_flash_init();
-	gecko_bgapi_class_test_init();
-	//gecko_bgapi_class_sm_init();
-	//mesh_native_bgapi_init();
-	gecko_bgapi_class_mesh_node_init();
-	//gecko_bgapi_class_mesh_prov_init();
-	gecko_bgapi_class_mesh_proxy_init();
-	gecko_bgapi_class_mesh_proxy_server_init();
-	//gecko_bgapi_class_mesh_proxy_client_init();
-	//gecko_bgapi_class_mesh_generic_client_init();
-	gecko_bgapi_class_mesh_generic_server_init();
-	//gecko_bgapi_class_mesh_vendor_model_init();
-	//gecko_bgapi_class_mesh_health_client_init();
-	//gecko_bgapi_class_mesh_health_server_init();
-	//gecko_bgapi_class_mesh_test_init();
-	//gecko_bgapi_class_mesh_lpn_init();
-	gecko_bgapi_class_mesh_friend_init();
+	  gecko_bgapi_class_dfu_init();
+	  gecko_bgapi_class_system_init();
+	  gecko_bgapi_class_le_gap_init();
+	  gecko_bgapi_class_le_connection_init();
+	  //gecko_bgapi_class_gatt_init();
+	  gecko_bgapi_class_gatt_server_init();
+	  gecko_bgapi_class_hardware_init();
+	  gecko_bgapi_class_flash_init();
+	  gecko_bgapi_class_test_init();
+	  //gecko_bgapi_class_sm_init();
+	  //mesh_native_bgapi_init();
+	  gecko_bgapi_class_mesh_node_init();
+	  //gecko_bgapi_class_mesh_prov_init();
+	  gecko_bgapi_class_mesh_proxy_init();
+	  gecko_bgapi_class_mesh_proxy_server_init();
+	  //gecko_bgapi_class_mesh_proxy_client_init();
+	  //gecko_bgapi_class_mesh_generic_client_init();
+	  gecko_bgapi_class_mesh_generic_server_init();
+	  //gecko_bgapi_class_mesh_vendor_model_init();
+	  //gecko_bgapi_class_mesh_health_client_init();
+	  //gecko_bgapi_class_mesh_health_server_init();
+	  //gecko_bgapi_class_mesh_test_init();
+	  //gecko_bgapi_class_mesh_lpn_init();
+	  gecko_bgapi_class_mesh_friend_init();
 }
 
 
@@ -209,12 +210,6 @@ void gecko_main_init()
  */
 
 
-
-#define TIMER_ID_FACTORY_RESET  77
-#define TIMER_ID_RESTART    78
-#define TIMER_ID_PROVISIONING   66
-#define TIMER_ID_FRIEND_FIND 20
-
 /** Timer Frequency used. */
 #define TIMER_CLK_FREQ ((uint32)32768)
 /** Convert msec to timer ticks. */
@@ -227,7 +222,7 @@ static uint8 conn_handle = 0xFF;      /* handle of the last opened LE connection
 
 void initiate_factory_reset(void)
 {
-  LOG_INFO("factory reset\r\n");
+  LOG_INFO("factory reset");
   displayPrintf(DISPLAY_ROW_CONNECTION,"FACTORY RESET");
 
   /* if connection is open then close it before rebooting */
@@ -238,7 +233,8 @@ void initiate_factory_reset(void)
 
   /* perform a factory reset by erasing PS storage. This removes all the keys and other settings
      that have been configured for this node */
-  gecko_cmd_flash_ps_erase_all();
+  if(gecko_cmd_flash_ps_erase_all()!=0)
+	  LOG_ERROR("Flash erase failed");
   // reboot after a small delay
   gecko_cmd_hardware_set_soft_timer(2 * 32768, TIMER_ID_FACTORY_RESET, 1);
 }
@@ -334,11 +330,12 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			struct gecko_msg_mesh_node_initialized_evt_t *pData = (struct gecko_msg_mesh_node_initialized_evt_t *)&(evt->data);
 
 			if (pData->provisioned) {
-				LOG_INFO("node is provisioned. address:%x, ivi:%ld", pData->address, pData->ivi);
+				LOG_INFO("node is provisioned. address:0x%x, ivi:%ld", pData->address, pData->ivi);
 				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
-							actuator_node_init();
+				lightbulb_state_init();
+											actuator_node_init();
 				#else
 							sensor_node_init();
 				#endif
@@ -362,7 +359,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			LOG_INFO("Started provisioning");
 			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioning ..");
 			// start timer for blinking LEDs to indicate which node is being provisioned
-			gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
+//			gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
 			break;
 
 		case gecko_evt_mesh_node_provisioned_id:
@@ -375,23 +372,24 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 						sensor_node_init();
 			#endif
 
-			LOG_INFO("node provisioned, got address=%x\r\n", evt->data.evt_mesh_node_provisioned.address);
+			LOG_INFO("node provisioned, got address=0x%x", evt->data.evt_mesh_node_provisioned.address);
 			// stop LED blinking when provisioning complete
-			gecko_cmd_hardware_set_soft_timer(0, TIMER_ID_PROVISIONING, 0);
+//			gecko_cmd_hardware_set_soft_timer(0, TIMER_ID_PROVISIONING, 0);
 
 			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 			break;
 
 		case gecko_evt_mesh_node_provisioning_failed_id:
 			prov_fail_evt = (struct gecko_msg_mesh_node_provisioning_failed_evt_t  *)&(evt->data);
-			LOG_INFO("provisioning failed, code %x", prov_fail_evt->result);
+			LOG_INFO("provisioning failed, code 0x%x", prov_fail_evt->result);
 			displayPrintf(DISPLAY_ROW_PASSKEY,"prov failed");
 			/* start a one-shot timer that will trigger soft reset after small delay */
 			gecko_cmd_hardware_set_soft_timer(2 * 32768, TIMER_ID_RESTART, 1);
 			break;
 
 		case gecko_evt_mesh_node_key_added_id:
-			LOG_INFO("got new %s key with index %x", evt->data.evt_mesh_node_key_added.type == 0 ? "network" : "application",
+			LOG_INFO("got new %s key with index 0x%x",
+					evt->data.evt_mesh_node_key_added.type == 0 ? "network" : "application",
 					evt->data.evt_mesh_node_key_added.index);
 			break;
 
@@ -403,14 +401,14 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_mesh_generic_server_client_request_id:
-			LOG_DEBUG("evt gecko_evt_mesh_generic_server_client_request_id");
+			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
 			mesh_lib_generic_server_event_handler(evt);
 			break;
 
 		case gecko_evt_mesh_generic_server_state_changed_id:
 			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
 
-			LOG_INFO("Elem index %d Model id: %d",
+			LOG_INFO("State changed Elem index %d Model id: 0x%x",
 					evt->data.evt_mesh_generic_server_state_changed.elem_index,
 					evt->data.evt_mesh_generic_server_state_changed.model_id);
 
@@ -445,7 +443,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	      displayPrintf(DISPLAY_ROW_ACTION,"NO FRIEND");
 
 	      // try again in 2 seconds
-	      result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(2000), TIMER_ID_FRIEND_FIND, 1)->result;
+	      result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(5000), TIMER_ID_FRIEND_FIND, 1)->result;
 	      if (result) {
 	        LOG_DEBUG("timer failure?!  %x", result);
 	      }
@@ -459,16 +457,18 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	        // try again in 2 seconds
 	        result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(2000), TIMER_ID_FRIEND_FIND, 1)->result;
 	        if (result) {
-	          LOG_INFO("timer failure?!  %x\r\n", result);
+	          LOG_INFO("timer failure?!  %x", result);
 	        }
 
 	      break;
 
 		case gecko_evt_le_gap_adv_timeout_id:
+			LOG_INFO("Connection timeout");
 			// adv timeout events silently discarded
 			break;
 
 		case gecko_evt_le_connection_opened_id:
+			lpn_deinit();
 			LOG_INFO("evt:gecko_evt_le_connection_opened_id");
 			conn_handle = evt->data.evt_le_connection_opened.connection;
 			displayPrintf(DISPLAY_ROW_CONNECTION,"connected");
@@ -505,7 +505,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_system_external_signal_id:
-			LOG_DEBUG("gecko_evt_system_external_signal_id");
+			LOG_INFO("gecko_evt_system_external_signal_id");
 			scheduler_run();
 			logFlush();
 			break;
