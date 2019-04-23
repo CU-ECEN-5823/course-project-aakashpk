@@ -51,6 +51,8 @@
 #include "scheduler.h"
 #include "gecko_ble_errors.h"
 #include "gecko_helper.h"
+#include "sensor_node_mesh.h"
+#include "actuator_node_mesh.h"
 
 /***********************************************************************************************//**
  * @addtogroup Application
