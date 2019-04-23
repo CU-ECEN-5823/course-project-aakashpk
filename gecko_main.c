@@ -203,8 +203,6 @@ void gecko_main_init()
 
 }
 
-
-
 /*
  * All code below heavily borrows from
  * Si Labs BT mesh light and switch implementation
@@ -304,8 +302,9 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
         case TIMER_ID_FRIEND_FIND:
         {
-          LOG_INFO("trying to find friend...");
+          LOG_DEBUG("trying to find friend...");
           uint16_t result = gecko_cmd_mesh_lpn_establish_friendship(0)->result;
+          displayPrintf(DISPLAY_ROW_ACTION,"FRIEND SRCH");
 
           if (result != 0) {
             LOG_INFO("ret.code %x", result);
@@ -439,7 +438,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	      break;
 
 	    case gecko_evt_mesh_lpn_friendship_failed_id:
-	      LOG_INFO("friendship failed 0x%x",evt->data.evt_mesh_lpn_friendship_failed.reason);
+	      LOG_DEBUG("friendship failed 0x%x",evt->data.evt_mesh_lpn_friendship_failed.reason);
 	      displayPrintf(DISPLAY_ROW_ACTION,"NO FRIEND");
 
 	      // try again in 2 seconds
