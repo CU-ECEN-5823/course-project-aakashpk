@@ -484,6 +484,15 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			conn_handle = 0xFF;
 			break;
 
+		case gecko_evt_gatt_server_attribute_value_id:
+			LOG_INFO("gecko_evt_gatt_server_attribute_value_id opcode 0x%x attribute 0x%4x length %d data 0x%02x%02x",
+					evt->data.evt_gatt_server_attribute_value.att_opcode,
+					evt->data.evt_gatt_server_attribute_value.attribute,
+					evt->data.evt_gatt_server_attribute_value.value.len,
+					evt->data.evt_gatt_server_attribute_value.value.data[0],
+					evt->data.evt_gatt_server_attribute_value.value.data[1]);
+			break;
+
 		case gecko_evt_gatt_server_user_write_request_id:
 			LOG_INFO("gecko_evt_gatt_server_user_write_request_id");
 			if (evt->data.evt_gatt_server_user_write_request.characteristic == gattdb_ota_control) {
