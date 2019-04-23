@@ -63,6 +63,9 @@ void send_sensor_data(uint16_t lightness_level,
 					  int16_t DELTA_UV,
 					  int retrans);
 
+void send_sensor_data_ctl(uint16_t lightness_level,
+		uint16_t temperature_level,int16_t DELTA_UV,int retrans);
+
 void lpn_init(void);
 void lpn_deinit(void);
 

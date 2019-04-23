@@ -196,7 +196,7 @@ void send_button_state(uint8_t state)
 	if (resp) {
 		LOG_INFO("gecko_cmd_mesh_generic_client_publish failed,code %x\r\n", resp);
 	} else {
-		LOG_INFO("request sent, trx id = %u", trid);
+		LOG_INFO("On/off request sent, trx id = %u", trid);
 	}
 }
 
@@ -244,10 +244,47 @@ void send_sensor_data(uint16_t lightness_level,
   if (resp1) {
     LOG_ERROR("gecko_cmd_mesh_generic_client_publish failed,code %x", resp1);
   } else {
-    LOG_INFO("request sent, trid = %u, delay = %d", trid, delay);
+    LOG_INFO("Sensor Data sent, trid = %u, delay = %d", trid, delay);
   }
 }
 
+void send_sensor_data_ctl(uint16_t lightness_level,
+		uint16_t temperature_level,int16_t DELTA_UV,int retrans)
+{
+  uint16 resp1 = 1;
+  uint16 delay;
+  struct mesh_generic_request req;
+
+//  req.kind = mesh_lighting_request_lightness_actual;
+  req.kind = mesh_lighting_request_ctl;
+  req.ctl.lightness = lightness_level;
+  req.ctl.temperature = temperature_level;
+  req.ctl.deltauv = DELTA_UV; //hardcoded delta uv
+
+  // increment transaction ID for each request, unless it's a retransmission
+  if (retrans == 0)
+  {
+    trid++;
+  }
+
+  delay = 0;
+
+  resp1 = mesh_lib_generic_client_publish(
+		  MESH_LIGHTING_CTL_CLIENT_MODEL_ID,
+    0,
+    trid,
+    &req,
+    0,     // transition
+    delay,
+    0     // flags
+    );
+
+  if (resp1) {
+    LOG_ERROR("gecko_cmd_mesh_generic_client_publish failed,code %x", resp1);
+  } else {
+    LOG_INFO("Sensor Data sent, trid = %u, delay = %d", trid, delay);
+  }
+}
 
 /***************************************************************************//**
  * This function process the requests for the light CTL model.

@@ -40,6 +40,7 @@ void log_temp_task(void)
 	get_temp_humidity(&temp, &humidity);
 	//LOG_INFO("Temp %f Humidity %f",temp/1000.0,humidity/1000.0);
 	send_sensor_data(temp,0,0,0);
+	//send_sensor_data_ctl(0,temp,0,0,0);
 	send_button_state(state);
 	state = state ^ 0x01;
 }
