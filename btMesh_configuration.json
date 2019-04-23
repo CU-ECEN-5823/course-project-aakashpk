@@ -5,32 +5,50 @@
     "PID": "0xf0b0",
     "VID": "0x1234",
     "CRPL": "0x0020",
-    "Features": "0x000f",
+    "Features": "0x0007",
     "Elements": [
       {
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "9",
+        "NumS": "11",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
           "Configuration Server",
-          "0x1001",
-          "Generic OnOff Client",
+          "0x0002",
+          "Health Server",
           "0x1000",
           "Generic OnOff Server",
-          "0x1303",
-          "Light CTL Server",
-          "0x1305",
-          "Light CTL Client",
-          "0x1302",
-          "Light Lightness Client",
           "0x1300",
           "Light Lightness Server",
           "0x1301",
           "Light Lightness Setup Server",
+          "0x1002",
+          "Generic Level Server",
+          "0x1006",
+          "Generic Power OnOff Server",
+          "0x1007",
+          "Generic Power OnOff Setup Server",
+          "0x1004",
+          "Generic Default Transition Time Server",
+          "0x1303",
+          "Light CTL Server",
           "0x1304",
           "Light CTL Setup Server"]
+        ,
+        "Vendor Models": [
+          ]
+      },
+      {
+        "Name": "Secondary Element",
+        "Loc": "0x0000",
+        "NumS": "2",
+        "NumV": "0",
+        "SIG Models": [
+          "0x1002",
+          "Generic Level Server",
+          "0x1306",
+          "Light CTL Temperature Server"]
         ,
         "Vendor Models": [
           ]
@@ -38,8 +56,8 @@
     
   },
   "Memory configuration": {
-    "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "9",
+    "MAX_ELEMENTS": "2",
+    "MAX_MODELS": "13",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",

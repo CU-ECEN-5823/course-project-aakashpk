@@ -23,7 +23,7 @@
 
 
 // Top level macros
-#define SILABS_AF_DEVICE_NAME "soc-btmesh-switch"
+#define SILABS_AF_DEVICE_NAME "soc-btmesh-light"
 
 
 // Generated plugin macros
