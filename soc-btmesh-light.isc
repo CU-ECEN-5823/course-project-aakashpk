@@ -118,7 +118,7 @@ appPlugin: slot-manager=false
       \{
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "11",
+        "NumS": "10",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
@@ -137,8 +137,6 @@ appPlugin: slot-manager=false
           "Generic Power OnOff Server",
           "0x1007",
           "Generic Power OnOff Setup Server",
-          "0x1004",
-          "Generic Default Transition Time Server",
           "0x1303",
           "Light CTL Server",
           "0x1304",
@@ -150,7 +148,7 @@ appPlugin: slot-manager=false
   \},
   "Memory configuration": \{
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "11",
+    "MAX_MODELS": "10",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
