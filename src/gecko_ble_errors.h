@@ -207,7 +207,7 @@ BG_ERROR_ENUM(bg_err_last,"last_entry")
  */
 #define BTSTACK_LOG_RESULT(call,result)\
 if( result != bg_err_success ) { \
-	LOG_WARN("%s failed with result %d (%s - detail: %s)",\
+	LOG_WARN("%s failed with result %x (%s - detail: %s)",\
 		#call,result,bleResponseString((enum bg_error)result),bleResponseFailureDescription((enum bg_error)result));\
 }\
 
@@ -221,6 +221,12 @@ if( result != bg_err_success ) { \
 #define BTSTACK_CHECK_RESPONSE(call) \
 {\
 	BTSTACK_LOG_RESULT(call,call->result)\
+}
+
+#define MESH_CHECK_RESPONSE(result)\
+if( result != bg_err_success ) { \
+	LOG_ERROR("%s failed with result %x (%s - detail: %s)",\
+		__func__,result,bleResponseString((enum bg_error)result),bleResponseFailureDescription((enum bg_error)result));\
 }
 
 const char *bleResponseFailureDescription(enum bg_error error);
