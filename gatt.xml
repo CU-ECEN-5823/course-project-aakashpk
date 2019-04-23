@@ -109,7 +109,11 @@
     
     <!--Light Setpoint-->
     <characteristic id="light_setpoint" name="Light Setpoint" sourceId="custom.type" uuid="395d3e74-a5e0-44be-8a6d-fcafc36c23b9">
+      <description>Light setpoint</description>
       <informativeText>Custom characteristic</informativeText>
+      <capabilities>
+        <capability>mesh_proxy_service</capability>
+      </capabilities>
       <value length="2" type="hex" variable_length="false">0x00</value>
       <properties read="true" read_requirement="optional" write="true" write_requirement="optional"/>
     </characteristic>

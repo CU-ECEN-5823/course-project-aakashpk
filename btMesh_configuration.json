@@ -10,7 +10,7 @@
       {
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "11",
+        "NumS": "12",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
@@ -34,7 +34,9 @@
           "0x1002",
           "Generic Level Server",
           "0x1006",
-          "Generic Power OnOff Server"]
+          "Generic Power OnOff Server",
+          "0x1306",
+          "Light CTL Temperature Server"]
         ,
         "Vendor Models": [
           ]
@@ -43,7 +45,7 @@
   },
   "Memory configuration": {
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "11",
+    "MAX_MODELS": "12",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
