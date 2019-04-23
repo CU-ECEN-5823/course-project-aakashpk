@@ -10,7 +10,7 @@
       {
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "9",
+        "NumS": "8",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
@@ -25,8 +25,6 @@
           "Generic Level Server",
           "0x1006",
           "Generic Power OnOff Server",
-          "0x1007",
-          "Generic Power OnOff Setup Server",
           "0x1303",
           "Light CTL Server",
           "0x1304",
@@ -39,7 +37,7 @@
   },
   "Memory configuration": {
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "9",
+    "MAX_MODELS": "8",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
