@@ -139,16 +139,16 @@ void onoff_request(uint16_t model_id,
                           uint8_t request_flags)
 {
 	static uint8_t button_state = 0x01;
-	LOG_INFO("Model id 0x%4x element index 0%d client addr 0x%04x server addr 0x%04x "
+
+
+	LOG_DEBUG("Model id 0x%4x element index 0%d client addr 0x%04x server addr 0x%04x "
 			"appkey index 0%d transition_ms 0%d delay_ms 0%d request flags 0x%4x",
 			model_id,element_index,client_addr,server_addr,appkey_index,
 			transition_ms,delay_ms,request_flags);
 
-	LOG_INFO("Request %d",request->on_off);
-
 	displayPrintf(DISPLAY_ROW_TEMPVALUE,"LED %s",(button_state?"ON":"OFF"));
 	button_state?gpioLed0SetOn():gpioLed0SetOff();
-	update_and_publish_on_off(button_state^0x01,button_state);
+	//update_and_publish_on_off(button_state^0x01,button_state);
 	button_state = button_state^0x01;
 }
 

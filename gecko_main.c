@@ -51,7 +51,6 @@
 #include "scheduler.h"
 #include "gecko_ble_errors.h"
 #include "gecko_helper.h"
-#include "lightbulb.h"
 
 /***********************************************************************************************//**
  * @addtogroup Application
@@ -334,10 +333,9 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
-//				lightbulb_state_init();
-				actuator_node_init();
+					actuator_node_init();
 				#else
-							sensor_node_init();
+					sensor_node_init();
 				#endif
 			}
 			else
@@ -401,7 +399,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_mesh_generic_server_client_request_id:
-			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
+			LOG_DEBUG("evt gecko_evt_mesh_generic_server_client_request_id");
 			mesh_lib_generic_server_event_handler(evt);
 			break;
 
@@ -452,8 +450,6 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	    case gecko_evt_mesh_lpn_friendship_terminated_id:
 	      LOG_INFO("friendship terminated 0x%x",evt->data.evt_mesh_friend_friendship_terminated.reason);
 	      displayPrintf(DISPLAY_ROW_ACTION,"FRIEND LOST");
-
-
 	        // try again in 2 seconds
 	        result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(2000), TIMER_ID_FRIEND_FIND, 1)->result;
 	        if (result) {
