@@ -50,17 +50,6 @@ const uint8_t __mesh_dcd[] = {
         /* Begin Vendor Models */
         /* End Vendor Models */
     /* End Primary Element */
-    /* Begin Secondary Element */
-        0x00, 0x00, /* Location = 0x0000 */
-        0x02, /* Number of SIG Models = 0x02 */
-        0x00, /* Number of Vendor Models = 0x00 */
-        /* Begin SIG Models */
-        0x02, 0x10, /* Generic Level Server */
-        0x06, 0x13, /* Light CTL Temperature Server */
-        /* End SIG Models */
-        /* Begin Vendor Models */
-        /* End Vendor Models */
-    /* End Secondary Element */
 };
 
 const size_t __mesh_dcd_len = sizeof(__mesh_dcd);

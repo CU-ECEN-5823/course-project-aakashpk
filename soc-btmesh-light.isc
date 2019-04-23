@@ -146,25 +146,11 @@ appPlugin: slot-manager=false
         ,
         "Vendor Models": [
           ]
-      \},
-      \{
-        "Name": "Secondary Element",
-        "Loc": "0x0000",
-        "NumS": "2",
-        "NumV": "0",
-        "SIG Models": [
-          "0x1002",
-          "Generic Level Server",
-          "0x1306",
-          "Light CTL Temperature Server"]
-        ,
-        "Vendor Models": [
-          ]
       \}]
   \},
   "Memory configuration": \{
-    "MAX_ELEMENTS": "2",
-    "MAX_MODELS": "13",
+    "MAX_ELEMENTS": "1",
+    "MAX_MODELS": "11",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
