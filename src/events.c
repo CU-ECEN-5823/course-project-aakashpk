@@ -38,9 +38,11 @@ void log_temp_task(void)
 	int32_t temp;
 	uint32_t humidity;
 	get_temp_humidity(&temp, &humidity);
-	//LOG_INFO("Temp %f Humidity %f",temp/1000.0,humidity/1000.0);
-	send_sensor_data(temp,0,0,0);
-//	send_sensor_data_ctl(0,humidity,0,0);
+	LOG_INFO("Temp %f Humidity %f State %x",temp/1000.0,humidity/1000.0,state);
+
+	SEND_LIGHT_DATA(temp,2);
+	SEND_WATER_DATA(humidity,3);
+
 	send_button_state(state);
 	state = state ^ 0x01;
 }
@@ -48,7 +50,6 @@ void log_temp_task(void)
 //Task1
 void Button_Press_Task(void)
 {
-	//send_button_state(0x01);
 	LETIMER_start_intr();
 }
 

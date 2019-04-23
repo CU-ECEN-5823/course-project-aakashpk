@@ -14,6 +14,8 @@
 #include "gecko_helper.h"
 #include "display.h"
 #include "Si7021_I2C.h"
+#include "sensor_node_mesh.h"
+#include "actuator_node_mesh.h"
 
 #define READ_TEMP_EVENT 0
 #define READ_HUMIDITY_EVENT	1
