@@ -32,11 +32,10 @@ const uint8_t __mesh_dcd[] = {
     0x07, 0x00, /* Features Bitmask = 0x0007 */
     /* Begin Primary Element */
         0x00, 0x00, /* Location = 0x0000 */
-        0x0a, /* Number of SIG Models = 0x0a */
+        0x09, /* Number of SIG Models = 0x09 */
         0x00, /* Number of Vendor Models = 0x00 */
         /* Begin SIG Models */
         0x00, 0x00, /* Configuration Server */
-        0x02, 0x00, /* Health Server */
         0x00, 0x10, /* Generic OnOff Server */
         0x00, 0x13, /* Light Lightness Server */
         0x01, 0x13, /* Light Lightness Setup Server */

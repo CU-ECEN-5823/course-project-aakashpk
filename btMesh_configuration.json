@@ -10,13 +10,11 @@
       {
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "10",
+        "NumS": "9",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
           "Configuration Server",
-          "0x0002",
-          "Health Server",
           "0x1000",
           "Generic OnOff Server",
           "0x1300",
@@ -41,7 +39,7 @@
   },
   "Memory configuration": {
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "10",
+    "MAX_MODELS": "9",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
