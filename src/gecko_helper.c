@@ -489,17 +489,18 @@ void actuator_node_init(void)
 	                                           onoff_request,
 	                                           onoff_change));
 
+	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_LIGHTING_LIGHTNESS_SERVER_MODEL_ID,
+			                                           0,
+													   lightness_request,
+													   lightness_change));
+
 	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_LIGHTING_CTL_SERVER_MODEL_ID,
 			                                           0,
 													   ctl_request,
 													   ctl_change));
 
-	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_LIGHTING_LIGHTNESS_SERVER_MODEL_ID,
-			                                           0,
-													   lightness_request,
-													   lightness_change));
-	//update_and_publish_on_off(0,1);
-	//LOG_INFO("Update and publish 0x%x",ctl_update_and_publish(0,0)); // This errors now, no clue why
+//	update_and_publish_on_off(0,1);
+//	LOG_INFO("Update and publish 0x%x",ctl_update_and_publish(0,0)); // This errors now, no clue why
 
 }
 
