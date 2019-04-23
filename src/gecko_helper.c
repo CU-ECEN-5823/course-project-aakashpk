@@ -71,15 +71,15 @@ void lpn_deinit(void)
   // Terminate friendship if exist
   result = gecko_cmd_mesh_lpn_terminate_friendship()->result;
   if (result) {
-    LOG_INFO("Friendship termination failed (0x%x)\r\n", result);
+    LOG_INFO("Friendship termination failed (0x%x)", result);
   }
   // turn off lpn feature
   result = gecko_cmd_mesh_lpn_deinit()->result;
   if (result) {
-    LOG_INFO("LPN deinit failed (0x%x)\r\n", result);
+    LOG_INFO("LPN deinit failed (0x%x)", result);
   }
   lpn_active = 0;
-  LOG_INFO("LPN deinitialized\r\n");
+  LOG_INFO("LPN deinitialized");
 }
 
 /**
@@ -356,20 +356,87 @@ errorcode_t ctl_update_and_publish(uint16_t element_index,
   errorcode_t e;
 
   e = ctl_update(element_index, remaining_ms);
-  /*
+
   if (e == bg_err_success) {
 
     e = mesh_lib_generic_server_publish(MESH_LIGHTING_CTL_SERVER_MODEL_ID,
                                         element_index,
                                         mesh_lighting_state_ctl);
-  }*/
+  }
 
   return e;
 }
 
+
+/***************************************************************************//**
+ * This function process the requests for the light lightness model.
+ *
+ * @param[in] model_id       Server model ID.
+ * @param[in] element_index  Server model element index.
+ * @param[in] client_addr    Address of the client model which sent the message.
+ * @param[in] server_addr    Address the message was sent to.
+ * @param[in] appkey_index   The application key index used in encrypting the request.
+ * @param[in] request        Pointer to the request structure.
+ * @param[in] transition_ms  Requested transition time (in milliseconds).
+ * @param[in] delay_ms       Delay time (in milliseconds).
+ * @param[in] request_flags  Message flags. Bitmask of the following:
+ *                           - Bit 0: Nonrelayed. If nonzero indicates
+ *                                    a response to a nonrelayed request.
+ *                           - Bit 1: Response required. If nonzero client
+ *                                    expects a response from the server.
+ ******************************************************************************/
+static void lightness_request(uint16_t model_id,
+                              uint16_t element_index,
+                              uint16_t client_addr,
+                              uint16_t server_addr,
+                              uint16_t appkey_index,
+                              const struct mesh_generic_request *request,
+                              uint32_t transition_ms,
+                              uint16_t delay_ms,
+                              uint8_t request_flags)
+{
+
+	switch(request->kind)
+	{
+	case mesh_lighting_request_lightness_actual:
+		LOG_INFO("lightness_request actual: level=%u, transition=%lu, delay=%u",
+				         request->lightness, transition_ms, delay_ms);
+		LOG_INFO("Sensor Value = %f",request->lightness/1000.0);
+		break;
+	case mesh_lighting_request_lightness_linear:
+		LOG_INFO("lightness_request linear: level=%u, transition=%lu, delay=%u\r\n",
+						         request->lightness, transition_ms, delay_ms);
+		break;
+	default:
+		LOG_INFO("Unhandled lightness type %x",request->kind);
+		break;
+	}
+
+}
+
+/***************************************************************************//**
+ * This function is a handler for light lightness change event.
+ *
+ * @param[in] model_id       Server model ID.
+ * @param[in] element_index  Server model element index.
+ * @param[in] current        Pointer to current state structure.
+ * @param[in] target         Pointer to target state structure.
+ * @param[in] remaining_ms   Time (in milliseconds) remaining before transition
+ *                           from current state to target state is complete.
+ ******************************************************************************/
+static void lightness_change(uint16_t model_id,
+                             uint16_t element_index,
+                             const struct mesh_generic_state *current,
+                             const struct mesh_generic_state *target,
+                             uint32_t remaining_ms)
+{
+	LOG_INFO("Lightness change");
+}
+
+
 void actuator_node_init(void)
 {
-	mesh_lib_init(malloc, free,8);
+	mesh_lib_init(malloc, free,10);
 
 	uint16_t res;
 	//Initialize Friend functionality
@@ -392,10 +459,10 @@ void actuator_node_init(void)
 
 	LOG_INFO("register model %d",mesh_lib_generic_server_register_handler(MESH_LIGHTING_LIGHTNESS_SERVER_MODEL_ID,
 			                                           0,
-													   ctl_request,
-													   ctl_change));
+													   lightness_request,
+													   lightness_change));
 	//update_and_publish_on_off(0,1);
-	LOG_INFO("Update and publish 0x%x",ctl_update_and_publish(0,0)); // This errors now, no clue why
+	//LOG_INFO("Update and publish 0x%x",ctl_update_and_publish(0,0)); // This errors now, no clue why
 
 }
 

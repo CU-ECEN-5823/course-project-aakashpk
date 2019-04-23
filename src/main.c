@@ -60,12 +60,10 @@ int main(void)
 
   LETIMER_stop_intr();
 
+#if DEVICE_IS_SENSOR_NODE
+
   //Init scheduler, Tasks registered later
    scheduler_init();
-
-
-
-#if DEVICE_IS_SENSOR_NODE
   /*
    * Initialize temp sensor,
    * using for now, will change to

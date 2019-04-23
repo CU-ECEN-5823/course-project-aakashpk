@@ -334,8 +334,8 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
-				lightbulb_state_init();
-											actuator_node_init();
+//				lightbulb_state_init();
+				actuator_node_init();
 				#else
 							sensor_node_init();
 				#endif
@@ -463,7 +463,6 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	      break;
 
 		case gecko_evt_le_gap_adv_timeout_id:
-			LOG_INFO("Connection timeout");
 			// adv timeout events silently discarded
 			break;
 
