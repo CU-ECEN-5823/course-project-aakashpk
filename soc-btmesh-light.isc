@@ -118,7 +118,7 @@ appPlugin: slot-manager=false
       \{
         "Name": "Primary Element",
         "Loc": "0x0000",
-        "NumS": "8",
+        "NumS": "7",
         "NumV": "0",
         "SIG Models": [
           "0x0000",
@@ -129,8 +129,6 @@ appPlugin: slot-manager=false
           "Light Lightness Server",
           "0x1301",
           "Light Lightness Setup Server",
-          "0x1002",
-          "Generic Level Server",
           "0x1303",
           "Light CTL Server",
           "0x1304",
@@ -144,7 +142,7 @@ appPlugin: slot-manager=false
   \},
   "Memory configuration": \{
     "MAX_ELEMENTS": "1",
-    "MAX_MODELS": "8",
+    "MAX_MODELS": "7",
     "MAX_APP_BINDS": "4",
     "MAX_SUBSCRIPTIONS": "4",
     "MAX_NETKEYS": "4",
