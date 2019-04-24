@@ -225,8 +225,8 @@ if( result != bg_err_success ) { \
 
 #define MESH_CHECK_RESPONSE(result)\
 if( result != bg_err_success ) { \
-	LOG_ERROR("%s failed with result %x (%s - detail: %s)",\
-		__func__,result,bleResponseString((enum bg_error)result),bleResponseFailureDescription((enum bg_error)result));\
+	LOG_ERROR("failed with result %x (%s - detail: %s)",\
+		result,bleResponseString((enum bg_error)result),bleResponseFailureDescription((enum bg_error)result));\
 }
 
 const char *bleResponseFailureDescription(enum bg_error error);
