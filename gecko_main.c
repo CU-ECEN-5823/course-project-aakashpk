@@ -404,6 +404,11 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			mesh_lib_generic_server_event_handler(evt);
 			break;
 
+		case gecko_evt_mesh_generic_client_server_status_id:
+			LOG_INFO("gecko_evt_mesh_generic_client_server_status_id");
+			mesh_lib_generic_client_event_handler(evt);
+			break;
+
 		case gecko_evt_mesh_generic_server_state_changed_id:
 			LOG_INFO("evt gecko_evt_mesh_generic_server_client_request_id");
 
