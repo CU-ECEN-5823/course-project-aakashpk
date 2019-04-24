@@ -69,14 +69,29 @@ void lpn_deinit(void)
 
 }
 
+client_on_off_response(uint16_t model_id,
+					  uint16_t element_index,
+					  uint16_t client_addr,
+					  uint16_t server_addr,
+					  const struct mesh_generic_state *current,
+					  const struct mesh_generic_state *target,
+					  uint32_t remaining_ms,
+					  uint8_t response_flags)
+{
+	LOG_INFO("response flags 0x%x",response_flags);
+}
+
 /**
  * Sensor node initialization. This is called at each boot if provisioning is already done.
  * Otherwise this function is called after provisioning is completed.
  */
 void sensor_node_init(void)
 {
-  mesh_lib_init(malloc, free, 8);
+  MESH_CHECK_RESPONSE(mesh_lib_init(malloc, free, 8));
 
+  MESH_CHECK_RESPONSE(mesh_lib_generic_client_register_handler(MESH_GENERIC_ON_OFF_CLIENT_MODEL_ID,
+                                           0,
+                                           client_on_off_response));
   lpn_init();
 }
 
