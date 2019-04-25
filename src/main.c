@@ -58,12 +58,13 @@ int main(void)
    */
   LETIMER_pulse_setup(PERIOD_MS,sleepEM4);
 
-  LETIMER_stop_intr();
-
-#if DEVICE_IS_SENSOR_NODE
+//  LETIMER_stop_intr();
 
   //Init scheduler, Tasks registered later
-   scheduler_init();
+  scheduler_init();
+	#if DEVICE_IS_SENSOR_NODE
+
+
   /*
    * Initialize temp sensor,
    * using for now, will change to
@@ -78,10 +79,16 @@ int main(void)
    GPIOINT_Init();
    GPIOINT_CallbackRegister(BUTTON0_PIN,button_press);
 
-   //Register Tasks
+   //Register Sensor Tasks
   scheduler_event_register(log_temp_task, Task0);
   scheduler_event_register(Button_Press_Task,Task1);
-#endif
+	#else
+
+  //Register Actuator Tasks
+   scheduler_event_register(light_actuator_task, LIGHT_TASK);
+   scheduler_event_register(pump_actuator_task,WATER_TASK);
+   scheduler_event_register(light_setpoint_change_task,SETPOINT_CHANGE_TASK);
+	#endif
 
 
   while (1) {
