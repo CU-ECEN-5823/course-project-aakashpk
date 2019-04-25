@@ -6,12 +6,13 @@ All project update documents on [google drive](https://drive.google.com/drive/u/
 * This model has a request.kind field that can be used to differentiate between the sensors. 
 * The lightness model gives a 16bit value that can be sent, this should be enough for both sensors
 * Added a gatt characteristic for light setpoint, change in value gets raised as event. Logging the event for now
+* writes setpoint values to flash when changed from GATT
+* Tested Control functions for pump and light with light value not changing in case of unreliable data
 
 
 ### TODOs
-* Add functions to write the setpoint to flash once updated and retrieve the setpoint stored in flash on startup.
 * Publish setpoint at startup the gatt char, and update setpoint when it gets changed from gatt
-* Basic control functions based on sensor values read and state save of the actuator last state. 
+* Config data to use either or both sensors, have to add seperate GATT char for that.
 * If time permits, try getting the vendor model working. provisioning can be done using the embedded provisioner.
 
 
