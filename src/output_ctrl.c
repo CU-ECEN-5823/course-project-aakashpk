@@ -156,6 +156,15 @@ void light_control_init()
 			light_val.actuator.deadband,
 			light_val.actuator.light_output);
 
+//	char char_data[6];
+//	snprintf(char_data,6,"%d",light_val.actuator.light_setpoint);
+	BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_server_write_attribute_value(gattdb_light_setpoint,
+			  0, sizeof(uint16_t), (uint8 *)light_val.actuator.light_setpoint));
+
+//	snprintf(char_data,6,"%d",light_val.actuator.deadband);
+	BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_server_write_attribute_value(gattdb_deadband,
+			  0, sizeof(uint8_t), (uint8 *)light_val.actuator.deadband));
+
 	light_level_set();
 }
 
