@@ -26,7 +26,14 @@ void button_press(uint8 flags);
 
 // Events / Tasks
 
+//Sensor
 void log_temp_task(void);
 void Button_Press_Task(void);
+
+//Actuator
+void light_actuator_task(void);
+void pump_actuator_task(void);
+void light_setpoint_change_task(void);
+
 
 #endif /* SRC_EVENTS_H_ */
