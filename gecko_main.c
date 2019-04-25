@@ -321,7 +321,6 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 
 			#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 						gecko_cmd_mesh_generic_server_init(); // server
-						//LOG_INFO("Friend init 0x%x", gecko_cmd_mesh_friend_init()->result);
 
 			#else
 						gecko_cmd_mesh_generic_client_init(); //client
@@ -357,8 +356,6 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 		case gecko_evt_mesh_node_provisioning_started_id:
 			LOG_INFO("Started provisioning");
 			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioning ..");
-			// start timer for blinking LEDs to indicate which node is being provisioned
-//			gecko_cmd_hardware_set_soft_timer(32768 / 4, TIMER_ID_PROVISIONING, 0);
 			break;
 
 		case gecko_evt_mesh_node_provisioned_id:
@@ -372,9 +369,6 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			#endif
 
 			LOG_INFO("node provisioned, got address=0x%x", evt->data.evt_mesh_node_provisioned.address);
-			// stop LED blinking when provisioning complete
-//			gecko_cmd_hardware_set_soft_timer(0, TIMER_ID_PROVISIONING, 0);
-
 			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 			break;
 
@@ -427,7 +421,9 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_mesh_friend_friendship_established_id:
-			LOG_INFO("evt gecko_evt_mesh_friend_friendship_established, lpn_address=%x\r\n", evt->data.evt_mesh_friend_friendship_established.lpn_address);
+			LOG_DEBUG("evt gecko_evt_mesh_friend_friendship_established");
+			LOG_INFO("Friend estd: lpn_address=%x",
+					evt->data.evt_mesh_friend_friendship_established.lpn_address);
 			displayPrintf(DISPLAY_ROW_ACTION,"FRIEND");
 			break;
 
@@ -497,6 +493,19 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 					evt->data.evt_gatt_server_attribute_value.value.len,
 					evt->data.evt_gatt_server_attribute_value.value.data[0],
 					evt->data.evt_gatt_server_attribute_value.value.data[1]);
+			//check on which attribute here
+			switch(evt->data.evt_gatt_server_attribute_value.value.len)
+			{
+			case 1:
+				set_changed_light_setpoint(evt->data.evt_gatt_server_attribute_value.value.data[0]);
+				break;
+			case 2:
+				set_changed_light_setpoint((uint16_t)evt->data.evt_gatt_server_attribute_value.value.data[0]<<8
+						|evt->data.evt_gatt_server_attribute_value.value.data[1]);
+				break;
+			}
+			schedule_event(SETPOINT_CHANGE_TASK);
+			gecko_external_signal(SET_GECKO_EVENT);
 			break;
 
 		case gecko_evt_gatt_server_user_write_request_id:
