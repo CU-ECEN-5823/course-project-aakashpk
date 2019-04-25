@@ -7,8 +7,10 @@
 
 #include "actuator_node_mesh.h"
 
+
 void update_and_publish_on_off(uint8_t old_state, uint8_t new_state)
 {
+	printf("sending \n\r");
 	struct mesh_generic_state current, target;
 	errorcode_t e;
 
@@ -18,18 +20,22 @@ void update_and_publish_on_off(uint8_t old_state, uint8_t new_state)
 	target.kind = mesh_generic_state_on_off;
 	target.on_off.on = new_state; //MESH_GENERIC_ON_OFF_STATE_OFF;
 
-
-	MESH_CHECK_RESPONSE(mesh_lib_generic_server_update(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
+	printf("inside send 1\n\r");
+	//This goes into default intr handler, not sure why TODO: check and figure this out
+//	MESH_CHECK_RESPONSE(
+	LOG_INFO("On off update %x",		mesh_lib_generic_server_update(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
 	                                        0, // element index for primary is 0
 	                                        &current,
 	                                        &target,
 	                                        0));
-
-	MESH_CHECK_RESPONSE(mesh_lib_generic_server_publish(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
+	printf("inside send 2\n\r");
+//	MESH_CHECK_RESPONSE(
+	LOG_INFO("On off server publish %x",		mesh_lib_generic_server_publish(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
 	                                        0, // element index for primary is 0
 	                                        mesh_generic_state_on_off));
 						// can this use mesh_generic_state_on_power_up instead
 						//to show that the device has powered up
+	printf("leaving send \n\r");
 }
 
 void onoff_request(uint16_t model_id,
@@ -49,12 +55,10 @@ void onoff_request(uint16_t model_id,
 			model_id,element_index,client_addr,server_addr,appkey_index,
 			transition_ms,delay_ms,request_flags);
 
-	displayPrintf(DISPLAY_ROW_TEMPVALUE,"LED %s",(button_state?"ON":"OFF"));
-
 	//Change the LED state based
 	button_state?gpioLed0SetOn():gpioLed0SetOff();
 
-	update_and_publish_on_off(button_state^0x01,button_state);
+//	update_and_publish_on_off(button_state^0x01,button_state);
 	button_state = button_state^0x01;
 }
 
@@ -114,19 +118,33 @@ static void lightness_request(uint16_t model_id,
 			request->kind,
 			client_addr,server_addr,request->lightness,request_flags);
 
+	/*
+	 * TODO: to handle the case of multiple sensors here,
+	 * maybe out of scope for this project
+	 */
+
 	switch(request->kind)
 	{
 	case mesh_lighting_request_lightness_actual:
+		//if request flag is zero, sensor error
+		set_light_val(request->lightness,request_flags>0);
 		//schedule light handling task
+		schedule_event(LIGHT_TASK);
 		break;
+
 	case mesh_lighting_request_lightness_linear:
+
+		set_water_level(request->lightness);
 		//schedule water level handling task
+		schedule_event(WATER_TASK);
 		break;
 	default:
 		LOG_INFO("Unhandled lightness type %x",request->kind);
 		break;
 	}
 
+	//raise external signal to run scheduler
+	gecko_external_signal(SET_GECKO_EVENT);
 }
 
 /***************************************************************************//**
@@ -163,6 +181,8 @@ void actuator_node_init(void)
 	                                           0,
 	                                           onoff_request,
 	                                           onoff_change));
+
+//	update_and_publish_on_off(0x00,0x01);
 
 	MESH_CHECK_RESPONSE(mesh_lib_generic_server_register_handler(MESH_LIGHTING_LIGHTNESS_SERVER_MODEL_ID,
 			                                           0,
