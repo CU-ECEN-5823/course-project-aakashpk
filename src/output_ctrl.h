@@ -9,9 +9,9 @@
 #define SRC_OUTPUT_CTRL_H_
 
 #include <stdbool.h>
+#include "gecko_helper.h"
 #include "em_gpio.h"
-#include "log.h"
-#include "display.h"
+
 
 #define PUMP_PORT gpioPortF
 #define PUMP_PIN (5U)
@@ -40,13 +40,13 @@ typedef enum {
 
 typedef struct{
 	uint16_t light_setpoint;
-	uint16_t deadband;
-	uint8_t light_output;
+	uint8_t deadband;
+	uint8_t light_output; //output value in %
 } light_actuator_t;
 
 typedef struct {
 	uint16_t light_level;
-	bool sensor_state; //true is sensor OK,false is sensor error
+	bool reliable; //true is sensor OK,false is sensor error
 } light_sensor_t;
 
 typedef struct {
@@ -62,6 +62,7 @@ typedef struct{
 void set_light_val(uint16_t val,bool sensor_state);
 void set_water_level(uint16_t val);
 void set_changed_light_setpoint(uint16_t val);
+void set_changed_light_deadband(uint8_t val);
 
 void pump_control_init();
 void light_control_init();
@@ -73,7 +74,7 @@ void update_light_setpoint(void);
 void pump_on();
 void pump_off();
 
-void light_level_set();
+void light_level_set(void);
 
 
 #endif /* SRC_OUTPUT_CTRL_H_ */
