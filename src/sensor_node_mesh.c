@@ -89,7 +89,8 @@ void sensor_node_init(void)
 {
   MESH_CHECK_RESPONSE(mesh_lib_init(malloc, free, 8));
 
-  MESH_CHECK_RESPONSE(mesh_lib_generic_client_register_handler(MESH_GENERIC_ON_OFF_CLIENT_MODEL_ID,
+//  MESH_CHECK_RESPONSE(
+		  LOG_INFO("client register handler %x",mesh_lib_generic_client_register_handler(MESH_GENERIC_ON_OFF_CLIENT_MODEL_ID,
                                            0,
                                            client_on_off_response));
   lpn_init();
