@@ -114,7 +114,7 @@ static void lightness_request(uint16_t model_id,
 	LOG_DEBUG("[actual]: level=%u, transition=%lu, delay=%u flags 0x%x",
 			         request->lightness, transition_ms, delay_ms, request_flags);
 
-	LOG_INFO("%d c[0x%04x] s[0x%04x] value %u flag 0x%x",
+	LOG_DEBUG("%d c[0x%04x] s[0x%04x] value %u flag 0x%x",
 			request->kind,
 			client_addr,server_addr,request->lightness,request_flags);
 
@@ -175,6 +175,8 @@ void actuator_node_init(void)
 	//Initialize Friend functionality
 	BTSTACK_CHECK_RESPONSE(gecko_cmd_mesh_friend_init());
 
+	pump_control_init();
+	light_control_init();
 
 	// Initialize required models
 	MESH_CHECK_RESPONSE(mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
