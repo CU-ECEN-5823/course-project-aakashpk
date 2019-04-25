@@ -19,6 +19,8 @@ extern const struct bg_gattdb_def bg_gattdb_data;
 #define gattdb_device_name                     11
 #define gattdb_ota_control                     31
 #define gattdb_light_setpoint                  34
+#define gattdb_deadband                        37
+#define gattdb_conn_dev                        41
 
 typedef enum
 {
