@@ -32,6 +32,10 @@
 
 #define SENSOR_DEFAULT_CONFIG 0x03
 
+#define PWM_BITS 8
+#define PWM_MAX ((0x01<<(PWM_BITS))-1)
+
+#define PERCENT_TO_PWM(percent) (((float)percent/(float)100)*PWM_MAX)
 
 typedef enum {
 	undefined,
