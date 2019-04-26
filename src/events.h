@@ -34,6 +34,7 @@ void Button_Press_Task(void);
 void light_actuator_task(void);
 void pump_actuator_task(void);
 void light_setpoint_change_task(void);
-
+void light_deadband_change_task(void);
+void connected_devices_change_task(void);
 
 #endif /* SRC_EVENTS_H_ */

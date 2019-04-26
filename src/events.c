@@ -77,3 +77,17 @@ void light_setpoint_change_task(void)
 	update_light_setpoint();
 }
 
+//Task 3
+void light_deadband_change_task(void)
+{
+	LOG_INFO("Light deadband changed");
+	update_light_deadband();
+}
+
+
+//Task 4
+void connected_devices_change_task(void)
+{
+	LOG_WARN("Config changed, \n****** reset device to use updated config ******** ");
+
+}
