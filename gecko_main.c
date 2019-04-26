@@ -114,7 +114,9 @@ const gecko_configuration_t config =
 //void mesh_native_bgapi_init(void);
 //bool mesh_bgapi_listener(struct gecko_cmd_packet *evt);
 
-void gatt_char_change(struct gecko_cmd_packet *evt);
+// definition
+void gatt_char_change_server(struct gecko_cmd_packet *evt);
+void gatt_char_change_client(struct gecko_cmd_packet *evt);
 
 /**
  * See light switch app.c file definition
@@ -487,14 +489,18 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_gatt_server_attribute_value_id:
-			LOG_INFO("gecko_evt_gatt_server_attribute_value_id opcode 0x%x attribute 0x%4x length %d data 0x%02x%02x",
+			LOG_DEBUG("gecko_evt_gatt_server_attribute_value_id opcode 0x%x attribute 0x%4x length %d data 0x%02x%02x",
 					evt->data.evt_gatt_server_attribute_value.att_opcode,
 					evt->data.evt_gatt_server_attribute_value.attribute,
 					evt->data.evt_gatt_server_attribute_value.value.len,
 					evt->data.evt_gatt_server_attribute_value.value.data[0],
 					evt->data.evt_gatt_server_attribute_value.value.data[1]);
+			#if DEVICE_USES_BLE_MESH_SERVER_MODEL
+					gatt_char_change_server(evt);
+			#else
+					gatt_char_change_client(evt);
+			#endif
 
-			gatt_char_change(evt);
 			break;
 
 		case gecko_evt_gatt_server_user_write_request_id:
@@ -527,7 +533,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 }
 
 
-void gatt_char_change(struct gecko_cmd_packet *evt)
+void gatt_char_change_server(struct gecko_cmd_packet *evt)
 {
 	switch(evt->data.evt_gatt_server_attribute_value.attribute)
 	{
@@ -549,12 +555,13 @@ void gatt_char_change(struct gecko_cmd_packet *evt)
 
 	case gattdb_deadband:
 		set_changed_light_deadband(evt->data.evt_gatt_server_attribute_value.value.data[0]);
-		schedule_event(SETPOINT_CHANGE_TASK);
+		schedule_event(DEADBAND_CHANGE_TASK);
 		gecko_external_signal(SET_GECKO_EVENT);
 		break;
 
 	case gattdb_conn_dev:
-
+		schedule_event(CONFIG_CHANGE_TASK);
+		gecko_external_signal(SET_GECKO_EVENT);
 		break;
 	}
 
