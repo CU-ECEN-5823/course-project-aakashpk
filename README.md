@@ -11,7 +11,8 @@ All project update documents on [google drive](https://drive.google.com/drive/u/
 
 
 ### TODOs
-* Publish setpoint at startup the gatt char, and update setpoint when it gets changed from gatt
+* Write setpoint at startup to the gatt char, and update setpoint when it gets changed from gatt
+* PWM signal write and can be shown on DSO.
 * Config data to use either or both sensors, have to add seperate GATT char for that.
 * If time permits, try getting the vendor model working. provisioning can be done using the embedded provisioner.
 
