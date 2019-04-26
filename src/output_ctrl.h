@@ -28,6 +28,10 @@
 
 #define LIGHT_STATE_KEY 0x4008
 #define PUMP_STATE_KEY 0x4009
+#define CONFIG_STATE_KEY 0x400A
+
+#define SENSOR_DEFAULT_CONFIG 0x03
+
 
 typedef enum {
 	undefined,
@@ -64,12 +68,15 @@ void set_water_level(uint16_t val);
 void set_changed_light_setpoint(uint16_t val);
 void set_changed_light_deadband(uint8_t val);
 
+uint8_t get_config_val(void);
+
 void pump_control_init();
 void light_control_init();
 
 void update_light_state(void);
 void update_pump_state(void);
 void update_light_setpoint(void);
+void update_light_deadband(void);
 
 void pump_on();
 void pump_off();

@@ -129,6 +129,12 @@ void update_light_setpoint(void)
 				light_val.actuator.light_setpoint);
 	}
 
+	// write value to flash
+	light_actuator_state_store();
+}
+
+void update_light_deadband(void)
+{
 	if(changed_light_deadband != light_val.actuator.deadband)
 	{
 		light_val.actuator.deadband = changed_light_deadband;
@@ -145,9 +151,9 @@ void light_control_init()
 	/*Init sensor value to 0 and
 	 * unreliable reading as default
 	 */
-
 	light_val.sensor.light_level=0;
 	light_val.sensor.reliable=0;
+
 	//Get last stored values from NVM
 	light_actuator_state_load();
 
@@ -156,15 +162,15 @@ void light_control_init()
 			light_val.actuator.deadband,
 			light_val.actuator.light_output);
 
-//	char char_data[6];
-//	snprintf(char_data,6,"%d",light_val.actuator.light_setpoint);
+
+	// write the setpoint and deadband values to GATT chars
 	BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_server_write_attribute_value(gattdb_light_setpoint,
-			  0, sizeof(uint16_t), (uint8 *)light_val.actuator.light_setpoint));
+			  0, sizeof(uint16_t), (uint8 *)&light_val.actuator.light_setpoint));
 
-//	snprintf(char_data,6,"%d",light_val.actuator.deadband);
 	BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_server_write_attribute_value(gattdb_deadband,
-			  0, sizeof(uint8_t), (uint8 *)light_val.actuator.deadband));
+			  0, sizeof(uint8_t), (uint8 *)&light_val.actuator.deadband));
 
+	//Set the read value to actual hardware
 	light_level_set();
 }
 
@@ -283,6 +289,56 @@ void pump_off()
 	GPIO_PinOutClear(PUMP_PORT,PUMP_PIN);
 	LOG_INFO("<<< Pump OFF");
 	displayPrintf(PUMP_ACTION,"PUMP OFF");
+}
+
+
+
+// Acuator config
+
+static uint8_t config_state;
+
+int config_state_load(void)
+{
+  struct gecko_msg_flash_ps_load_rsp_t* pLoad;
+
+  pLoad = gecko_cmd_flash_ps_load(CONFIG_STATE_KEY);
+
+  // Set default values if ps_load fail
+  if (pLoad->result ) {
+	LOG_WARN("Flash load failed, loading defaults");
+    memset(&config_state, 0, sizeof(uint8_t));
+    config_state = SENSOR_DEFAULT_CONFIG;
+    return -1;
+  }
+
+  memcpy(&config_state, pLoad->value.data, pLoad->value.len);
+
+  return 0;
+}
+
+
+int config_state_store(void)
+{
+  struct gecko_msg_flash_ps_save_rsp_t* pSave;
+
+  pSave = gecko_cmd_flash_ps_save(CONFIG_STATE_KEY,
+		  sizeof(uint8_t),
+		  (const uint8*)&config_state);
+
+  if (pSave->result) {
+    LOG_ERROR("config state store(): PS save failed, code %x", pSave->result);
+    return(-1);
+  }
+
+  return 0;
+}
+
+/*
+ *
+ */
+uint8_t get_config_val(void)
+{
+	return config_state;
 }
 
 
