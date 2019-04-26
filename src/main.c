@@ -84,10 +84,18 @@ int main(void)
   scheduler_event_register(Button_Press_Task,Task1);
 	#else
 
+  /*
+   * read config data here, based on read value
+   * based on read value, register just the first or second 3
+   * or all events, for only light, only pump and both configs.
+   */
+
   //Register Actuator Tasks
    scheduler_event_register(light_actuator_task, LIGHT_TASK);
    scheduler_event_register(pump_actuator_task,WATER_TASK);
    scheduler_event_register(light_setpoint_change_task,SETPOINT_CHANGE_TASK);
+   scheduler_event_register(light_deadband_change_task,DEADBAND_CHANGE_TASK);
+   scheduler_event_register(connected_devices_change_task,CONFIG_CHANGE_TASK);
 	#endif
 
 
