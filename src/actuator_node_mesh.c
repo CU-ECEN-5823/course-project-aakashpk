@@ -202,7 +202,6 @@ void actuator_node_init(void)
 	                                           onoff_request,
 	                                           onoff_change));
 
-//	update_and_publish_on_off(0x00,0x01);
 
 	MESH_CHECK_RESPONSE(mesh_lib_generic_server_register_handler(MESH_LIGHTING_LIGHTNESS_SERVER_MODEL_ID,
 			                                           0,

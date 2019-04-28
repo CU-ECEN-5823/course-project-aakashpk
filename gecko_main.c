@@ -288,7 +288,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			set_device_name(&pAddr->address);
 
 			// Initialize Mesh stack in Node operation mode, wait for initialized event
-			LOG_INFO("Node init %x",gecko_cmd_mesh_node_init()->result);
+			BTSTACK_CHECK_RESPONSE(gecko_cmd_mesh_node_init());
 
 		}
 		break;
@@ -320,7 +320,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 		break;
 
 		case gecko_evt_mesh_node_initialized_id:
-			LOG_INFO("node initialized");
+			LOG_INFO("Node Initialized");
 
 			#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 						gecko_cmd_mesh_generic_server_init(); // server
@@ -332,7 +332,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			struct gecko_msg_mesh_node_initialized_evt_t *pData = (struct gecko_msg_mesh_node_initialized_evt_t *)&(evt->data);
 
 			if (pData->provisioned) {
-				LOG_INFO("node is provisioned. address:0x%x, ivi:%ld", pData->address, pData->ivi);
+				LOG_INFO("Node provisioned. address:0x%x, ivi:%ld", pData->address, pData->ivi);
 				displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 
 				#if DEVICE_USES_BLE_MESH_SERVER_MODEL
@@ -343,7 +343,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			}
 			else
 			{
-				LOG_INFO("node is unprovisioned");
+				LOG_INFO("Node is unprovisioned");
 				displayPrintf(DISPLAY_ROW_PASSKEY,"unprovisioned");
 
 				LOG_INFO("starting unprovisioned beaconing...");
@@ -371,7 +371,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 						sensor_node_init();
 			#endif
 
-			LOG_INFO("node provisioned, got address=0x%x", evt->data.evt_mesh_node_provisioned.address);
+			LOG_INFO("Node provisioned, got address=0x%x", evt->data.evt_mesh_node_provisioned.address);
 			displayPrintf(DISPLAY_ROW_PASSKEY,"provisioned");
 			break;
 
