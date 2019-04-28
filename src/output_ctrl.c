@@ -88,8 +88,12 @@ uint8_t light_output_calc(uint16_t value)
 
 void light_level_set()
 {
-	LOG_INFO(">>> Bulb %d%%",light_val.actuator.light_output);
-	displayPrintf(LIGHT_ACTION,"Bulb: %d%%",light_val.actuator.light_output);
+	LOG_INFO(">>> Bulb %d%% PWM: %d",
+			light_val.actuator.light_output,
+			PERCENT_TO_PWM(light_val.actuator.light_output));
+	displayPrintf(LIGHT_ACTION,"Bulb: %d%% PWM: %d",
+			light_val.actuator.light_output,
+			PERCENT_TO_PWM(light_val.actuator.light_output));
 	// Set MOSFET PWM value here
 }
 
@@ -217,24 +221,48 @@ int pump_state_store(void)
 
 void update_pump_state(void)
 {
-	uint8_t pump_state;
+	uint8_t pump_state = water_val.pump_state;
 
-	switch(water_val.water_level)
-	{
-		case full:
+	switch (water_val.pump_mode) {
+		case Auto:
+			switch(water_val.water_level)
+			{
+				case full:
+					pump_state = 0;
+					break;
+				case half:
+				/*
+				 * nothing to be done here,
+				 * when filling up pump should be ON
+				 * when pump already OFF, then pump should be OFF
+				 * so just keep last value.
+				 */
+				break;
+				case empty:
+					pump_state = 1;
+					break;
+				default: // in case of error, turn pump off
+					pump_state = 0;
+				break;
+			}
+			break;
+
+		case Manual_Off:
 			pump_state = 0;
 			break;
-		case half:
-			pump_state = 0;
-		break;
-		case empty:
+
+		case Manual_On:
 			pump_state = 1;
 			break;
-		default: // in case of error, turn pump off
-			pump_state = 0;
-		break;
+
+		default:
+			LOG_WARN("Unknown Pump Mode");
+			break;
 	}
 
+	/*
+	 * Write to flash only is state chaned.
+	 */
 	if(pump_state != water_val.pump_state)
 	{
 		//Update pump state
@@ -244,8 +272,13 @@ void update_pump_state(void)
 
 		pump_state_store();
 	}
-	LOG_INFO("Water level %d Pump State %d",
+
+	/*
+	 * TODO: change the states to strings for logging
+	 */
+	LOG_INFO("Water level %d Pump Mode %d Pump State %d",
 			water_val.water_level,
+			water_val.pump_mode,
 			water_val.pump_state);
 }
 
@@ -263,15 +296,12 @@ void pump_control_init(void)
 	 * set the pump to that value on restart
 	 */
 	pump_state_load();
+	water_val.pump_mode = Auto;
 	water_val.pump_state ? pump_on():pump_off();
+
 }
 
 
-/* TODO:
- * Should pump values be written to NVM
- * every time state changes ?
- * Too many writes into flash ??
- */
 void pump_on()
 {
 	/*
@@ -356,6 +386,11 @@ void set_light_val(uint16_t val,bool sensor_state)
 void set_water_level(uint16_t val)
 {
 	water_val.water_level = val;
+}
+
+void set_pump_mode(pump_mode_t val)
+{
+	water_val.pump_mode = val;
 }
 
 void set_changed_light_setpoint(uint16_t val)

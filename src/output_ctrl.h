@@ -14,7 +14,7 @@
 
 
 #define PUMP_PORT gpioPortF
-#define PUMP_PIN (5U)
+#define PUMP_PIN (4U)
 #define LIGHT_PORT gpioPortF
 #define LIGHT_PIN (7U)
 
@@ -35,16 +35,18 @@
 #define PWM_BITS 8
 #define PWM_MAX ((0x01<<(PWM_BITS))-1)
 
-#define PERCENT_TO_PWM(percent) (((float)percent/(float)100)*PWM_MAX)
+#define PERCENT_TO_PWM(percent) ((uint32_t)((percent/100.0)*PWM_MAX))
 
 typedef enum {
-	undefined,
+	undefined0,
 	full,
 	error,
 	half,
 	empty
 }water_level_t;
 
+
+//char * water_level_enum[]
 
 typedef struct{
 	uint16_t light_setpoint;
@@ -62,25 +64,39 @@ typedef struct {
 	light_actuator_t actuator;
 }light_data_t;
 
+typedef enum {
+	undefined1,
+	Auto,
+	Manual_On,
+	Manual_Off
+}pump_mode_t;
+
 typedef struct{
 	water_level_t water_level;
 	uint8_t pump_state;
+	pump_mode_t pump_mode;
 }water_data_t;
 
-void set_light_val(uint16_t val,bool sensor_state);
-void set_water_level(uint16_t val);
-void set_changed_light_setpoint(uint16_t val);
-void set_changed_light_deadband(uint8_t val);
-
-uint8_t get_config_val(void);
 
 void pump_control_init();
 void light_control_init();
 
 void update_light_state(void);
-void update_pump_state(void);
 void update_light_setpoint(void);
 void update_light_deadband(void);
+
+void update_pump_state(void);
+
+void set_light_val(uint16_t val,bool sensor_state);
+void set_changed_light_setpoint(uint16_t val);
+void set_changed_light_deadband(uint8_t val);
+
+void set_water_level(uint16_t val);
+void set_pump_mode(pump_mode_t val);
+
+uint8_t get_config_val(void);
+
+
 
 void pump_on();
 void pump_off();
