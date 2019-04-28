@@ -1,20 +1,19 @@
 # Current Implementation progress
 All project documents on [google drive](https://drive.google.com/drive/u/0/folders/1rQfYgGdwMprrHQvmEfe_ihg3yPjacLZz)
 
-* Low Power and Friend implementation working, proven using energy profiler.
-* Publish and Subscribe over lightness model working.Publish working over lighting lightness model. 
-* This model has a request.kind field that can be used to differentiate between the sensors. 
-* The lightness model gives a 16bit value that can be sent, this should be enough for both sensors
-* Added a gatt characteristic for light setpoint, change in value gets raised as event. Logging the event for now
-* writes setpoint values to flash when changed from GATT
-* Tested Control functions for pump and light with light value not changing in case of unreliable data
-* Light PWM signal shown on LCD, can change to higher resolution PWM with by changing a macro
-* Setpoints can be changed from GATT characteristic, also shows current setpoint when first opened
+* Establish friendship with a low power node
+* Receive data on lighting lightness and generic on off model over mesh
+* Differentiate between the 2 different sensor data using the request kind attribute
+* Actuate 2 different actuators based on the read sensor data
+* Exposed a setpoint and deadband parameter over GATT
+* Register changes to the parameter from the Blue Gecko App and change the setpoint and deadband accordingly
+* The changes are written to flash, hence saved over power cycle
+* A change in actuator output is also written to flash so that the last value is held at startup.
+* A config parameter is also exposed to GATT, this can be changed to select the number of actuators connected to the node.
+* Override the state of pump based on button press from the sensor node.
+* Integrated the LCD so that the actuator values and mesh state is shown on the screen
+* Logging over serial for debugging functionality.
 
-
-### TODOs
-* Config data to use either or both sensors - need minor additions for this, most code is already there
-* Code documentation -- mostly done, need cleanup
 
 ## ECEN 5823 Bluetooth Mesh Skeleton Project
 
