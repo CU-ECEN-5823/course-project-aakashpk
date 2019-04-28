@@ -38,6 +38,7 @@ void update_and_publish_on_off(uint8_t old_state, uint8_t new_state)
 	printf("leaving send \n\r");
 }
 
+
 void onoff_request(uint16_t model_id,
                           uint16_t element_index,
                           uint16_t client_addr,
@@ -48,18 +49,29 @@ void onoff_request(uint16_t model_id,
                           uint16_t delay_ms,
                           uint8_t request_flags)
 {
-	static uint8_t button_state = 0x01;
+	static pump_mode_t mode = Auto;
 
-	LOG_DEBUG("Model id 0x%4x element index 0%d client addr 0x%04x server addr 0x%04x "
+	LOG_DEBUG ("Model id 0x%4x element index 0%d client addr 0x%04x server addr 0x%04x "
 			"appkey index 0%d transition_ms 0%d delay_ms 0%d request flags 0x%4x",
 			model_id,element_index,client_addr,server_addr,appkey_index,
 			transition_ms,delay_ms,request_flags);
 
 	//Change the LED state based
-	button_state?gpioLed0SetOn():gpioLed0SetOff();
-
+//	button_state?gpioLed1SetOn():gpioLed1SetOff();
 //	update_and_publish_on_off(button_state^0x01,button_state);
-	button_state = button_state^0x01;
+//	button_state = button_state^0x01;
+
+	if(request->on_off)
+	{
+		mode++;
+		if(mode > 3)
+			mode =Auto;
+	}
+
+	//Change pump mode
+	set_pump_mode(mode);
+	// Call water task
+	schedule_event(WATER_TASK);
 }
 
 void onoff_change(uint16_t model_id,
@@ -75,9 +87,6 @@ void onoff_change(uint16_t model_id,
 			current->on_off,
 			target->on_off);
 }
-
-
-
 
 
 
@@ -179,6 +188,7 @@ void actuator_node_init(void)
 	light_control_init();
 
 	// Initialize required models
+
 	MESH_CHECK_RESPONSE(mesh_lib_generic_server_register_handler(MESH_GENERIC_ON_OFF_SERVER_MODEL_ID,
 	                                           0,
 	                                           onoff_request,
