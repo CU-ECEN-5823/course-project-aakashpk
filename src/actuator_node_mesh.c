@@ -135,8 +135,18 @@ static void lightness_request(uint16_t model_id,
 	switch(request->kind)
 	{
 	case mesh_lighting_request_lightness_actual:
-		//if request flag is zero, sensor error
-		set_light_val(request->lightness,request_flags>0);
+		/*
+		 * if request flag is zero, sensor error
+		 * To increase reading resolution we multiply lumen by 100
+		 * in sensor node, gives 2 more digits precision
+		 * lightness model does not transfer 0 value
+		 * so add a 1 to the reading so that 1 is the lowest
+		 * value that we send over the mesh lightness model
+		 *
+		 * The same has to be done in reverse
+		 * to get back the correct lumen value
+		 */
+		set_light_val((request->lightness-1)/100.0,request_flags>0);
 		//schedule light handling task
 		schedule_event(LIGHT_TASK);
 		break;
