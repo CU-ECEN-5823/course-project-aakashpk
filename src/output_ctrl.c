@@ -61,7 +61,7 @@ int light_actuator_state_store(void)
 }
 
 
-uint8_t light_output_calc(uint16_t value)
+uint8_t light_output_calc(float value)
 {
 	/*
 	 * All input values are in lumens
@@ -116,7 +116,7 @@ void update_light_state(void)
 		}
 	}
 
-	LOG_INFO("Light %d :%s, Setpoint %d Deadband %d Bulb %d",
+	LOG_INFO("Light %f :%s, Setpoint %d Deadband %d Bulb %d",
 					light_val.sensor.light_level,
 					light_val.sensor.reliable?"reliable":"unreliable",
 					light_val.actuator.light_setpoint,
@@ -377,7 +377,7 @@ uint8_t get_config_val(void)
 /*
  * Setter functions for static variables in file
  */
-void set_light_val(uint16_t val,bool sensor_state)
+void set_light_val(float val,bool sensor_state)
 {
 	light_val.sensor.light_level = val;
 	light_val.sensor.reliable = sensor_state;

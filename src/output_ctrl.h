@@ -55,7 +55,7 @@ typedef struct{
 } light_actuator_t;
 
 typedef struct {
-	uint16_t light_level;
+	float light_level;
 	bool reliable; //true is sensor OK,false is sensor error
 } light_sensor_t;
 
@@ -87,7 +87,7 @@ void update_light_deadband(void);
 
 void update_pump_state(void);
 
-void set_light_val(uint16_t val,bool sensor_state);
+void set_light_val(float val,bool sensor_state);
 void set_changed_light_setpoint(uint16_t val);
 void set_changed_light_deadband(uint8_t val);
 
