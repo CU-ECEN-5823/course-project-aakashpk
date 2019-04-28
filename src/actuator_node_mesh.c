@@ -56,11 +56,6 @@ void onoff_request(uint16_t model_id,
 			model_id,element_index,client_addr,server_addr,appkey_index,
 			transition_ms,delay_ms,request_flags);
 
-	//Change the LED state based
-//	button_state?gpioLed1SetOn():gpioLed1SetOff();
-//	update_and_publish_on_off(button_state^0x01,button_state);
-//	button_state = button_state^0x01;
-
 	if(request->on_off)
 	{
 		mode++;

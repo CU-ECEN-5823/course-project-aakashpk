@@ -94,7 +94,7 @@ int main(void)
   // register config change task
   scheduler_event_register(connected_devices_change_task,CONFIG_CHANGE_TASK);
 
-  //Register Actuator Tasks
+  //Register Actuator Tasks based on config
   if(cur_config & 0x01)
   {
 	  light_control_init();

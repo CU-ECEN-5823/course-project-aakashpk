@@ -431,7 +431,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			break;
 
 		case gecko_evt_mesh_friend_friendship_terminated_id:
-			LOG_INFO("evt gecko_evt_mesh_friend_friendship_terminated, reason=%x\r\n", evt->data.evt_mesh_friend_friendship_terminated.reason);
+			LOG_INFO("evt gecko_evt_mesh_friend_friendship_terminated, reason=%x", evt->data.evt_mesh_friend_friendship_terminated.reason);
 			displayPrintf(DISPLAY_ROW_ACTION,"NO LPN");
 			break;
 

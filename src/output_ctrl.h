@@ -32,7 +32,7 @@
 
 #define SENSOR_DEFAULT_CONFIG 0x03
 
-#define PWM_BITS 8
+#define PWM_BITS 8 // Change this to change to a different bit PWM
 #define PWM_MAX ((0x01<<(PWM_BITS))-1)
 
 #define PERCENT_TO_PWM(percent) ((uint32_t)((percent/100.0)*PWM_MAX))
@@ -75,29 +75,47 @@ typedef struct{
 }water_data_t;
 
 
+/*
+ * Actuator Init functions
+ */
 void pump_control_init();
 void light_control_init();
 
+/*
+ * State update functions to be called
+ * from events
+ */
 void update_light_state(void);
 void update_light_setpoint(void);
 void update_light_deadband(void);
 
 void update_pump_state(void);
 
-void set_light_val(float val,bool sensor_state);
-void set_changed_light_setpoint(uint16_t val);
-void set_changed_light_deadband(uint8_t val);
-
-void set_water_level(uint16_t val);
-void set_pump_mode(pump_mode_t val);
-
+/*
+ * Config change functions
+ */
 void update_config(void);
 uint8_t config_init(void);
+void set_changed_config(uint8_t val);
+
+/*
+ * Actuator functions
+ */
 
 void pump_on();
 void pump_off();
 
 void light_level_set(void);
+
+/*
+ * Setter functions for static variables
+ */
+void set_light_val(float val,bool sensor_state);
+void set_changed_light_setpoint(uint16_t val);
+void set_changed_light_deadband(uint8_t val);
+void set_water_level(uint16_t val);
+void set_pump_mode(pump_mode_t val);
+
 
 
 #endif /* SRC_OUTPUT_CTRL_H_ */

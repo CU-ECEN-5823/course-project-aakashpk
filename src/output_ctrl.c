@@ -20,7 +20,7 @@ char * pump_mode_enum_str[4] = {"Undefined",
 									"Manual OFF"
 };
 
-// Structures for sensor value and actuator state
+// Static Structures for sensor value and actuator state
 static light_data_t light_val;
 static water_data_t water_val;
 static uint8_t config_state;
@@ -77,7 +77,17 @@ int light_actuator_state_store(void)
   return 0;
 }
 
+/*
+ * Light Control functions
+ */
 
+
+/**
+ * Calculates the light output based
+ * on given light value
+ * @param value - currently measured light in lumen
+ * @return actuator percentage
+ */
 uint8_t light_output_calc(float value)
 {
 	/*
@@ -100,7 +110,6 @@ uint8_t light_output_calc(float value)
 	else return 0;
 
 }
-
 
 
 void light_level_set()
@@ -305,8 +314,8 @@ void update_pump_state(void)
 
 void pump_control_init(void)
 {
-	GPIO_DriveStrengthSet(PUMP_PORT, gpioDriveStrengthWeakAlternateWeak);
-	GPIO_PinModeSet(PUMP_PORT, PUMP_PIN, gpioModePushPull, false);
+	GPIO_DriveStrengthSet(PUMP_PORT, gpioDriveStrengthStrongAlternateStrong);
+	GPIO_PinModeSet(PUMP_PORT, PUMP_PIN, gpioModePushPull, false);//gpioModeWiredAnd //gpioModePushPull
 
 	water_val.water_level = error; // initialize to unreliable
 	/*
@@ -323,7 +332,7 @@ void pump_control_init(void)
 void pump_on()
 {
 	/*
-	 * TODO: Start a timer here,
+	 * TODO: Maybe Start a timer here,
 	 * turn off pump when the timer expires
 	 * in case the sensor is broken
 	 */
@@ -342,7 +351,6 @@ void pump_off()
 
 
 // Acuator config
-
 
 
 int config_state_load(void)
