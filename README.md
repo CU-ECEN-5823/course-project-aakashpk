@@ -1,4 +1,4 @@
-# Current Implementation progress
+# Current Implementation
 All project documents on [google drive](https://drive.google.com/drive/u/0/folders/1rQfYgGdwMprrHQvmEfe_ihg3yPjacLZz)
 
 * Establish friendship with a low power node
