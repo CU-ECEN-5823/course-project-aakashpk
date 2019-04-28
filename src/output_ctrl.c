@@ -7,12 +7,29 @@
 
 #include "output_ctrl.h"
 
+char * water_level_enum_str[5] = {"Undefined",
+									"Full",
+									"Error",
+									"Half",
+									"Empty"
+};
+
+char * pump_mode_enum_str[4] = {"Undefined",
+									"Auto",
+									"Manual ON",
+									"Manual OFF"
+};
+
 // Structures for sensor value and actuator state
 static light_data_t light_val;
 static water_data_t water_val;
+static uint8_t config_state;
+
+
 
 static uint16_t changed_light_setpoint;
 static uint8_t changed_light_deadband;
+static uint8_t changed_config_state;
 
 
 int light_actuator_state_load(void)
@@ -116,7 +133,7 @@ void update_light_state(void)
 		}
 	}
 
-	LOG_INFO("Light %f :%s, Setpoint %d Deadband %d Bulb %d",
+	LOG_INFO("Light %f:%s, Setpoint:%d, Deadband:%d, Bulb:%d%%",
 					light_val.sensor.light_level,
 					light_val.sensor.reliable?"reliable":"unreliable",
 					light_val.actuator.light_setpoint,
@@ -131,10 +148,12 @@ void update_light_setpoint(void)
 		light_val.actuator.light_setpoint = changed_light_setpoint;
 		LOG_INFO("Light setpoint changed to %d",
 				light_val.actuator.light_setpoint);
+
+
+		// write value to flash
+		light_actuator_state_store();
 	}
 
-	// write value to flash
-	light_actuator_state_store();
 }
 
 void update_light_deadband(void)
@@ -144,10 +163,12 @@ void update_light_deadband(void)
 		light_val.actuator.deadband = changed_light_deadband;
 		LOG_INFO("Light deadband changed to %d",
 				light_val.actuator.deadband);
+
+		// write value to flash
+		light_actuator_state_store();
 	}
 
-	// write value to flash
-	light_actuator_state_store();
+
 }
 
 void light_control_init()
@@ -161,7 +182,7 @@ void light_control_init()
 	//Get last stored values from NVM
 	light_actuator_state_load();
 
-	LOG_INFO("Setpoint %d Deadband %d Output %d",
+	LOG_INFO("Setpoint:%d Deadband:%d Output:%d",
 			light_val.actuator.light_setpoint,
 			light_val.actuator.deadband,
 			light_val.actuator.light_output);
@@ -233,7 +254,7 @@ void update_pump_state(void)
 				case half:
 				/*
 				 * nothing to be done here,
-				 * when filling up pump should be ON
+				 * when filling up pump should continue to be ON
 				 * when pump already OFF, then pump should be OFF
 				 * so just keep last value.
 				 */
@@ -273,13 +294,10 @@ void update_pump_state(void)
 		pump_state_store();
 	}
 
-	/*
-	 * TODO: change the states to strings for logging
-	 */
-	LOG_INFO("Water level %d Pump Mode %d Pump State %d",
-			water_val.water_level,
-			water_val.pump_mode,
-			water_val.pump_state);
+	LOG_INFO("Water level:%s, Pump Mode:%s, Pump State:%s",
+			water_level_enum_str[water_val.water_level],
+			pump_mode_enum_str[water_val.pump_mode],
+			water_val.pump_state ? "ON":"OFF");
 }
 
 
@@ -325,7 +343,7 @@ void pump_off()
 
 // Acuator config
 
-static uint8_t config_state;
+
 
 int config_state_load(void)
 {
@@ -363,16 +381,36 @@ int config_state_store(void)
   return 0;
 }
 
-/*
- *
- */
-uint8_t get_config_val(void)
+uint8_t config_init(void)
 {
+	config_state_load();
+
+	BTSTACK_CHECK_RESPONSE(gecko_cmd_gatt_server_write_attribute_value(gattdb_conn_dev,
+				  0, sizeof(uint8_t), (uint8 *)&config_state));
+
 	return config_state;
 }
 
 
 
+void set_changed_config(uint8_t val)
+{
+	changed_config_state = val;
+}
+
+void update_config(void)
+{
+	if(changed_config_state != config_state)
+	{
+		config_state = changed_config_state;
+		LOG_INFO("Config changed to 0x%x",
+				config_state);
+
+		// write value to flash
+		config_state_store();
+	}
+
+}
 
 /*
  * Setter functions for static variables in file
@@ -402,4 +440,5 @@ void set_changed_light_deadband(uint8_t val)
 {
 	changed_light_deadband = val;
 }
+
 

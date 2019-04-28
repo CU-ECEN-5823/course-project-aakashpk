@@ -45,9 +45,6 @@ typedef enum {
 	empty
 }water_level_t;
 
-
-//char * water_level_enum[]
-
 typedef struct{
 	uint16_t light_setpoint;
 	uint8_t deadband;
@@ -94,9 +91,8 @@ void set_changed_light_deadband(uint8_t val);
 void set_water_level(uint16_t val);
 void set_pump_mode(pump_mode_t val);
 
-uint8_t get_config_val(void);
-
-
+void update_config(void);
+uint8_t config_init(void);
 
 void pump_on();
 void pump_off();
