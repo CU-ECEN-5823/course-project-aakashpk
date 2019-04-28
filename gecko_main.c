@@ -116,7 +116,7 @@ const gecko_configuration_t config =
 
 // definition
 void gatt_char_change_server(struct gecko_cmd_packet *evt);
-void gatt_char_change_client(struct gecko_cmd_packet *evt);
+
 
 /**
  * See light switch app.c file definition
@@ -236,8 +236,8 @@ void initiate_factory_reset(void)
 
   /* perform a factory reset by erasing PS storage. This removes all the keys and other settings
      that have been configured for this node */
-  if(gecko_cmd_flash_ps_erase_all()!=0)
-	  LOG_ERROR("Flash erase failed");
+  BTSTACK_CHECK_RESPONSE(gecko_cmd_flash_ps_erase_all());
+
   // reboot after a small delay
   gecko_cmd_hardware_set_soft_timer(2 * 32768, TIMER_ID_FACTORY_RESET, 1);
 }
@@ -445,22 +445,21 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 	      displayPrintf(DISPLAY_ROW_ACTION,"NO FRIEND");
 
 	      // try again in 2 seconds
-	      result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(5000), TIMER_ID_FRIEND_FIND, 1)->result;
-	      if (result) {
-	        LOG_DEBUG("timer failure?!  %x", result);
-	      }
+	      BTSTACK_CHECK_RESPONSE(
+	    		  gecko_cmd_hardware_set_soft_timer(
+	    				  TIMER_MS_2_TIMERTICK(5000),
+	    				  TIMER_ID_FRIEND_FIND, 1));
 	      break;
 
 	    case gecko_evt_mesh_lpn_friendship_terminated_id:
 	      LOG_INFO("friendship terminated 0x%x",evt->data.evt_mesh_friend_friendship_terminated.reason);
 	      displayPrintf(DISPLAY_ROW_ACTION,"FRIEND LOST");
-	        // try again in 2 seconds
-	        result  = gecko_cmd_hardware_set_soft_timer(TIMER_MS_2_TIMERTICK(2000), TIMER_ID_FRIEND_FIND, 1)->result;
-	        if (result) {
-	          LOG_INFO("timer failure?!  %x", result);
-	        }
 
-	      break;
+	      // try again in 2 seconds
+	        BTSTACK_CHECK_RESPONSE(gecko_cmd_hardware_set_soft_timer
+	        		(TIMER_MS_2_TIMERTICK(2000),
+	        				TIMER_ID_FRIEND_FIND, 1));
+	        break;
 
 		case gecko_evt_le_gap_adv_timeout_id:
 			// adv timeout events silently discarded
@@ -498,7 +497,7 @@ void handle_gecko_event(uint32_t evt_id, struct gecko_cmd_packet *evt)
 			#if DEVICE_USES_BLE_MESH_SERVER_MODEL
 					gatt_char_change_server(evt);
 			#else
-					gatt_char_change_client(evt);
+//					gatt_char_change_client(evt);
 			#endif
 
 			break;
