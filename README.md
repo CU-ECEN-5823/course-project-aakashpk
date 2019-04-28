@@ -8,14 +8,13 @@ All project update documents on [google drive](https://drive.google.com/drive/u/
 * Added a gatt characteristic for light setpoint, change in value gets raised as event. Logging the event for now
 * writes setpoint values to flash when changed from GATT
 * Tested Control functions for pump and light with light value not changing in case of unreliable data
+* Light PWM signal shown on LCD, can change to higher resolution PWM with by changing a macro
+* Setpoints can be changed from GATT characteristic, also shows current setpoint when first opened
 
 
 ### TODOs
-* Write setpoint at startup to the gatt char, and update setpoint when it gets changed from gatt
-* PWM signal write and can be shown on DSO.
-* Config data to use either or both sensors, have to add seperate GATT char for that.
-* If time permits, try getting the vendor model working. provisioning can be done using the embedded provisioner.
-
+* Config data to use either or both sensors - need minor additions for this, most code is already there
+* Code documentation -- mostly done, need cleanup
 
 ## ECEN 5823 Bluetooth Mesh Skeleton Project
 
