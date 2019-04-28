@@ -1,5 +1,5 @@
 # Current Implementation progress
-All project update documents on [google drive](https://drive.google.com/drive/u/0/folders/1rQfYgGdwMprrHQvmEfe_ihg3yPjacLZz)
+All project documents on [google drive](https://drive.google.com/drive/u/0/folders/1rQfYgGdwMprrHQvmEfe_ihg3yPjacLZz)
 
 * Low Power and Friend implementation working, proven using energy profiler.
 * Publish and Subscribe over lightness model working.Publish working over lighting lightness model. 
