@@ -64,7 +64,7 @@ void light_actuator_task(void)
 	update_light_state();
 }
 
-//Task 2
+//Task 3
 void pump_actuator_task(void)
 {
 	update_pump_state();
@@ -73,14 +73,12 @@ void pump_actuator_task(void)
 //Task 4
 void light_setpoint_change_task(void)
 {
-	LOG_INFO("Light setpoint changed");
 	update_light_setpoint();
 }
 
 //Task 5
 void light_deadband_change_task(void)
 {
-	LOG_INFO("Light deadband changed");
 	update_light_deadband();
 }
 
@@ -88,7 +86,8 @@ void light_deadband_change_task(void)
 //Task 6
 void connected_devices_change_task(void)
 {
-
-	LOG_WARN("Config changed, \n****** reset device to use updated config ******** ");
+	update_config();
+	LOG_WARN("Config changed, \n****** RESET DEVICE TO USE UPDATED CONFIG ******** ");
+	displayPrintf(DISPLAY_ROW_TEMPVALUE,"RESET DEVICE");
 
 }

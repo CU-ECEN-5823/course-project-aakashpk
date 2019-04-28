@@ -85,17 +85,29 @@ int main(void)
 	#else
 
   /*
-   * read config data here, based on read value
-   * based on read value, register just the first or second 3
+   * read config
+   * based on read value, register just the first or second
    * or all events, for only light, only pump and both configs.
    */
+  uint8_t cur_config = config_init();
+
+  // register config change task
+  scheduler_event_register(connected_devices_change_task,CONFIG_CHANGE_TASK);
 
   //Register Actuator Tasks
-   scheduler_event_register(light_actuator_task, LIGHT_TASK);
-   scheduler_event_register(pump_actuator_task,WATER_TASK);
-   scheduler_event_register(light_setpoint_change_task,SETPOINT_CHANGE_TASK);
-   scheduler_event_register(light_deadband_change_task,DEADBAND_CHANGE_TASK);
-   scheduler_event_register(connected_devices_change_task,CONFIG_CHANGE_TASK);
+  if(cur_config & 0x01)
+  {
+	  light_control_init();
+	  scheduler_event_register(light_actuator_task, LIGHT_TASK);
+	  scheduler_event_register(light_setpoint_change_task,SETPOINT_CHANGE_TASK);
+	  scheduler_event_register(light_deadband_change_task,DEADBAND_CHANGE_TASK);
+  }
+  if(cur_config & 0x02)
+  {
+	  pump_control_init();
+	  scheduler_event_register(pump_actuator_task,WATER_TASK);
+  }
+
 	#endif
 
 

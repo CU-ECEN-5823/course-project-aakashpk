@@ -215,7 +215,7 @@ void execute_next_event(void)
 
 	else
 	{
-		LOG_ERROR("Unregistered Event Execution Tried");
+		LOG_DEBUG("Unregistered Event Execution Tried");
 	}
 }
 

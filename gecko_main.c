@@ -91,6 +91,7 @@ uint8_t boot_to_dfu = 0;
 
 const gecko_configuration_t config =
 {
+  .sleep.flags = SLEEP_FLAGS_DEEP_SLEEP_ENABLE,
   .bluetooth.max_connections = MAX_CONNECTIONS,
   .bluetooth.max_advertisers = MAX_ADVERTISERS,
   .bluetooth.heap = bluetooth_stack_heap,
@@ -559,6 +560,7 @@ void gatt_char_change_server(struct gecko_cmd_packet *evt)
 		break;
 
 	case gattdb_conn_dev:
+		set_changed_config(evt->data.evt_gatt_server_attribute_value.value.data[0]);
 		schedule_event(CONFIG_CHANGE_TASK);
 		gecko_external_signal(SET_GECKO_EVENT);
 		break;
