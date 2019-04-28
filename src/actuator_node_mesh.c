@@ -194,8 +194,6 @@ void actuator_node_init(void)
 	//Initialize Friend functionality
 	BTSTACK_CHECK_RESPONSE(gecko_cmd_mesh_friend_init());
 
-	pump_control_init();
-	light_control_init();
 
 	// Initialize required models
 
